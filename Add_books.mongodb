@@ -2,7 +2,7 @@
 // Use Ctrl+Space inside a snippet or a string literal to trigger completions.
 
 // The current database to use.
-use('store');
+use('code_snippets');
 
 db.getCollection('books').deleteMany({});
 
