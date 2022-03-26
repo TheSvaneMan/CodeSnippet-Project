@@ -2,6 +2,8 @@ import { useLoaderData, Link } from "remix";
 import connectDb from "~/db/connectDb.server.js";
 import React, { useRef, useState } from 'react';
 
+
+
 export async function loader() {
   const db = await connectDb();
   const books = await db.models.Book.find();
@@ -33,10 +35,9 @@ export default function Index() {
         </h2>
         <ul className="ml-5 list-disc">
           {books.map((book, i) => {
-            let checkID = "check" + book._id
             return (
-              <li key={book._id}>
-                <input id={checkID} onClick={() =>toggle(i)} type="checkbox"/><label>{book.title}</label>
+              <li key={book._id} onClick={() =>toggle(i)}>
+                <label>{book.title}</label>
               </li>
             );
           })} 
@@ -47,10 +48,8 @@ export default function Index() {
           Code:
         </h2>
         {books.map((book, i) => {
-          let codeID = "code" + book._id
           return (
-              
-            <div className={show == i ? 'block' : 'hidden'}  key={book._id} id={codeID}>
+            <div className={show == i ? 'block' : 'hidden'}  key={book._id} id={book._id}>
           <h1 className="text-2xl font-bold mb-4">{book.title}</h1>
           <h1>
             Author: {book.author}
