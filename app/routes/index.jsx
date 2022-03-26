@@ -1,5 +1,8 @@
 import { useLoaderData, Link } from "remix";
 import connectDb from "~/db/connectDb.server.js";
+import React, { useRef, useState } from 'react';
+
+import '../style.css';
 
 export async function loader() {
   const db = await connectDb();
@@ -9,6 +12,15 @@ export async function loader() {
 
 export default function Index() {
   const books = useLoaderData();
+  const [show, setShow] = useState(null);
+
+  const toggle = (i) => {
+    if (show == i) {
+      return setShow(null)
+    }
+    setShow(i);
+  }
+
 
   return (
     <section className="flex">
@@ -22,11 +34,11 @@ export default function Index() {
           Code snippets:
         </h2>
         <ul className="ml-5 list-disc">
-          {books.map((book) => {
+          {books.map((book, i) => {
             let checkID = "check" + book._id
             return (
               <li key={book._id}>
-                <input id={checkID} type="checkbox"/><label>{book.title}</label>
+                <input id={checkID} onClick={() =>toggle(i)} type="checkbox"/><label>{book.title}</label>
               </li>
             );
           })} 
@@ -36,10 +48,11 @@ export default function Index() {
         <h2 className="text-lg font-bold mb-3">
           Code:
         </h2>
-        {books.map((book) => {
+        {books.map((book, i) => {
           let codeID = "code" + book._id
-            return (
-              <div key={book._id} id={codeID}>
+          return (
+              
+            <div className={show == i ? 'content show' : 'content'}  key={book._id} id={codeID}>
           <h1 className="text-2xl font-bold mb-4">{book.title}</h1>
           <h1>
             Author: {book.author}
@@ -49,11 +62,12 @@ export default function Index() {
           </h1>
           <h1>
             ID: {book._id}
-          </h1>
-          <h1>
-            Description: {book.description}
-          </h1>
+                </h1>
+                <h1>
+                    Description: {book.description}
+                  </h1>
             </div>
+          
               );
             })} 
       </div>
