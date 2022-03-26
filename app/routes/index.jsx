@@ -2,8 +2,6 @@ import { useLoaderData, Link } from "remix";
 import connectDb from "~/db/connectDb.server.js";
 import React, { useRef, useState } from 'react';
 
-import '../style.css';
-
 export async function loader() {
   const db = await connectDb();
   const books = await db.models.Book.find();
@@ -52,7 +50,7 @@ export default function Index() {
           let codeID = "code" + book._id
           return (
               
-            <div className={show == i ? 'content show' : 'content'}  key={book._id} id={codeID}>
+            <div className={show == i ? 'block' : 'hidden'}  key={book._id} id={codeID}>
           <h1 className="text-2xl font-bold mb-4">{book.title}</h1>
           <h1>
             Author: {book.author}
