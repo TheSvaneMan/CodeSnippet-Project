@@ -11,24 +11,53 @@ export default function Index() {
   const books = useLoaderData();
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-4">Remix + Mongoose</h1>
+    <section className="flex">
+      <div className="m-6">
       <h2 className="text-lg font-bold mb-3">
-        Here are a few of my favorite books:
-      </h2>
-      <ul className="ml-5 list-disc">
+      Categories:
+        </h2>
+      </div>
+      <div className="m-6">
+        <h2 className="text-lg font-bold mb-3">
+          Code snippets:
+        </h2>
+        <ul className="ml-5 list-disc">
+          {books.map((book) => {
+            let checkID = "check" + book._id
+            return (
+              <li key={book._id}>
+                <input id={checkID} type="checkbox"/><label>{book.title}</label>
+              </li>
+            );
+          })} 
+        </ul>
+      </div>
+      <div className="m-6">
+        <h2 className="text-lg font-bold mb-3">
+          Code:
+        </h2>
         {books.map((book) => {
-          return (
-            <li key={book._id}>
-              <Link
-                to={`/books/${book._id}`}
-                className="text-blue-600 hover:underline">
-                {book.title}
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
+          let codeID = "code" + book._id
+            return (
+              <div key={book._id} id={codeID}>
+          <h1 className="text-2xl font-bold mb-4">{book.title}</h1>
+          <h1>
+            Author: {book.author}
+          </h1>
+          <h1>
+            Price: {book.price}USD
+          </h1>
+          <h1>
+            ID: {book._id}
+          </h1>
+          <h1>
+            Description: {book.description}
+          </h1>
+            </div>
+              );
+            })} 
+      </div>
+    </section>
   );
+
 }
