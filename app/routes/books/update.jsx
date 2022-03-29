@@ -5,7 +5,7 @@ export async function action({ request }) {
   const form = await request.formData();
   const db = await connectDb();
   try {
-    const newBook = await db.models.Book.create({ title: form.get("title"), description: form.get("description") });
+    const newBook = await db.models.Book.create({ title: form.get("title") });
     return redirect(`/books/${newBook._id}`);
   } catch (error) {
     return json(
@@ -15,12 +15,11 @@ export async function action({ request }) {
   }
 }
 
-export default function CreateBook() {
+export default function UpdateSnip() {
   const actionData = useActionData();
-  console.log(actionData);
   return (
     <div>
-      <h1>Create book</h1>
+      <h1>Update code snippet</h1>
       <Form method="post">
         <label htmlFor="title" className="block">
           Title
@@ -36,21 +35,6 @@ export default function CreateBook() {
         />
         {actionData?.errors.title && (
           <p className="text-red-500">{actionData.errors.title.message}</p>
-        )}
-        <label htmlFor="description" className="block">
-          Description
-        </label>
-        <input
-          type="text"
-          name="description"
-          defaultValue={actionData?.values.description}
-          id="description"
-          className={
-            actionData?.errors.description ? "border-2 border-red-500" : null
-          }
-        />
-        {actionData?.errors.description && (
-          <p className="text-red-500">{actionData.errors.description.message}</p>
         )}
         <br />
         <button type="submit">Save</button>

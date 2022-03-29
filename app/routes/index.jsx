@@ -2,8 +2,6 @@ import { useLoaderData, Link } from "remix";
 import connectDb from "~/db/connectDb.server.js";
 import React, { useRef, useState } from 'react';
 
-
-
 export async function loader() {
   const db = await connectDb();
   const books = await db.models.Book.find();
@@ -20,7 +18,6 @@ export default function Index() {
     }
     setShow(i);
   }
-
 
   return (
     <section className="flex">
@@ -62,8 +59,16 @@ export default function Index() {
                 </h1>
                 <h1>
                     Description: {book.description}
-                  </h1>
+              </h1>
+              
+            <form method="post" action="./books/delete">
+              <input type="hidden" name="inputID" value={book._id}></input>
+              <button type="submit">Delete</button>
+            </form>
+
+              
             </div>
+          
           
               );
             })} 
