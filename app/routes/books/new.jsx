@@ -20,7 +20,7 @@ export default function CreateBook() {
   console.log(actionData);
   return (
     <div>
-      <h1>Create book</h1>
+      <h1>Create code snippet</h1>
       <Form method="post">
         <label htmlFor="title" className="block">
           Title

@@ -17,6 +17,7 @@ export default function Index() {
       return setShow(null)
     }
     setShow(i);
+    console.log(books);
   }
 
   return (
@@ -30,15 +31,14 @@ export default function Index() {
         <h2 className="text-lg font-bold mb-3">
           Code snippets:
         </h2>
-        <ul className="ml-5 list-disc">
+        <div className="ml-5 list-disc flex flex-col">
           {books.map((book, i) => {
             return (
-              <li key={book._id} onClick={() =>toggle(i)}>
-                <label>{book.title}</label>
-              </li>
+              <button className="text-left" key={book._id} onClick={() => toggle(i)}>{book.title}</button>
+              
             );
           })} 
-        </ul>
+        </div>
       </div>
       <div className="m-6">
         <h2 className="text-lg font-bold mb-3">
@@ -64,7 +64,8 @@ export default function Index() {
             <form method="post" action="./books/delete">
               <input type="hidden" name="inputID" value={book._id}></input>
               <button type="submit">Delete</button>
-            </form>
+              </form>
+              
 
               
             </div>
