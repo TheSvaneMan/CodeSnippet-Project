@@ -46,13 +46,17 @@ export default function Index() {
         </h2>
         {books.map((book, i) => {
           return (
-            <div className={show == i ? 'block' : 'hidden'}  key={book._id} id={book._id}>
+        <div className={show == i ? 'block' : 'hidden'}  key={book._id} id={book._id}>
           <h1 className="text-2xl font-bold mb-4">{book.title}</h1>
           <h1>
             ID: {book._id}
           </h1>
           <h1>
             Description: {book.description}
+              </h1>
+            
+          <h1>
+                Favorite: <b>{book.favorite? 'Yes' : 'No'}</b>
           </h1>
           
           {/* Deleting post method with Form and POST */}
@@ -64,7 +68,14 @@ export default function Index() {
           {/* Editing post method with passing ID in the link */}
           <Link to={`books/${book._id}/update`}>Update</Link>
               
-            </div>
+          {/* Adding to favorite with Form and POST */}
+          <form method="post" action="./books/favorite">
+          <input type="hidden" name="inputID" value={book._id}></input>
+          <input type="hidden" name="favorite" value={book.favorite}></input>
+          <button type="submit">Add to favorite</button>
+          </form>
+          
+        </div>
           
           
               );

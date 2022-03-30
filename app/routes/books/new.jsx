@@ -5,8 +5,8 @@ export async function action({ request }) {
   const form = await request.formData();
   const db = await connectDb();
   try {
-    const newBook = await db.models.Book.create({ title: form.get("title"), description: form.get("description") });
-    return redirect(`/books/${newBook._id}`);
+    await db.models.Book.create({ title: form.get("title"), description: form.get("description") });
+    return redirect(`/`);
   } catch (error) {
     return json(
       { errors: error.errors, values: Object.fromEntries(form) },

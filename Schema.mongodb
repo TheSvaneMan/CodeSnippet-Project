@@ -2,19 +2,12 @@
 // Use Ctrl+Space inside a snippet or a string literal to trigger completions.
 
 // The current database to use.
-use('books');
+use('code_snippets');
 
-/*
+
   import mongoose from 'mongoose';
   const { Schema } = mongoose;
 
-  const books = new Schema({
-    author:  String, // String is shorthand for {type: String}
-    price: Number,
-    title:   String,
-    description: String,
-    image: String
-  });
-*/
 
-Schema.add({ description: 'string', image: 'string'});
+
+Schema.add({ favorite: 'bool' });

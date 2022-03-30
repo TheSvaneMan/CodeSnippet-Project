@@ -19,11 +19,13 @@ export async function action() {
     await db.models.Book.insertMany([
         {
             "title": "HTML form",
-            "description": "some description..."
+            "description": "some description...",
+            "favorite": true
         },
         {
             "title": "Tailwind",
-            "description": "some description..."
+            "description": "some description...",
+            "favorite": false
         }
     ]);
     return redirect("/")
