@@ -37,10 +37,9 @@ export default function UpdateSnip() {
           Title
         </label>
         <input
-          placeholder={snip.title}
           type="text"
           name="title"
-          defaultValue={actionData?.values.title}
+          defaultValue={snip.title}
           id="title"
           className={
             actionData?.errors.title ? "border-2 border-red-500" : null
@@ -55,7 +54,7 @@ export default function UpdateSnip() {
         <input
           type="text"
           name="description"
-          defaultValue={actionData?.values.description}
+          defaultValue={snip.description}
           id="description"
           className={
             actionData?.errors.description ? "border-2 border-red-500" : null
