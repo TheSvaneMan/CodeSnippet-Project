@@ -1,4 +1,4 @@
-import { useLoaderData, Link } from "remix";
+import { useLoaderData, Link, Links } from "remix";
 import connectDb from "~/db/connectDb.server.js";
 import React, { useRef, useState } from 'react';
 
@@ -17,7 +17,7 @@ export default function Index() {
       return setShow(null)
     }
     setShow(i);
-    console.log(books);
+    //console.log(books);
   }
 
   return (
@@ -56,17 +56,19 @@ export default function Index() {
           </h1>
           <h1>
             ID: {book._id}
-                </h1>
-                <h1>
-                    Description: {book.description}
-              </h1>
-              
-            <form method="post" action="./books/delete">
-              <input type="hidden" name="inputID" value={book._id}></input>
-              <button type="submit">Delete</button>
-              </form>
-              
-
+          </h1>
+          <h1>
+            Description: {book.description}
+          </h1>
+          
+          {/* Deleting post method with Form and POST */}
+          <form method="post" action="./books/delete">
+          <input type="hidden" name="inputID" value={book._id}></input>
+          <button type="submit">Delete</button>
+          </form>
+          
+          {/* Editing post method with passing ID in the link */}
+          <Link to={`books/${book._id}/update`}>Update</Link>
               
             </div>
           

@@ -1,12 +1,22 @@
-import { Form, redirect, json, useActionData } from "remix";
+import { Form, redirect, json, useActionData, useParams, Link, useLoaderData } from "remix";
 import connectDb from "~/db/connectDb.server";
 
+//loader?
 
-export async function action({ request }) {
+export async function loader({ params }) {
+  const db = await connectDb();
+  const book = await db.models.Book.findById(params.bookId);
+  return book;
+}
+console.log(loader);
+
+export async function action({ request, params }) {
   const form = await request.formData();
   const db = await connectDb();
+
+
   try {
-    await db.models.Book.updateOne({_id:"6240c45a15edf84f3a33f138"}, { title: form.get("title"), description: form.get("description") });
+    await db.models.Book.updateOne({ _id: params.bookId }, { title: form.get("title"), description: form.get("description") });
     return redirect(`/`);
   } catch (error) {
     return json(
@@ -18,7 +28,7 @@ export async function action({ request }) {
 
 export default function UpdateSnip() {
   const actionData = useActionData();
-  console.log(actionData);
+  const snip = useLoaderData();
   return (
     <div>
       <h1>Edit</h1>
@@ -27,6 +37,7 @@ export default function UpdateSnip() {
           Title
         </label>
         <input
+          placeholder={snip.title}
           type="text"
           name="title"
           defaultValue={actionData?.values.title}
