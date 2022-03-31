@@ -20,12 +20,14 @@ export async function action() {
         {
             "title": "HTML form",
             "description": "some description...",
-            "favorite": true
+            "favorite": true,
+            "date": "29/03/2022"
         },
         {
             "title": "Tailwind",
             "description": "some description...",
-            "favorite": false
+            "favorite": false,
+            "date": "30/03/2022"
         }
     ]);
     return redirect("/")
@@ -34,7 +36,7 @@ export async function action() {
 export default function Index() {
     return (
         <Form method="post">
-            <button type="submit">Add defualt snippets</button>
+            <button type="submit">Delete all snippets and add defualt ones</button>
         </Form>
         
     )

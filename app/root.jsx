@@ -37,7 +37,10 @@ export default function App() {
             Home
           </Link>
           <Link to="/books/new" className="ml-3 hover:underline text-blue-600">
-            New book
+            New code snippet
+          </Link>
+          <Link to="/seed" className="ml-3 hover:underline text-blue-600">
+            Seed
           </Link>
         </header>
         <Outlet />

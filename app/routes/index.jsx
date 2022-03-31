@@ -11,33 +11,46 @@ export async function loader() {
 export default function Index() {
   const books = useLoaderData();
   const [show, setShow] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const toggle = (i) => {
     if (show == i) {
       return setShow(null)
     }
     setShow(i);
-    //console.log(books);
+    console.log(books);
   }
 
   return (
     <section className="flex">
       <div className="m-6">
       <h2 className="text-lg font-bold mb-3">
-      Categories:
+          Filters:
         </h2>
+        <input type="text" placeholder="Search..." name="search" onChange={(event) => {
+          setSearchTerm(event.target.value);
+        }}
+        />
       </div>
       <div className="m-6">
         <h2 className="text-lg font-bold mb-3">
           Code snippets:
         </h2>
         <div className="ml-5 list-disc flex flex-col">
-          {books.map((book, i) => {
+          {books.filter((book) => {
+            if (searchTerm == "") {
+              return book
+            }
+            else if (book.title.toString().toLowerCase().includes(searchTerm.toLowerCase())) {
+              return book
+            }
+          }).map((book, i) => {
             return (
-              <button className="text-left" key={book._id} onClick={() => toggle(i)}>{book.title}</button>
-              
+              <button className="text-left" key={i} onClick={() => toggle(i)}>{book.title}</button>
             );
           })} 
+          
+          
         </div>
       </div>
       <div className="m-6">
@@ -48,6 +61,9 @@ export default function Index() {
           return (
         <div className={show == i ? 'block' : 'hidden'}  key={book._id} id={book._id}>
           <h1 className="text-2xl font-bold mb-4">{book.title}</h1>
+          <h1>
+            Date: {book.date}
+          </h1>
           <h1>
             ID: {book._id}
           </h1>
@@ -72,7 +88,7 @@ export default function Index() {
           <form method="post" action="./books/favorite">
           <input type="hidden" name="inputID" value={book._id}></input>
           <input type="hidden" name="favorite" value={book.favorite}></input>
-          <button type="submit">Add to favorite</button>
+          <button type="submit">Toggle favorite</button>
           </form>
           
         </div>

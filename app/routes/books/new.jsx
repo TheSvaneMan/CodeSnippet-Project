@@ -5,7 +5,7 @@ export async function action({ request }) {
   const form = await request.formData();
   const db = await connectDb();
   try {
-    await db.models.Book.create({ title: form.get("title"), description: form.get("description") });
+    await db.models.Book.create({ title: form.get("title"), description: form.get("description"), date: form.get("date") });
     return redirect(`/`);
   } catch (error) {
     return json(
@@ -18,10 +18,13 @@ export async function action({ request }) {
 export default function CreateBook() {
   const actionData = useActionData();
   console.log(actionData);
+  const current = new Date();
+  const date = `${current.getDate()}/${current.getMonth()+1}/${current.getFullYear()}`;
   return (
     <div>
       <h1>Create code snippet</h1>
       <Form method="post">
+        <input type="text" name="date" value={date} id="date"/>
         <label htmlFor="title" className="block">
           Title
         </label>
