@@ -13,6 +13,29 @@ export default function Index() {
   const [show, setShow] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
+  // sort by name
+  //How to make books = sortByName after the funcition runs?
+  const sortByName = () => {
+    books.sort(function (a, b) {
+      const snipA = a.title.toString().toLowerCase();
+      const snipB = b.title.toString().toLowerCase();
+      if (snipA < snipB) {
+        return -1;
+      }
+      if (snipA > snipB) {
+        return 1;
+      }
+      return 0;
+    });
+  }
+
+  //How to display add and update on the right side of the screen insead of another page?
+  //Use router!
+  
+  //Do I import everything from these 2 pages, add it to Index() and display onClick like I did with snippet details?
+
+  
+
   const toggle = (i) => {
     if (show == i) {
       return setShow(null)
@@ -23,7 +46,7 @@ export default function Index() {
 
   return (
     <section className="flex">
-      <div className="m-6">
+      <div className="m-6 flex flex-col">
       <h2 className="text-lg font-bold mb-3">
           Filters:
         </h2>
@@ -31,13 +54,14 @@ export default function Index() {
           setSearchTerm(event.target.value);
         }}
         />
+        <button className="mt-6" onClick={() =>sortByName()}>Sort by name</button>
       </div>
       <div className="m-6">
         <h2 className="text-lg font-bold mb-3">
           Code snippets:
         </h2>
         <div className="ml-5 list-disc flex flex-col">
-          {books.filter((book) => {
+          { books.filter((book) => {
             if (searchTerm == "") {
               return book
             }
