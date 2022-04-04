@@ -65,10 +65,10 @@ export default function App() {
           <Link to="/" className="hover:text-orange-400 text-neutral-50 text-3xl mr-28">
             KeepSnip
           </Link>
-          <Link to="/books/new" className="ml-5 hover:text-neutral-50 text-orange-400">
+          <Link to="/new" className="ml-5 hover:text-neutral-50 text-orange-400">
             New code snippet
           </Link>
-          <Link to="/books/seed" className="ml-5 hover:text-neutral-50 text-orange-400">
+          <Link to="/seed" className="ml-5 hover:text-neutral-50 text-orange-400">
             Defualt snippets
           </Link>
         </header>
@@ -100,13 +100,13 @@ export default function App() {
                 }
               }).map((book, i) => {
                 return (
-                  <Link to={`/books/${book._id}`} key={book._id}>{i+1+". "+book.title}</Link>
+                  <Link to={`/${book._id}`} key={book._id}>{i+1+". "+book.title}</Link>
                   //<button className="text-left mb-2" key={i} onClick={() => toggle(i)}>{i+1+". "+book.title}</button>
                 );
               })}
             </div>
           </div>
-          <Outlet/>
+          <Outlet />
         </section>
         
         <ScrollRestoration />

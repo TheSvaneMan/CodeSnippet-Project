@@ -17,7 +17,7 @@ export async function action({ request, params }) {
 
   try {
     await db.models.Book.updateOne({ _id: params.bookId }, { title: form.get("title"), description: form.get("description") });
-    return redirect(`/`);
+    return redirect(`/${params.bookId}`);
   } catch (error) {
     return json(
       { errors: error.errors, values: Object.fromEntries(form) },

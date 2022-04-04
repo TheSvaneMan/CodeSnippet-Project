@@ -6,9 +6,9 @@ export async function action({ request, params }) {
   const db = await connectDb();
   if (form.get("favorite") == "true") {
     await db.models.Book.updateOne({_id: params.bookId}, {favorite: false});
-    return redirect(`/books/${params.bookId}`);
+    return redirect(`/${params.bookId}`);
   }
   await db.models.Book.updateOne({_id: params.bookId}, {favorite: true});
-  return redirect(`/books/${params.bookId}`);
+  return redirect(`/${params.bookId}`);
 }
   
