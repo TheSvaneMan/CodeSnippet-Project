@@ -4,7 +4,7 @@ import React, { useRef, useState } from 'react';
 
 export async function loader() {
   const db = await connectDb();
-  const snipps = await db.models.Book.find();
+  const snipps = await db.models.snip.find();
   return snipps;
 }
 
@@ -22,8 +22,8 @@ export default function Index() {
     });;
   }
   else if (sort == "showFavorite") {
-    sortedsnipps = snipps.filter(function (book) {
-      return book.favorite == true;
+    sortedsnipps = snipps.filter(function (snip) {
+      return snip.favorite == true;
     })
   }
 
@@ -51,16 +51,16 @@ export default function Index() {
               Code snippets:
             </h2>
             <div className="list-disc flex flex-col">
-              {sortedsnipps.filter((book) => {
+              {sortedsnipps.filter((snip) => {
                 if (searchTerm == "") {
-                  return book
+                  return snip
                 }
-                else if (book.title.toString().toLowerCase().includes(searchTerm.toLowerCase())) {
-                  return book
+                else if (snip.title.toString().toLowerCase().includes(searchTerm.toLowerCase())) {
+                  return snip
                 }
-              }).map((book, i) => {
+              }).map((snip, i) => {
                 return (
-                  <Link to={`/snipps/${book._id}`} key={book._id}>{i+1+". "+book.title}</Link>
+                  <Link to={`/snipps/${snip._id}`} key={snip._id}>{i+1+". "+snip.title}</Link>
                 );
               })}
           </div>

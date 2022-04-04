@@ -5,7 +5,7 @@ export async function action({ request }) {
   const form = await request.formData();
   const db = await connectDb();
   try {
-    await db.models.Book.create({ title: form.get("title"), description: form.get("description"), date: form.get("date") });
+    await db.models.snip.create({ title: form.get("title"), description: form.get("description"), date: form.get("date") });
     return redirect(`/`);
   } catch (error) {
     return json(
@@ -15,7 +15,7 @@ export async function action({ request }) {
   }
 }
 
-export default function CreateBook() {
+export default function Createsnip() {
   const actionData = useActionData();
   console.log(actionData);
   const current = new Date();

@@ -29,7 +29,7 @@ export function meta() {
 
 export async function loader() {
   const db = await connectDb();
-  const snipps = await db.models.Book.find();
+  const snipps = await db.models.snip.find();
   return snipps;
 }
 
@@ -46,8 +46,8 @@ export default function App() {
     });;
   }
   else if (sort == "showFavorite") {
-    sortedSnipps = snipps.filter(function (book) {
-      return book.favorite == true;
+    sortedSnipps = snipps.filter(function (snip) {
+      return snip.favorite == true;
     })
   }
 
@@ -91,17 +91,17 @@ export default function App() {
               Code snippets:
             </h2>
             <div className="list-disc flex flex-col">
-              {sortedSnipps.filter((book) => {
+              {sortedSnipps.filter((snip) => {
                 if (searchTerm == "") {
-                  return book
+                  return snip
                 }
-                else if (book.title.toString().toLowerCase().includes(searchTerm.toLowerCase())) {
-                  return book
+                else if (snip.title.toString().toLowerCase().includes(searchTerm.toLowerCase())) {
+                  return snip
                 }
-              }).map((book, i) => {
+              }).map((snip, i) => {
                 return (
-                  <Link to={`/${book._id}`} key={book._id}>{i+1+". "+book.title}</Link>
-                  //<button className="text-left mb-2" key={i} onClick={() => toggle(i)}>{i+1+". "+book.title}</button>
+                  <Link to={`/${snip._id}`} key={snip._id}>{i+1+". "+snip.title}</Link>
+                  //<button className="text-left mb-2" key={i} onClick={() => toggle(i)}>{i+1+". "+snip.title}</button>
                 );
               })}
             </div>

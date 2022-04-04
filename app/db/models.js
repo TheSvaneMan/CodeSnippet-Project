@@ -11,7 +11,7 @@ const snippschema = new Schema({
 
 export const models = [
   {
-    name: "Book",
+    name: "snip",
     schema: snippschema,
     collection: "snipps",
   },
