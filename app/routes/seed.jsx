@@ -5,9 +5,9 @@ import connectDb from "~/db/connectDb.server";
 
 export async function loader() {
     const db = await connectDb();
-    const numberOfBooks = await db.models.Book.find()
+    const numberOfsnipps = await db.models.Book.find()
     return (
-        { books: numberOfBooks.length }
+        { snipps: numberOfsnipps.length }
     )
 }
 

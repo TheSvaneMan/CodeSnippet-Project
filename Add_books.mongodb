@@ -4,10 +4,10 @@
 // The current database to use.
 use('code_snippets');
 
-db.getCollection('books').deleteMany({});
+db.getCollection('snipps').deleteMany({});
 
 // Search for documents in the current collection.
-db.getCollection('books').insertMany([
+db.getCollection('snipps').insertMany([
   {
     "title": "Divine Comedy",
     "author": "Dante",
