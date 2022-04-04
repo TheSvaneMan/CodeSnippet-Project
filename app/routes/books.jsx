@@ -8,14 +8,28 @@ export async function loader() {
   return books;
 }
 
-export default function Index({ sortedBooks }) {
+export default function Index() {
   const books = useLoaderData();
   const [show, setShow] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [sort, setSort] = useState("");
 
   // sorting
-  
+  let sortedBooks;
+  if (sort == "sortByName") {
+    sortedBooks = [...books].sort(function (a, b) {
+      return a.title.localeCompare(b.title);
+    });;
+  }
+  else if (sort == "showFavorite") {
+    sortedBooks = books.filter(function (book) {
+      return book.favorite == true;
+    })
+  }
+
+  else {
+    sortedBooks = books;
+  }
 
 
 
@@ -44,15 +58,15 @@ export default function Index({ sortedBooks }) {
                 }
               }).map((book, i) => {
                 return (
-                  <Link to={`books/${book._id}`} key={book._id}>{i+1+". "+book.title}</Link>
+                  <Link to={`${book._id}`} key={book._id}>{i+1+". "+book.title}</Link>
                   //<button className="text-left mb-2" key={i} onClick={() => toggle(i)}>{i+1+". "+book.title}</button>
                 );
               })}
             </div>
           </div>
-          <Outlet sortedBooks={sortedBooks} />
+        <Outlet/>
       </section>
     );
-              
+
   }
 

@@ -6,8 +6,11 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData
 } from "remix";
 import styles from "~/tailwind.css";
+import connectDb from "~/db/connectDb.server.js";
+import React, { useRef, useState } from 'react';
 
 export const links = () => [
   {
@@ -24,7 +27,33 @@ export function meta() {
   };
 }
 
+export async function loader() {
+  const db = await connectDb();
+  const books = await db.models.Book.find();
+  return books;
+}
+
 export default function App() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sort, setSort] = useState("");
+  const books = useLoaderData();
+
+  // sorting
+  let sortedBooks = [];
+  if (sort == "sortByName") {
+    sortedBooks = [...books].sort(function (a, b) {
+      return a.title.localeCompare(b.title);
+    });;
+  }
+  else if (sort == "showFavorite") {
+    sortedBooks = books.filter(function (book) {
+      return book.favorite == true;
+    })
+  }
+
+  else {
+    sortedBooks = books;
+  }
   return (
     <html lang="en">
       <head>
@@ -43,7 +72,23 @@ export default function App() {
             Defualt snippets
           </Link>
         </header>
-        <Outlet />
+        <section className="flex">
+          <div className="p-6 flex flex-col items-start h-screen bg-neutral-800 text-neutral-50">
+            <h2 className="text-lg font-bold mb-4">
+              Filters:
+            </h2>
+            <input type="text" placeholder="Search..." className="rounded-3xl pt-1 pb-1 pr-2 pl-2 border-2 border-orange-400"
+              name="search" onChange={(event) => {
+              setSearchTerm(event.target.value);
+            }}
+            />
+            <button className="mt-4 hover:underline" onClick={() => setSort("")}>Sort by date</button>
+            <button className="mt-4 hover:underline" onClick={() => setSort("sortByName")}>Sort by name</button>
+            <button className="mt-4 hover:underline" onClick={() => setSort("showFavorite")}>Show favorite only</button>
+          </div>
+          <Outlet sortedBooks={sortedBooks} />
+        </section>
+        
         <ScrollRestoration />
         <Scripts />
         <LiveReload />

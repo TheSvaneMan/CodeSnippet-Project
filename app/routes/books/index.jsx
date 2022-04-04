@@ -1,15 +1,8 @@
-import { useLoaderData, Link } from "remix";
-import connectDb from "~/db/connectDb.server.js";
+import { Outlet } from "react-router-dom";
 
-export async function loader({ params }) {
-  const db = await connectDb();
-  return db.models.Book.findById(params.bookId);
-}
-
-export default function BookPage() {
-  const book = useLoaderData();
-  return (
-    <div className="m-6 w-1/2">
+export default function Books() {
+    return (
+        <div className="m-6 w-1/2">
           <h2 className="text-lg font-bold mb-3">
             Snippet code:
           </h2>
@@ -61,5 +54,5 @@ export default function BookPage() {
             );
           })}
         </div>
-  );
+    )
 }
