@@ -68,7 +68,7 @@ export default function App() {
           <Link to="/books/new" className="ml-5 hover:text-neutral-50 text-orange-400">
             New code snippet
           </Link>
-          <Link to="/seed" className="ml-5 hover:text-neutral-50 text-orange-400">
+          <Link to="/books/seed" className="ml-5 hover:text-neutral-50 text-orange-400">
             Defualt snippets
           </Link>
         </header>
@@ -86,7 +86,27 @@ export default function App() {
             <button className="mt-4 hover:underline" onClick={() => setSort("sortByName")}>Sort by name</button>
             <button className="mt-4 hover:underline" onClick={() => setSort("showFavorite")}>Show favorite only</button>
           </div>
-          <Outlet sortedBooks={sortedBooks} />
+          <div className="p-6 flex flex-col items-start border-r-2 border-neutral-800">
+            <h2 className="text-lg font-bold mb-3">
+              Code snippets:
+            </h2>
+            <div className="list-disc flex flex-col">
+              {sortedBooks.filter((book) => {
+                if (searchTerm == "") {
+                  return book
+                }
+                else if (book.title.toString().toLowerCase().includes(searchTerm.toLowerCase())) {
+                  return book
+                }
+              }).map((book, i) => {
+                return (
+                  <Link to={`/books/${book._id}`} key={book._id}>{i+1+". "+book.title}</Link>
+                  //<button className="text-left mb-2" key={i} onClick={() => toggle(i)}>{i+1+". "+book.title}</button>
+                );
+              })}
+            </div>
+          </div>
+          <Outlet/>
         </section>
         
         <ScrollRestoration />
