@@ -5,18 +5,18 @@ import connectDb from "~/db/connectDb.server";
 
 export async function loader() {
     const db = await connectDb();
-    const numberOfBooks = await db.models.Book.find()
+    const numberOfsnipps = await db.models.snip.find()
     return (
-        { books: numberOfBooks.length }
+        { snipps: numberOfsnipps.length }
     )
 }
 
 export async function action() {
     const db = await connectDb();
 
-    await db.models.Book.deleteMany({});
+    await db.models.snip.deleteMany({});
 
-    await db.models.Book.insertMany([
+    await db.models.snip.insertMany([
         {
             "title": "HTML form",
             "description": "A webform, web form or HTML form on a web page allows a user to enter data that is sent to a server for processing. Forms can resemble paper or database forms because web users fill out the forms using checkboxes, radio buttons, or text fields.",

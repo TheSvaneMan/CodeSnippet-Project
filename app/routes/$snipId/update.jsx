@@ -5,8 +5,8 @@ import connectDb from "~/db/connectDb.server";
 
 export async function loader({ params }) {
   const db = await connectDb();
-  const book = await db.models.Book.findById(params.bookId);
-  return book;
+  const snip = await db.models.snip.findById(params.snipId);
+  return snip;
 }
 console.log(loader);
 
@@ -16,8 +16,8 @@ export async function action({ request, params }) {
 
 
   try {
-    await db.models.Book.updateOne({ _id: params.bookId }, { title: form.get("title"), description: form.get("description") });
-    return redirect(`/${params.bookId}`);
+    await db.models.snip.updateOne({ _id: params.snipId }, { title: form.get("title"), description: form.get("description") });
+    return redirect(`/${params.snipId}`);
   } catch (error) {
     return json(
       { errors: error.errors, values: Object.fromEntries(form) },
