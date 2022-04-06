@@ -1,4 +1,4 @@
-import { Form, redirect, json, useActionData, useParams, Link, useLoaderData } from "remix";
+import { Form, redirect, json, useActionData, useLoaderData } from "remix";
 import connectDb from "~/db/connectDb.server";
 
 //loader?
@@ -13,10 +13,10 @@ console.log(loader);
 export async function action({ request, params }) {
   const form = await request.formData();
   const db = await connectDb();
-
+ 
 
   try {
-    await db.models.snip.updateOne({ _id: params.snipId }, { title: form.get("title"), description: form.get("description") });
+    await db.models.snip.updateOne({ _id: params.snipId }, { title: form.get("title"), description: form.get("description"), language: form.get("language"), code: form.get("code") });
     return redirect(`/${params.snipId}`);
   } catch (error) {
     return json(
@@ -62,6 +62,36 @@ export default function UpdateSnip() {
         />
         {actionData?.errors.description && (
           <p className="text-red-500">{actionData.errors.description.message}</p>
+        )}
+        <label htmlFor="language" className="block">
+        Language
+        </label>
+        <input
+          type="text"
+          name="language"
+          defaultValue={snip.language}
+          id="language"
+          className={
+            actionData?.errors.language ? "border-2 border-red-500" : null
+          }
+        />
+        {actionData?.errors.language && (
+          <p className="text-red-500">{actionData.errors.language.message}</p>
+        )}
+        <label htmlFor="code" className="block">
+        Code
+        </label>
+        <input
+          type="text"
+          name="code"
+          defaultValue={snip.code}
+          id="code"
+          className={
+            actionData?.errors.code ? "border-2 border-red-500" : null
+          }
+        />
+        {actionData?.errors.description && (
+          <p className="text-red-500">{actionData.errors.code.message}</p>
         )}
         <br />
         <button type="submit">Save</button>
