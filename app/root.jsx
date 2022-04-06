@@ -35,6 +35,7 @@ export async function loader() {
 
 export default function App() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchLanguage, setLanguage] = useState("");
   const [sort, setSort] = useState("");
   const snipps = useLoaderData();
 
@@ -85,6 +86,18 @@ export default function App() {
             <button className="mt-4 hover:underline" onClick={() => setSort("")}>Sort by date</button>
             <button className="mt-4 hover:underline" onClick={() => setSort("sortByName")}>Sort by name</button>
             <button className="mt-4 hover:underline" onClick={() => setSort("showFavorite")}>Show favorite only</button>
+
+            <select id="languageList" name="language" onChange={(event) => {
+              setLanguage(event.target.value);
+            }}>
+            <option value="JS">JavaScript</option>
+            <option value="HTML">HTML</option>
+            <option value="CSS">CSS</option>
+            <option value="Python">Python</option>
+            <option value="C">C</option>
+            <option value="Java">Java</option>
+            </select>
+            <h1>{searchLanguage}</h1>
           </div>
           <div className="p-6 flex flex-col items-start border-r-2 border-neutral-800">
             <h2 className="text-lg font-bold mb-3">
@@ -102,6 +115,18 @@ export default function App() {
                 return (
                   <Link to={`/${snip._id}`} key={snip._id}>{i+1+". "+snip.title}</Link>
                   //<button className="text-left mb-2" key={i} onClick={() => toggle(i)}>{i+1+". "+snip.title}</button>
+                );
+              })}
+              {sortedSnipps.filter((snip) => {
+                if (searchLanguage == "") {
+                  return snip
+                }
+                else if (snip.language.toString().toLowerCase().includes(searchLanguage.toLowerCase())) {
+                  return snip
+                }
+              }).map((snip, i) => {
+                return (
+                  <Link to={`/${snip._id}`} key={snip._id}>{i+1+". "+snip.title}</Link>
                 );
               })}
             </div>
