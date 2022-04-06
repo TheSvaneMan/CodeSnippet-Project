@@ -21,26 +21,25 @@ export default function snipPage() {
               <div key={snip._id} id={snip._id}>
                 <h1 className="text-2xl font-bold mb-4">{snip.title}</h1>
                 <h1>
-                  Date: {snip.date}
+                <b>Date:</b> {snip.date}
                 </h1>
                 <h1>
-                  ID: {snip._id}
+                <b>Language:</b> {snip.language}
                 </h1>
                 <h1>
-                  Description: {snip.description}
-                </h1>
-                
-                <h1>
-                  Language: {snip.language}
+                <b>Description:</b> {snip.description}
                 </h1>
                 
                 <p>
-                  Code: {snip.code}
+                 <b>Code:</b>
+                  <pre>
+                  <code>{snip.code}
+                  </code>
+                  </pre>
                 </p>
                 
-            
                 <h1>
-                  Favorite: <b>{snip.favorite ? 'Yes' : 'No'}</b>
+                <b>Favorite:</b> {snip.favorite ? 'Yes' : 'No'}
                 </h1>
 
                 {/* Adding to favorite with Form and POST */}
