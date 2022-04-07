@@ -56,8 +56,9 @@ export default function App() {
     sortedSnipps = snipps;
   }
 
-  const toggle = () => {
-    document.querySelectorAll(".darkMode");
+  const toggle = (i) => {
+    //classList.add("bg-neutral-800");
+    console.log("test");
 }
   return (
     <html lang="en">
@@ -76,7 +77,7 @@ export default function App() {
           <Link to="/seed" className="ml-5 hover:text-neutral-50 text-orange-400">
             Defualt snippets
           </Link>
-          <button onClick={() => toggle()}>Light / Dark</button>
+          <button className="ml-5 hover:text-neutral-50 text-orange-400" onClick={() => toggle(i)}>Light / Dark</button>
         </header>
         <section className="flex">
           <div className="p-6 flex flex-col items-start h-screen bg-neutral-800 text-neutral-50">
@@ -107,7 +108,7 @@ export default function App() {
             <option value="Java">Java</option>
             </select>
           </div>
-          <div className="p-6 flex flex-col items-start border-r-2 border-neutral-800">
+          <div className="p-6 flex flex-col items-start border-r-2 border-neutral-800 mode">
             <h2 className="text-lg font-bold mb-3">
               Code snippets:
             </h2>
