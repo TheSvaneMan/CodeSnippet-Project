@@ -39,6 +39,7 @@ export default function App() {
   const [sort, setSort] = useState("");
   const snipps = useLoaderData();
   const finalSnipps = [];
+  const [show, setShow] = useState(null);
 
   // sorting
   let sortedSnipps = [];
@@ -57,9 +58,11 @@ export default function App() {
   }
 
   const toggle = (i) => {
-    //classList.add("bg-neutral-800");
-    console.log("test");
-}
+    if (show == i) {
+      return setShow(null)
+    }
+    setShow(i);
+  }
   return (
     <html lang="en">
       <head>
@@ -108,7 +111,7 @@ export default function App() {
             <option value="Java">Java</option>
             </select>
           </div>
-          <div className="p-6 flex flex-col items-start border-r-2 border-neutral-800 mode">
+          <div className={show == i ? ' p-6 flex flex-col items-start border-r-2 border-neutral-800' : 'p-6 flex flex-col items-start border-r-2 border-neutral-800 text-neutral-50'}>
             <h2 className="text-lg font-bold mb-3">
               Code snippets:
             </h2>
