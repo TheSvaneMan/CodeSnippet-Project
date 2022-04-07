@@ -33,7 +33,7 @@ export default function Createsnip() {
           name="title"
           defaultValue={actionData?.values.title}
           id="title"
-          className="py-1 px-2"
+          className="py-1 px-2 rounded-lg"
         />
         {actionData?.errors.title && (
           <p className="text-red-500">{actionData.errors.title.message}</p>
@@ -45,7 +45,7 @@ export default function Createsnip() {
           name="description"
           defaultValue={actionData?.values.description}
           id="description"
-          className="w-full h-20 py-1 px-2"
+          className="w-full h-20 py-1 px-2 rounded-lg"
         />
         {actionData?.errors.description && (
           <p className="text-red-500">{actionData.errors.description.message}</p>
@@ -75,7 +75,7 @@ export default function Createsnip() {
           name="language"
           defaultValue={actionData?.values.language}
           id="language"
-          className="py-1 px-2"
+          className="py-1 px-2 rounded-lg"
         />
         {actionData?.errors.language && (
           <p className="text-red-500">{actionData.errors.language.message}</p>
@@ -88,7 +88,7 @@ export default function Createsnip() {
           name="code"
           defaultValue={actionData?.values.code}
           id="code"
-          className="w-full h-60 py-1 px-2"
+          className="w-full h-60 py-1 px-2 rounded-lg"
         />
         {actionData?.errors.description && (
           <p className="text-red-500">{actionData.errors.code.message}</p>

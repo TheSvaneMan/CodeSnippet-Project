@@ -73,7 +73,9 @@ export async function action() {
 export default function Index() {
     return (
         <Form method="post">
-            <button type="submit">Delete all snippets and add defualt ones</button>
+            <button type="submit" className="mt-5 ml-5 mb-2 pr-3 pl-3 pt-0 pb-1 border-2 
+                  border-orange-400 bg-neutral-800 text-neutral-50 rounded-3xl
+                  hover:bg-orange-400">Delete all snippets and add defualt ones</button>
         </Form>
         
     )
