@@ -6,7 +6,9 @@ const snippschema = new Schema({
   title: String,
   description: String,
   favorite: Boolean,
-  date: String
+  date: String,
+  language: String,
+  code: String
 });
 
 export const models = [

@@ -9,6 +9,6 @@ export async function action({ request, params }) {
     return redirect(`/${params.snipId}`);
   }
   await db.models.snip.updateOne({_id: params.snipId}, {favorite: true});
-  return redirect(`/${params.snipId}`);
+  return redirect(`/${params.snipId}`); 
 }
   

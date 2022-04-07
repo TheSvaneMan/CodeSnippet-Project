@@ -1,14 +1,14 @@
 import { useLoaderData, Link, useFormAction } from "remix";
 import connectDb from "~/db/connectDb.server.js";
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
+
 
 export async function loader({ params }) {
   const db = await connectDb();
   return await db.models.snip.findById(params.snipId);
 }
 
-
-
+ 
 export default function snipPage() {
   const snip = useLoaderData();
   const [show, setShow] = useState(null);
@@ -17,24 +17,29 @@ export default function snipPage() {
 
   return (
     <div className="m-6 w-1/2">
-          <h2 className="text-lg font-bold mb-3">
-            Snippet code:
-          </h2>
           
               <div key={snip._id} id={snip._id}>
                 <h1 className="text-2xl font-bold mb-4">{snip.title}</h1>
                 <h1>
-                  Date: {snip.date}
+                <b>Date:</b> {snip.date}
                 </h1>
                 <h1>
-                  ID: {snip._id}
+                <b>Language:</b> {snip.language}
                 </h1>
                 <h1>
-                  Description: {snip.description}
+                <b>Description:</b> {snip.description}
                 </h1>
-            
+                
+                <p>
+                 <b>Code:</b>
+                  <pre>
+                  <code>{snip.code}
+                  </code>
+                  </pre>
+                </p>
+                
                 <h1>
-                  Favorite: <b>{snip.favorite ? 'Yes' : 'No'}</b>
+                <b>Favorite:</b> {snip.favorite ? 'Yes' : 'No'}
                 </h1>
 
                 {/* Adding to favorite with Form and POST */}
@@ -60,8 +65,9 @@ export default function snipPage() {
                   hover:bg-orange-400">Update</Link>
               
                 
-          
-              </div>
+      </div>
+      
+      
             </div>
           
             )

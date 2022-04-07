@@ -10,7 +10,7 @@ import {
 } from "remix";
 import styles from "~/tailwind.css";
 import connectDb from "~/db/connectDb.server.js";
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 
 export const links = () => [
   {
@@ -35,8 +35,10 @@ export async function loader() {
 
 export default function App() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchLanguage, setLanguage] = useState("");
   const [sort, setSort] = useState("");
   const snipps = useLoaderData();
+  const finalSnipps = [];
 
   // sorting
   let sortedSnipps = [];
@@ -77,14 +79,29 @@ export default function App() {
             <h2 className="text-lg font-bold mb-4">
               Filters:
             </h2>
-            <input type="text" placeholder="Search..." className="rounded-3xl pt-1 pb-1 pr-2 pl-2 border-2 border-orange-400"
+            <input type="text" placeholder="Search..." className="rounded-3xl pt-1 pb-1 pr-2 pl-2 border-2 border-orange-400 text-neutral-800"
               name="search" onChange={(event) => {
               setSearchTerm(event.target.value);
             }}
             />
             <button className="mt-4 hover:underline" onClick={() => setSort("")}>Sort by date</button>
             <button className="mt-4 hover:underline" onClick={() => setSort("sortByName")}>Sort by name</button>
-            <button className="mt-4 hover:underline" onClick={() => setSort("showFavorite")}>Show favorite only</button>
+            <div>
+            <button className="mt-4 hover:underline" onClick={() => setSort("showFavorite")}>Show favorite only&nbsp;</button>
+            /
+            <button className="mt-4 hover:underline" onClick={() => setSort("")}>&nbsp;all</button>
+            </div>
+            <select id="languageList" name="language" className="mt-4 rounded-lg pt-1 pb-1 pr-2 pl-2 border-2 border-orange-400 text-neutral-800" onChange={(event) => {
+              setLanguage(event.target.value);
+            }}>
+            <option value="">All languages</option>
+            <option value="JS">JS</option>
+            <option value="HTML">HTML</option>
+            <option value="CSS">CSS</option>
+            <option value="Python">Python</option>
+            <option value="C">C</option>
+            <option value="Java">Java</option>
+            </select>
           </div>
           <div className="p-6 flex flex-col items-start border-r-2 border-neutral-800">
             <h2 className="text-lg font-bold mb-3">
@@ -99,9 +116,18 @@ export default function App() {
                   return snip
                 }
               }).map((snip, i) => {
+                finalSnipps.push(snip);
+              })}
+              {finalSnipps.filter((snip) => {
+                if (searchLanguage == "") {
+                  return snip
+                }
+                else if (snip.language.toString().toLowerCase().includes(searchLanguage.toLowerCase())) {
+                  return snip
+                }
+              }).map((snip, i) => {
                 return (
                   <Link to={`/${snip._id}`} key={snip._id}>{i+1+". "+snip.title}</Link>
-                  //<button className="text-left mb-2" key={i} onClick={() => toggle(i)}>{i+1+". "+snip.title}</button>
                 );
               })}
             </div>
