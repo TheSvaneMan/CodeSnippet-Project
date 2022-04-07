@@ -52,10 +52,13 @@ export default function App() {
       return snip.favorite == true;
     })
   }
-
   else {
     sortedSnipps = snipps;
   }
+
+  const toggle = () => {
+    document.querySelectorAll(".darkMode");
+}
   return (
     <html lang="en">
       <head>
@@ -73,6 +76,7 @@ export default function App() {
           <Link to="/seed" className="ml-5 hover:text-neutral-50 text-orange-400">
             Defualt snippets
           </Link>
+          <button onClick={() => toggle()}>Light / Dark</button>
         </header>
         <section className="flex">
           <div className="p-6 flex flex-col items-start h-screen bg-neutral-800 text-neutral-50">
