@@ -12,6 +12,7 @@ import styles from "~/tailwind.css";
 import connectDb from "~/db/connectDb.server.js";
 import React, { useState } from 'react';
 
+//trying to export theme so I can use it in other pages
 export const theme = "light";
 
 export const links = () => [
@@ -136,7 +137,7 @@ export default function App() {
                 }
               }).map((snip, i) => {
                 return (
-                  <Link to={`/${snip._id}`} key={snip._id}>{i+1+". "+snip.title}</Link>
+                  <Link className="hover:underline" to={`/${snip._id}`} key={snip._id}>{i+1+". "+snip.title}</Link>
                 );
               })}
             </div>
