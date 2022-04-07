@@ -1,6 +1,9 @@
 import { Form, redirect, json, useActionData } from "remix";
 import connectDb from "~/db/connectDb.server";
 
+//Importing theme didn't work :/
+import theme from "../root";
+
 export async function action({ request }) {
   const form = await request.formData();
   const db = await connectDb();

@@ -12,6 +12,8 @@ import styles from "~/tailwind.css";
 import connectDb from "~/db/connectDb.server.js";
 import React, { useState } from 'react';
 
+export const theme = "light";
+
 export const links = () => [
   {
     rel: "stylesheet",
@@ -39,7 +41,7 @@ export default function App() {
   const [sort, setSort] = useState("");
   const snipps = useLoaderData();
   const finalSnipps = [];
-  const [show, setShow] = useState(null);
+  const [theme, setTheme] = useState("light");
 
   // sorting
   let sortedSnipps = [];
@@ -57,12 +59,11 @@ export default function App() {
     sortedSnipps = snipps;
   }
 
-  const toggle = (i) => {
-    if (show == i) {
-      return setShow(null)
-    }
-    setShow(i);
+  const toggle = () => {
+    theme == "light" ? setTheme("dark") : setTheme("light");
   }
+
+
   return (
     <html lang="en">
       <head>
@@ -80,7 +81,7 @@ export default function App() {
           <Link to="/seed" className="ml-5 hover:text-neutral-50 text-orange-400">
             Defualt snippets
           </Link>
-          <button className="ml-5 hover:text-neutral-50 text-orange-400" onClick={() => toggle(i)}>Light / Dark</button>
+          <button className="ml-5 hover:text-neutral-50 text-orange-400" onClick={() => toggle()}>Light / Dark</button>
         </header>
         <section className="flex">
           <div className="p-6 flex flex-col items-start h-screen bg-neutral-800 text-neutral-50">
@@ -111,7 +112,7 @@ export default function App() {
             <option value="Java">Java</option>
             </select>
           </div>
-          <div className={show == i ? ' p-6 flex flex-col items-start border-r-2 border-neutral-800' : 'p-6 flex flex-col items-start border-r-2 border-neutral-800 text-neutral-50'}>
+          <div className={theme == "light" ? 'p-6 flex flex-col items-start border-r-2 border-neutral-800' : 'p-6 flex flex-col items-start border-r-2 bg-neutral-800 text-neutral-50 border-l-2 border-orange-400'}>
             <h2 className="text-lg font-bold mb-3">
               Code snippets:
             </h2>
