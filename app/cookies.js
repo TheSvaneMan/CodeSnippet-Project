@@ -1,4 +1,4 @@
-import { createCookie } from "@remix-run/{runtime}";
+import { createCookie } from "remix";
 
 export const sessionCookie = createCookie("__session", {
   httpOnly: true,
