@@ -1,35 +1,39 @@
 import { useLoaderData } from "@remix-run/react";
 import { Form, redirect } from "remix";
-import { sessionCookie } from "../cookies"
+import { getSession, commitSession } from "~/sessions";
 
 export async function loader({request}) {
-    const cookie = request.headers.get("Cookie");
+    const session = await getSession(request.headers.get("Cookie"));
     
     return (
-        await sessionCookie.parse(
-            cookie 
-        )
+        { userID: session.get("userID") }
     )
 }
 
 export default function Index() {
-    const cookies  = useLoaderData();
-    const cookieStr = JSON.stringify({ cookies });
+    const { userID }  = useLoaderData();
     return (
         <div>
-            <p>{cookieStr}</p>
-        <Form method="post" reloadDocument>
-            <button type="submit">Submit</button>
+            <p>{userID}</p>
+            
+            <Form method="post" reloadDocument>
+            <button type="submit">Log in</button>
+            </Form>
+
+            <Form method="post" action="/logout">
+            <button type="submit">Log out</button>
             </Form>
         </div>
     )
 }
 
-export async function action() {
+export async function action({ request }) {
+    const session = await getSession(request.headers.get("Cookie"));
+    session.set( "userID", "1001" )
     
     return redirect("/login", {
         headers: {
-            "Set-Cookie": await sessionCookie.serialize({ userId: "1001" }),
+            "Set-Cookie": await commitSession(session),
           },
       });
 }
