@@ -1,6 +1,7 @@
 import { useLoaderData } from "@remix-run/react";
-import { Form, redirect } from "remix";
+import { Form, redirect, useActionData } from "remix";
 import { getSession, commitSession } from "~/sessions";
+import connectDb from "~/db/connectDb.server";
 
 export async function loader({request}) {
     const session = await getSession(request.headers.get("Cookie"));
@@ -11,26 +12,50 @@ export async function loader({request}) {
 }
 
 export default function Index() {
-    const { userID }  = useLoaderData();
-    return (
-        <div>
-            <p>{userID}</p>
-            
-            <Form method="post" reloadDocument>
-            <button type="submit">Log in</button>
-            </Form>
+    const { userID } = useLoaderData();
+    const login = useActionData();
+        if (userID != null) {
+            return (
+                <div>
+                    <p>{userID}</p>
+                    <Form method="post" action="/logout">
+                        <button type="submit">Log out</button>
+                        <h1>You logged in!</h1>
+                        {/*login.data.ok ? (
+                            <p>You logged in!</p>
+                        ) : login.data.error ? (
+                            <p data-error>{login.data.error}</p>
+                        ) : null*/}
+                    </Form>
+                </div>
+            )
+        }
+        else {
+            return (
+                <Form method="post" reloadDocument>
+                    <input type="text" name="username" placeholder="username"></input>
+                    <input type="text" name="password" placeholder="password"></input>
+                    <button type="submit">Log in</button>
+                </Form>
+            )
+        }
+        
+    }
+    
 
-            <Form method="post" action="/logout">
-            <button type="submit">Log out</button>
-            </Form>
-        </div>
-    )
-}
 
 export async function action({ request }) {
     const session = await getSession(request.headers.get("Cookie"));
-    session.set( "userID", "1001" )
-    
+    const db = await connectDb();
+    const form = await request.formData();
+    const user = await db.models.user.findOne({ username: form.get("username"), password: form.get("password") });
+    if (user != null) {
+        session.set("userID", user._id);
+    }
+    else {
+        console.log("null");
+        redirect("/login");
+    }
     return redirect("/login", {
         headers: {
             "Set-Cookie": await commitSession(session),

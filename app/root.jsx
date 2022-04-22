@@ -1,16 +1,10 @@
 import {
-  Links,
-  Link,
-  LiveReload,
-  Meta,
-  Outlet,
-  Scripts,
-  ScrollRestoration,
-  useLoaderData
+  Links, Link, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData, redirect
 } from "remix";
 import styles from "~/tailwind.css";
 import connectDb from "~/db/connectDb.server.js";
 import React, { useState } from 'react';
+import { getSession } from "~/sessions";
 
 //trying to export theme so I can use it in other pages
 export const theme = "light";
@@ -30,7 +24,17 @@ export function meta() {
   };
 }
 
-export async function loader() {
+export async function loader({ request }) {
+  //redirecting to login when not logged in doesnt work
+  const session = await getSession(request.headers.get("Cookie"));
+  if (session.has("userId")) {
+    console.log("user logged in")
+  }
+  else {
+    console.log("user not logged in")
+    redirect("routes/login");
+  }
+
   const db = await connectDb();
   const snipps = await db.models.snip.find();
   return snipps;
