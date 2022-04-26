@@ -1,13 +1,13 @@
 import {
-  Links, Link, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData, redirect
+  Links, Link, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData
 } from "remix";
 import styles from "~/tailwind.css";
 import connectDb from "~/db/connectDb.server.js";
 import React, { useState } from 'react';
-import { getSession } from "~/sessions";
+import styled, { themeProvider } from "styled-components";
+import { lightTheme, darkTheme } from "./theme";
 
-//trying to export theme so I can use it in other pages
-export const theme = "light";
+const styledApp = styled.div
 
 export const links = () => [
   {
@@ -25,15 +25,6 @@ export function meta() {
 }
 
 export async function loader({ request }) {
-  //redirecting to login when not logged in doesnt work
-  const session = await getSession(request.headers.get("Cookie"));
-  if (session.has("userId")) {
-    console.log("user logged in")
-  }
-  else {
-    console.log("user not logged in")
-    redirect("routes/login");
-  }
 
   const db = await connectDb();
   const snipps = await db.models.snip.find();
@@ -64,12 +55,14 @@ export default function App() {
     sortedSnipps = snipps;
   }
 
-  const toggle = () => {
+  const themeToggle = () => {
     theme == "light" ? setTheme("dark") : setTheme("light");
   }
 
 
   return (
+    <themeProvider theme={theme == "light" ? lightTheme : darkTheme}>
+      <styledApp>
     <html lang="en">
       <head>
         <Meta />
@@ -86,7 +79,7 @@ export default function App() {
           <Link to="/seed" className="ml-5 hover:text-neutral-50 text-orange-400">
             Defualt snippets
           </Link>
-          <button className="ml-5 hover:text-neutral-50 text-orange-400" onClick={() => toggle()}>Light / Dark</button>
+          <button className="ml-5 hover:text-neutral-50 text-orange-400" onClick={() => themeToggle()}>Light / Dark</button>
         </header>
         <section className="flex">
           <div className="p-6 flex flex-col items-start h-screen bg-neutral-800 text-neutral-50">
@@ -153,6 +146,8 @@ export default function App() {
         <Scripts />
         <LiveReload />
       </body>
-    </html>
+        </html>
+        </styledApp>
+      </themeProvider>
   );
 }
