@@ -1,6 +1,7 @@
 import { Form, redirect, useActionData, useLoaderData } from "remix";
 import { getSession, commitSession } from "~/sessions";
 import connectDb from "~/db/connectDb.server";
+import bcrypt from "bcryptjs";
 
 export async function loader({ request }) {
   const session = await getSession(request.headers.get("Cookie"));
@@ -10,22 +11,14 @@ export async function loader({ request }) {
 
 export default function Index() {
   const { userID } = useLoaderData();
-  const login = useActionData();
+  const loginStatus = useActionData();
+
   if (userID != null) {
     return (
       <div>
         <p>{userID}</p>
         <Form method="post" action="/logout">
           <button type="submit">Log out</button>
-          <h1>You logged in!</h1>
-          {/*login.data.ok ? (
-            <p>You logged in!
-              {login.data.ok}
-            </p>
-
-          ) : login.data.error ? (
-            <p data-error>{login.data.error}</p>
-          ) : null*/}
         </Form>
       </div>
     );
@@ -35,6 +28,7 @@ export default function Index() {
         <input type="text" name="username" placeholder="username"></input>
         <input type="text" name="password" placeholder="password"></input>
         <button type="submit">Log in</button>
+        <h1 className="text-red-500"> {loginStatus} </h1>
       </Form>
     );
   }
@@ -44,27 +38,30 @@ export async function action({ request }) {
   const session = await getSession(request.headers.get("Cookie"));
   const db = await connectDb();
   const form = await request.formData();
-  const user = await db.models.user.findOne({
-    username: form.get("username"),
-    password: form.get("password"),
-  });
+  let data = "";
   
+  
+  const user = await db.models.user.findOne({
+   username: form.get("username"),
+  });
   if (user != null) {
+    const isCorrectPassword = await bcrypt.compare(form.get("password"), user.password);
+  
+  if (user != null && isCorrectPassword == true) {
     session.set("userID", user._id);
-    let data = {
-      ok: "you logged in!"
-    };
+    return redirect("/login", {
+      headers: {
+      "Set-Cookie": await commitSession(session),
+      },
+      });
   }
   else {
-    let data = {
-      error: "wrong login or password"
-    };
-    //return json data property, with ok and error "wrong password" - becomes actionData
-    // remove redirect("/login");
+    data = "wrong login or password";
+    return data;
+    }
   }
-  return redirect("/login", {
-    headers: {
-      "Set-Cookie": await commitSession(session),
-    },
-  });
+  else {
+    data = "wrong login or password";
+    return data;
+    }
 }

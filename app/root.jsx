@@ -4,10 +4,6 @@ import {
 import styles from "~/tailwind.css";
 import connectDb from "~/db/connectDb.server.js";
 import React, { useState } from 'react';
-import styled, { themeProvider } from "styled-components";
-import { lightTheme, darkTheme } from "./theme";
-
-const styledApp = styled.div
 
 export const links = () => [
   {
@@ -61,8 +57,6 @@ export default function App() {
 
 
   return (
-    <themeProvider theme={theme == "light" ? lightTheme : darkTheme}>
-      <styledApp>
     <html lang="en">
       <head>
         <Meta />
@@ -147,7 +141,5 @@ export default function App() {
         <LiveReload />
       </body>
         </html>
-        </styledApp>
-      </themeProvider>
   );
 }

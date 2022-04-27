@@ -1,10 +1,12 @@
 import { redirect, Form  } from "remix";
 import connectDb from "~/db/connectDb.server";
+import { requireUserSession } from "~/sessions";
 
 
-export async function loader() {
+export async function loader({request}) {
     const db = await connectDb();
     const numberOfsnipps = await db.models.snip.find()
+    const session = await requireUserSession(request);
     return (
         { snipps: numberOfsnipps.length }
     )
