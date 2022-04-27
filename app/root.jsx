@@ -57,12 +57,12 @@ export default function App() {
 
 
   return (
-    <html lang="en">
+    <html lang="en" className={theme == "light" ? 'light' : 'dark'}>
       <head>
         <Meta />
         <Links />
       </head>
-      <body className="bg-slate-100 text-slate-800 font-sans">
+      <body className="bg-slate-100 text-slate-800 font-sans dark:bg-neutral-800 dark:text-neutral-50">
         <header className="p-4 border-b-4 border-orange-400 bg-neutral-800">
           <Link to="/" className="hover:text-orange-400 text-neutral-50 text-3xl mr-28">
             KeepSnip
@@ -104,7 +104,7 @@ export default function App() {
             <option value="Java">Java</option>
             </select>
           </div>
-          <div className={theme == "light" ? 'p-6 flex flex-col items-start border-r-2 border-neutral-800' : 'p-6 flex flex-col items-start border-r-2 bg-neutral-800 text-neutral-50 border-l-2 border-orange-400'}>
+          <div className={'p-6 flex flex-col items-start border-r-2 border-neutral-800 dark:bg-neutral-800 dark:text-neutral-50 dark:border-l-2 dark:border-orange-400'}>
             <h2 className="text-lg font-bold mb-3">
               Code snippets:
             </h2>
