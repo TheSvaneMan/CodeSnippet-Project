@@ -1,9 +1,11 @@
-import { useLoaderData, Link, useFormAction } from "remix";
+import { useLoaderData, Link, useFormAction, redirect } from "remix";
 import connectDb from "~/db/connectDb.server.js";
 import React, { useState } from 'react';
+import { requireUserSession } from "~/sessions";
 
 
-export async function loader({ params }) {
+export async function loader({ params, request }) {
+  const session = await requireUserSession(request);
   const db = await connectDb();
   return await db.models.snip.findById(params.snipId);
 }

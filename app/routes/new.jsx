@@ -1,8 +1,6 @@
 import { Form, redirect, json, useActionData } from "remix";
 import connectDb from "~/db/connectDb.server";
-
-//Importing theme didn't work :/
-import theme from "../root";
+import { requireUserSession } from "~/sessions";
 
 export async function action({ request }) {
   const form = await request.formData();
@@ -17,6 +15,13 @@ export async function action({ request }) {
     );
   }
 }
+
+export async function loader({ request }) {
+  const session = await requireUserSession(request);
+  return session;
+};
+
+
 
 export default function Createsnip() {
   const actionData = useActionData();
