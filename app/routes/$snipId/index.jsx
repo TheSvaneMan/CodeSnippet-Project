@@ -1,22 +1,13 @@
 import { useLoaderData, Link, useFormAction, redirect } from "remix";
 import connectDb from "~/db/connectDb.server.js";
 import React, { useState } from 'react';
-import { getSession } from "~/sessions";
+import { requireUserSession } from "~/sessions";
 
 
 export async function loader({ params, request }) {
+  const session = await requireUserSession(request);
   const db = await connectDb();
-  //redirecting to login when not logged in doesnt work
-  const session = await getSession(request.headers.get("Cookie"));
-  if (session.has("userId")) {
-    console.log("user logged in")
-  }
-  else {
-    console.log("user not logged in")
-    return redirect("/login");
-  }
   return await db.models.snip.findById(params.snipId);
-  
 }
 
  

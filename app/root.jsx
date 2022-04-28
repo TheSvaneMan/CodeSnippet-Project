@@ -1,5 +1,5 @@
 import {
-  Links, Link, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData
+  Links, Link, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData, Form
 } from "remix";
 import styles from "~/tailwind.css";
 import connectDb from "~/db/connectDb.server.js";
@@ -20,7 +20,7 @@ export function meta() {
   };
 }
 
-export async function loader({ request }) {
+export async function loader() {
 
   const db = await connectDb();
   const snipps = await db.models.snip.find();
@@ -74,6 +74,9 @@ export default function App() {
             Defualt snippets
           </Link>
           <button className="ml-5 hover:text-neutral-50 text-orange-400" onClick={() => themeToggle()}>Light / Dark</button>
+          <Link to="/logout" className="ml-5 hover:text-neutral-50 text-orange-400">
+          Log out
+          </Link>
         </header>
         <section className="flex">
           <div className="p-6 flex flex-col items-start h-screen bg-neutral-800 text-neutral-50">
@@ -92,6 +95,7 @@ export default function App() {
             /
             <button className="mt-4 hover:underline" onClick={() => setSort("")}>&nbsp;all</button>
             </div>
+            {/* Use Penda's tagging solution */}
             <select id="languageList" name="language" className="mt-4 rounded-lg pt-1 pb-1 pr-2 pl-2 border-2 border-orange-400 text-neutral-800" onChange={(event) => {
               setLanguage(event.target.value);
             }}>

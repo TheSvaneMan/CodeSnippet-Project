@@ -1,6 +1,6 @@
 import { Form, redirect, json, useActionData } from "remix";
 import connectDb from "~/db/connectDb.server";
-import { getSession } from "~/sessions";
+import { requireUserSession } from "~/sessions";
 
 export async function action({ request }) {
   const form = await request.formData();
@@ -17,12 +17,8 @@ export async function action({ request }) {
 }
 
 export async function loader({ request }) {
-  const session = await getSession(request.headers.get("Cookie"));
-  let userID = session.get("userID") 
-  if (userID == null) {
-    return redirect("./login")
-  }
-  return { userID: session.get("userID") };
+  const session = await requireUserSession(request);
+  return session;
 };
 
 

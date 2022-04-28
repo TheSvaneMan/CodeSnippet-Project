@@ -15,7 +15,7 @@ const { getSession, commitSession, destroySession } =
   
     // validate the session, `userId` is just an example, use whatever value you
     // put in the session when the user authenticated
-    if (!session.has("userId")) {
+    if (!session.has("userID")) {
       // if there is no user session, redirect to login
       throw redirect("/login");
     }

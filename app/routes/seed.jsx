@@ -9,7 +9,7 @@ export async function loader({request}) {
     const session = await requireUserSession(request);
     return (
         { snipps: numberOfsnipps.length }
-    )
+        )
 }
 
 export async function action() {

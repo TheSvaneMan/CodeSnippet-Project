@@ -5,7 +5,6 @@ import bcrypt from "bcryptjs";
 
 export async function loader({ request }) {
   const session = await getSession(request.headers.get("Cookie"));
-
   return { userID: session.get("userID") };
 }
 
