@@ -1,5 +1,5 @@
 import { sessionCookie } from "./cookies"
-import { createCookieSessionStorage, redirect } from "@remix-run/node";
+import { createCookieSessionStorage, redirect } from "remix";
 
 const { getSession, commitSession, destroySession } =
   createCookieSessionStorage({
