@@ -8,7 +8,8 @@ const snippschema = new Schema({
   favorite: Boolean,
   date: String,
   language: String,
-  code: String
+  code: String,
+  user: String,
 });
 
 const userSchema = new Schema({

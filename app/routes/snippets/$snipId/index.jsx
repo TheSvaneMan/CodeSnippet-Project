@@ -5,7 +5,7 @@ import { requireUserSession } from "~/sessions.server";
 
 
 export async function loader({ params, request }) {
-  const session = await requireUserSession(request);
+  await requireUserSession(request);
   const db = await connectDb();
   return await db.models.snip.findById(params.snipId);
 }

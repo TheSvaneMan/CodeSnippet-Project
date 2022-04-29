@@ -66,22 +66,6 @@ export default function Createsnip() {
         Language
         </label>
 
-        
-        {/*
-        Checkbox with already checked defaultValue
-          if ({actionData?.values.language} == "JS"){
-          <input type="checkbox" name="language" value="JS" checked />
-          <label>JavaScript</label>  
-          }
-        
-        <input type="checkbox" name="language" value="JS" />
-        <label>JavaScript</label>  
-        <input type="checkbox" name="language" value="HTML" />
-        <label>HTML</label>  
-        <input type="checkbox" name="language" value="CSS" />
-        <label>CSS</label>
-        */}
-
         <input
           type="text"
           name="language"
