@@ -45,7 +45,7 @@ export default function App() {
             Defualt snippets
           </Link>
           <button className="ml-5 hover:text-neutral-50 text-orange-400" onClick={() => themeToggle()}>Light / Dark</button>
-          <Link to="/logout" className="ml-5 hover:text-neutral-50 text-orange-400">
+          <Link to="/snippets/logout" className="ml-5 hover:text-neutral-50 text-orange-400">
           Log out
           </Link>
         </header>
@@ -55,6 +55,6 @@ export default function App() {
         <Scripts />
         <LiveReload />
       </body>
-        </html>
+    </html>
   );
 }
