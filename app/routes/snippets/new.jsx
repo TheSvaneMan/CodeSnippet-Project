@@ -1,13 +1,13 @@
 import { Form, redirect, json, useActionData } from "remix";
 import connectDb from "~/db/connectDb.server";
-import { requireUserSession } from "~/sessions";
+import { requireUserSession } from "~/sessions.server";
 
 export async function action({ request }) {
   const form = await request.formData();
   const db = await connectDb();
   try {
     await db.models.snip.create({ title: form.get("title"), description: form.get("description"), date: form.get("date"), language: form.get("language"), code: form.get("code") });
-    return redirect(`/`);
+    return redirect(`/snippets/`);
   } catch (error) {
     return json(
       { errors: error.errors, values: Object.fromEntries(form) },

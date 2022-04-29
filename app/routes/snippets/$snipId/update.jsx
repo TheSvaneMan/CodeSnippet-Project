@@ -14,7 +14,7 @@ export async function action({ request, params }) {
  
   try {
     await db.models.snip.updateOne({ _id: params.snipId }, { title: form.get("title"), description: form.get("description"), language: form.get("language"), code: form.get("code") });
-    return redirect(`/${params.snipId}`);
+    return redirect(`snippets/${params.snipId}`);
   } catch (error) {
     return json(
       { errors: error.errors, values: Object.fromEntries(form) },

@@ -1,5 +1,5 @@
 import { redirect } from "remix";
-import { getSession, destroySession } from "../sessions";
+import { getSession, destroySession } from "../sessions.server";
   
 export function loader() {
     return (

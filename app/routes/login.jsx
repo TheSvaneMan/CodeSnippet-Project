@@ -1,5 +1,5 @@
 import { Form, redirect, useActionData, useLoaderData } from "remix";
-import { getSession, commitSession } from "~/sessions";
+import { getSession, commitSession } from "~/sessions.server";
 import connectDb from "~/db/connectDb.server";
 import bcrypt from "bcryptjs";
 
@@ -13,14 +13,7 @@ export default function Index() {
   const loginStatus = useActionData();
 
   if (userID != null) {
-    return (
-      <div>
-        <p>{userID}</p>
-        <Form method="post" action="/logout">
-          <button type="submit">Log out</button>
-        </Form>
-      </div>
-    );
+    return redirect("/snippets");
   } else {
     return (
       <Form method="post" reloadDocument>
@@ -39,7 +32,6 @@ export async function action({ request }) {
   const form = await request.formData();
   let data = "";
   
-  
   const user = await db.models.user.findOne({
    username: form.get("username"),
   });
@@ -48,7 +40,7 @@ export async function action({ request }) {
   
   if (user != null && isCorrectPassword == true) {
     session.set("userID", user._id);
-    return redirect("/login", {
+    return redirect("/snippets", {
       headers: {
       "Set-Cookie": await commitSession(session),
       },

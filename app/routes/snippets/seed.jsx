@@ -1,6 +1,6 @@
 import { redirect, Form  } from "remix";
 import connectDb from "~/db/connectDb.server";
-import { requireUserSession } from "~/sessions";
+import { requireUserSession } from "~/sessions.server";
 
 
 export async function loader({request}) {
@@ -69,7 +69,7 @@ export async function action() {
             }`
         }
     ]);
-    return redirect("/")
+    return redirect("/snippets")
 }
 
 export default function Index() {

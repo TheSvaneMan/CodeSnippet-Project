@@ -6,9 +6,9 @@ export async function action({ request, params }) {
   const db = await connectDb();
   if (form.get("favorite") == "true") {
     await db.models.snip.updateOne({_id: params.snipId}, {favorite: false});
-    return redirect(`/${params.snipId}`);
+    return redirect(`/snippets/${params.snipId}`);
   }
   await db.models.snip.updateOne({_id: params.snipId}, {favorite: true});
-  return redirect(`/${params.snipId}`); 
+  return redirect(`/snippets/${params.snipId}`); 
 }
   
