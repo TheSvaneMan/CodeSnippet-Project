@@ -6,8 +6,8 @@ export async function action({ request }) {
   const form = await request.formData();
   const db = await connectDb();
   try {
-    await db.models.snip.create({ title: form.get("title"), description: form.get("description"), date: form.get("date"), language: form.get("language"), code: form.get("code") });
-    return redirect(`/snippets/`);
+    await db.models.snip.create({ title: form.get("title"), description: form.get("description"), date: form.get("date"), language: form.get("language"), code: form.get("code"), user: form.get("user") });
+    return redirect(`/snippets/`);//new snip
   } catch (error) {
     return json(
       { errors: error.errors, values: Object.fromEntries(form) },
@@ -32,7 +32,8 @@ export default function Createsnip() {
     <div className="m-6 w-1/2">
       <h1 className="text-2xl font-bold mb-4">Create code snippet</h1>
       <Form method="post">
-        <input type="text" name="date" value={date} id="date" className="hidden"/>
+        <input type="text" name="date" defaultValue={date} id="date" className="hidden" />
+        <input type="text" name="user" defaultValue={userID} id="user" className="hidden"/>
         <label htmlFor="title" className="block font-bold">
           Title
         </label>
