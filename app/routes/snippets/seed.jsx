@@ -1,12 +1,12 @@
 import { redirect, Form  } from "remix";
 import connectDb from "~/db/connectDb.server";
-import { requireUserSession } from "~/sessions";
+import { requireUserSession } from "~/sessions.server";
 
 
 export async function loader({request}) {
     const db = await connectDb();
     const numberOfsnipps = await db.models.snip.find()
-    const session = await requireUserSession(request);
+    await requireUserSession(request);
     return (
         { snipps: numberOfsnipps.length }
         )
@@ -24,6 +24,7 @@ export async function action() {
             "favorite": true,
             "date": "29/03/2022",
             "language": "HTML",
+            "user": "",
             "code": `<form>
             <label for="fname">First name:</label><br>
             <input type="text" id="fname" name="fname"><br>
@@ -37,6 +38,7 @@ export async function action() {
             "favorite": false,
             "date": "30/03/2022",
             "language": "CSS",
+            "user": "",
             "code": `<figure class="bg-slate-100 rounded-xl p-8 dark:bg-slate-800">
             <img class="w-24 h-24 rounded-full mx-auto" src="/sarah-dayan.jpg" alt="" width="384" height="512">
             <div class="pt-6 space-y-4">`
@@ -47,6 +49,7 @@ export async function action() {
             "favorite": true,
             "date": "02/04/2022",
             "language": "JS",
+            "user": "",
             "code": `export async function loader({ params }) {
                 const db = await connectDb();
                 const snip = await db.models.snip.findById(params.snipId);
@@ -58,6 +61,7 @@ export async function action() {
             "favorite": false,
             "date": "04/04/2022",
             "language": "JS",
+            "user": "",
             "code": `import { Outlet } from "@remix-run/react";
                 export default function Root() {
                 return (
@@ -69,7 +73,7 @@ export async function action() {
             }`
         }
     ]);
-    return redirect("/")
+    return redirect("/snippets")
 }
 
 export default function Index() {
