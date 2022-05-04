@@ -10,6 +10,7 @@ const snippschema = new Schema({
   language: String,
   code: String,
   user: String,
+  //add Timestamps (google mongoose timestamps)
 });
 
 const userSchema = new Schema({
