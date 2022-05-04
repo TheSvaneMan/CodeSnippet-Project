@@ -1,98 +1,63 @@
-import { Form, redirect, json, useActionData, useLoaderData } from "remix";
+import bcrypt from "bcryptjs/dist/bcrypt";
+import { Form, redirect, json, useActionData } from "remix";
 import connectDb from "~/db/connectDb.server";
-import { requireUserSession, getSession } from "~/sessions.server";
+import { getSession, commitSession } from "~/sessions.server";
 
 export async function action({ request }) {
   const form = await request.formData();
+  const session = await getSession(request.headers.get("Cookie"));
   const db = await connectDb();
-  try {
-    await db.models.snip.create({ title: form.get("title"), description: form.get("description"), date: form.get("date"), language: form.get("language"), code: form.get("code"), user: form.get("user") });
-    return redirect(`/snippets/`);
-  } catch (error) {
-    return json(
-      { errors: error.errors, values: Object.fromEntries(form) },
-      { status: 400 }
-    );
-  }
+
+    //hashedPassword ruins everything :(
+    //if you remove it it works
+    const hashedPassword = await bcrypt.hash(form.get("password").trim());
+  
+    await db.models.user.create({ username: form.get("username"), password: hashedPassword });
+    let user = db.model.user;
+    session.set("userID", user._id);
+    return redirect("/snippets", {
+      headers: {
+      "Set-Cookie": await commitSession(session),
+      },
+      });
+  
 }
 
-export async function loader({ request }) {
-  await requireUserSession(request);
-  const session = await getSession(request.headers.get("Cookie"));
-  return { userID: session.get("userID") };
-};
-
-
-
-
-export default function Createsnip() {
+export default function SingUp() {
   const actionData = useActionData();
-  const { userID } = useLoaderData();
-  console.log(actionData);
-  const current = new Date();
-  const date = `${current.getDate()}/${current.getMonth()+1}/${current.getFullYear()}`;
   return (
     <div className="m-6 w-1/2">
-      <h1 className="text-2xl font-bold mb-4">Create code snippet</h1>
+      <h1 className="text-2xl font-bold mb-4">Sign up</h1>
       <Form method="post">
-        <input type="text" name="date" value={date} id="date" className="hidden" />
-        <input type="text" name="user" value={userID} id="user" className="hidden"/>
-        <label htmlFor="title" className="block font-bold">
-          Title
+        <label htmlFor="username" className="block font-bold">
+          Username
         </label>
         <input
           type="text"
-          name="title"
-          defaultValue={actionData?.values.title}
-          id="title"
+          name="username"
+          id="username"
           className="py-1 px-2 rounded-lg"
         />
-        {actionData?.errors.title && (
-          <p className="text-red-500">{actionData.errors.title.message}</p>
+        {actionData?.errors.username && (
+          <p className="text-red-500">{actionData.errors.username.message}</p>
         )}
-        <label htmlFor="description" className="block font-bold">
-          Description
-        </label>
-        <textarea
-          name="description"
-          defaultValue={actionData?.values.description}
-          id="description"
-          className="w-full h-20 py-1 px-2 rounded-lg"
-        />
-        {actionData?.errors.description && (
-          <p className="text-red-500">{actionData.errors.description.message}</p>
-        )}
+        
         <label htmlFor="language" className="block font-bold">
-        Language
+        Password
         </label>
-
         <input
           type="text"
-          name="language"
-          defaultValue={actionData?.values.language}
-          id="language"
+          name="password"
+          id="password"
           className="py-1 px-2 rounded-lg"
         />
-        {actionData?.errors.language && (
-          <p className="text-red-500">{actionData.errors.language.message}</p>
-        )}
-        <label htmlFor="code" className="block font-bold">
-        Code
-        </label>
-        <input
-          type="text"
-          name="code"
-          defaultValue={actionData?.values.code}
-          id="code"
-          className="w-full h-60 py-1 px-2 rounded-lg"
-        />
-        {actionData?.errors.description && (
-          <p className="text-red-500">{actionData.errors.code.message}</p>
+        {actionData?.errors.password && (
+          <p className="text-red-500">{actionData.errors.password.message}</p>
         )}
     
         <button type="submit" className="mt-3 mb-2 pr-3 pl-3 pt-0 pb-1 border-2 
                   border-orange-400 bg-neutral-800 text-neutral-50 rounded-3xl
-                  hover:bg-orange-400">Save</button>
+                  hover:bg-orange-400">Register</button>
       </Form>
     </div>
   );
