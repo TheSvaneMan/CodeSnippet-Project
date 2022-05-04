@@ -6,5 +6,5 @@ export async function action({ request }) {
   const db = await connectDb();
   
   await db.models.snip.deleteOne({ _id: form._fields.inputID});
-  return redirect("/");
+  return redirect("/snippets");
 }
