@@ -4,7 +4,7 @@ import {
   import styles from "~/tailwind.css";
   import connectDb from "~/db/connectDb.server.js";
 import React, { useState } from 'react';
-import { requireUserSession } from "~/sessions.server";
+import { requireUserSession, getSession } from "~/sessions.server";
   
   export const links = () => [
     {
@@ -24,8 +24,10 @@ import { requireUserSession } from "~/sessions.server";
   export async function loader({ request }) {
   
     const db = await connectDb();
-    const snipps = await db.models.snip.find();
-    const session = await requireUserSession(request);
+    await requireUserSession(request);
+    const session = await getSession(request.headers.get("Cookie"));
+    const userID = session.get("userID");
+    const snipps = await db.models.snip.find({ user: { $in: [userID, ""] } });
     return snipps;
 }
 
@@ -52,11 +54,6 @@ import { requireUserSession } from "~/sessions.server";
     else {
       sortedSnipps = snipps;
     }
-  
-    const themeToggle = () => {
-      theme == "light" ? setTheme("dark") : setTheme("light");
-    }
-  
   
     return (
           <section className={theme == "light" ? 'light flex' : 'dark flex'}>

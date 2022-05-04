@@ -8,7 +8,9 @@ const snippschema = new Schema({
   favorite: Boolean,
   date: String,
   language: String,
-  code: String
+  code: String,
+  user: String,
+  //add Timestamps (google mongoose timestamps)
 });
 
 const userSchema = new Schema({

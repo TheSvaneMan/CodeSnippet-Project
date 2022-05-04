@@ -1,13 +1,7 @@
 import { redirect } from "remix";
 import { getSession, destroySession } from "../sessions.server";
   
-export function loader() {
-    return (
-        redirect("/login")
-    )
-}
-
-export async function action({ request }) {
+export async function loader({ request }) {
     const session = await getSession(request.headers.get("Cookie"));
     
     return redirect("/login", {

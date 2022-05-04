@@ -1,6 +1,6 @@
-import { Form, redirect, json, useActionData } from "remix";
+import { Form, redirect, json, useActionData, useLoaderData } from "remix";
 import connectDb from "~/db/connectDb.server";
-import { requireUserSession } from "~/sessions.server";
+import { requireUserSession, getSession } from "~/sessions.server";
 
 export async function action({ request }) {
   const form = await request.formData();
@@ -17,14 +17,17 @@ export async function action({ request }) {
 }
 
 export async function loader({ request }) {
-  const session = await requireUserSession(request);
-  return session;
+  await requireUserSession(request);
+  const session = await getSession(request.headers.get("Cookie"));
+  return { userID: session.get("userID") };
 };
+
 
 
 
 export default function Createsnip() {
   const actionData = useActionData();
+  const { userID } = useLoaderData();
   console.log(actionData);
   const current = new Date();
   const date = `${current.getDate()}/${current.getMonth()+1}/${current.getFullYear()}`;
