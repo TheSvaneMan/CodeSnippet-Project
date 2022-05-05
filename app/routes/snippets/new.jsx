@@ -70,7 +70,7 @@ export default function Createsnip() {
             id="title"
             placeholder='Enter code snippet title'
             className={
-              actionData?.errors.title ? "border-2 border-red-500 text-black p-4 rounded-lg" : "text-black p-4 rounded-lg"
+              actionData?.errors.title ? "border-2 border-red-500 text-neutral-800 p-4 rounded-lg" : "text-neutral-800 p-4 rounded-lg focus:outline-orange-400"
             }
           />
           {actionData?.errors.title && (
@@ -88,7 +88,7 @@ export default function Createsnip() {
             placeholder='Enter code snippet language'
             id="language"
             className={
-              actionData?.errors.language ? "border-2 border-red-500 text-black p-4 rounded-lg" : "text-black p-4 rounded-lg"
+              actionData?.errors.title ? "border-2 border-red-500 text-neutral-800 p-4 rounded-lg" : "text-neutral-800 p-4 rounded-lg focus:outline-orange-400"
             }
           />
           {actionData?.errors.language && (
@@ -113,9 +113,9 @@ export default function Createsnip() {
           {actionData?.errors.tags && (
             <p className="text-red-500">{actionData?.errors.tag.message}</p>
           )}
-        <input placeholder='tag' type="text" id="tag" name="tag" maxLength="8" minLength="1" className="text-lg my-2 text-black rounded-lg p-2" />
+        <input placeholder='tag' type="text" id="tag" name="tag" maxLength="8" minLength="1" className="text-lg my-2 text-neutral-800 rounded-lg p-2 focus:outline-orange-400" />
         <div id="codeTag" className='grid grid-cols-1 justify-items-end space-y-4'>
-          <button onClick={handleTag} className='bg-orange-600 p-2 rounded-lg hover:bg-orange-300 hover:-translate-y-2 hover:text-black transition ' >Add Tag</button>
+          <button onClick={handleTag} className='bg-orange-600 p-2 rounded-lg hover:bg-orange-300 hover:-translate-y-2 hover:text-neutral-800 transition ' >Add Tag</button>
         </div>
       </div>
         
@@ -130,7 +130,7 @@ export default function Createsnip() {
             placeholder='Enter code snippet'
             id="code"
             className={
-              actionData?.errors.code ? "border-2 border-red-500 text-black p-4 rounded-lg" : "text-black p-4 rounded-lg"
+              actionData?.errors.code ? "border-2 border-red-500 text-neutral-800 p-4 rounded-lg" : "text-neutral-800 p-4 rounded-lg focus:outline-orange-400"
             }
           />
           {actionData?.errors.code && (
@@ -148,7 +148,7 @@ export default function Createsnip() {
             id="description"
             placeholder='Enter code snippet description'
             className={
-              actionData?.errors.description ? "border-2 border-red-500 text-black p-4 rounded-lg" : "text-black p-4 rounded-lg"
+              actionData?.errors.description ? "border-2 border-red-500 text-neutral-800 p-4 rounded-lg" : "text-neutral-800 p-4 rounded-lg focus:outline-orange-400"
             }
           />
           {actionData?.errors.description && (

@@ -38,7 +38,7 @@ export default function UpdateSnip() {
           name="title"
           defaultValue={snip.title}
           id="title"
-          className="py-1 px-2 rounded-lg"
+          className="py-1 px-2 rounded-lg dark:text-neutral-800 focus:outline-orange-400"
         />
         {actionData?.errors.title && (
           <p className="text-red-500">{actionData.errors.title.message}</p>
@@ -50,7 +50,7 @@ export default function UpdateSnip() {
           name="description"
           defaultValue={snip.description}
           id="description"
-          className="w-full h-20 py-1 px-2 rounded-lg"
+          className="w-full h-20 py-1 px-2 rounded-lg dark:text-neutral-800 focus:outline-orange-400"
         />
         {actionData?.errors.description && (
           <p className="text-red-500">{actionData.errors.description.message}</p>
@@ -63,7 +63,7 @@ export default function UpdateSnip() {
           name="language"
           defaultValue={snip.language}
           id="language"
-          className="py-1 px-2 rounded-lg"
+          className="py-1 px-2 rounded-lg dark:text-neutral-800 focus:outline-orange-400"
         />
         {actionData?.errors.language && (
           <p className="text-red-500">{actionData.errors.language.message}</p>
@@ -75,7 +75,7 @@ export default function UpdateSnip() {
           name="code"
           defaultValue={snip.code}
           id="code"
-          className="w-full h-60 py-1 px-2 rounded-lg"
+          className="w-full h-60 py-1 px-2 rounded-lg dark:text-neutral-800 focus:outline-orange-400"
         />
         {actionData?.errors.description && (
           <p className="text-red-500">{actionData.errors.code.message}</p>

@@ -39,10 +39,13 @@ export function meta() {
 }
 
 export default function App() {
-  const [theme, setTheme] = useState("light");
+  let storedTheme = "";
+  const [theme, setTheme] = useState(storedTheme);
   const [session, setSession] = useState();
   const themeToggle = () => {
     theme == "light" ? setTheme("dark") : setTheme("light");
+    localStorage.setItem('theme', theme);
+    storedTheme = localStorage.getItem('theme');
   }
   const sessionState = useLoaderData();
 
