@@ -67,7 +67,7 @@ export default function App() {
           </div>
 
           {/* Use Penda's tagging solution */}
-          <select id="languageList" name="language" className="rounded-lg p-2 border-2 border-orange-400 text-neutral-800" onChange={(event) => {
+          <select id="languageList" name="language" className="rounded-lg p-2 border-2 border-orange-400 text-neutral-800 focus:outline-orange-400" onChange={(event) => {
             setLanguage(event.target.value);
           }}>
             <option value="">All languages</option>
@@ -78,7 +78,7 @@ export default function App() {
             <option value="C">C</option>
             <option value="Java">Java</option>
           </select>
-          <input type="text" placeholder="Search..." className="rounded-lg p-2 border-2  border-orange-400 text-neutral-800"
+          <input type="text" placeholder="Search..." className="rounded-lg p-2 border-2  border-orange-400 text-neutral-800 focus:outline-orange-400"
             name="search" onChange={(event) => {
               setSearchTerm(event.target.value);
             }}

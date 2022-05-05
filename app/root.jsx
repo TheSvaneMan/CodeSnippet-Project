@@ -40,10 +40,10 @@ export function meta() {
 
 export default function App() {
   let storedTheme = "";
-  const [theme, setTheme] = useState(storedTheme);
-  const [session, setSession] = useState();
+  let [theme, setTheme] = useState(storedTheme);
   const themeToggle = () => {
     theme == "light" ? setTheme("dark") : setTheme("light");
+    theme == "light" ? theme="dark" : theme="light";
     localStorage.setItem('theme', theme);
     storedTheme = localStorage.getItem('theme');
   }
