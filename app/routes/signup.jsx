@@ -52,9 +52,10 @@ export async function action({ request }) {
 export default function SingUp() {
   const actionData = useActionData();
   return (
-    <div className="m-6 w-1/2">
+    <div id="SignUpPage" className='grid grid-cols-1 justify-items-center align-middle min-h-full'>
       <h1 className="text-2xl font-bold mb-4">Sign up</h1>
       <Form method="post">
+      <div id="signup-input-fields" className='grid grid-cols-1 space-y-5'>
         <input
           type="text"
           name="username"
@@ -90,6 +91,7 @@ export default function SingUp() {
           <Link to="/login" className="ml-5 hover:text-neutral-50 text-orange-400">
           Log in!
           </Link>
+          </div>
       </Form>
     </div>
   );
