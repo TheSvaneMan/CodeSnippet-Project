@@ -1,89 +1,81 @@
-import { redirect, Form  } from "remix";
+import { useLoaderData, json, Link, Form, redirect, useCatch } from 'remix';
 import connectDb from "~/db/connectDb.server";
 import { requireUserSession } from "~/sessions.server";
+import snippetSeed from "~/db/seed.json";
 
 
 export async function loader({request}) {
     const db = await connectDb();
-    const numberOfsnipps = await db.models.snip.find()
+    const currentSnippetAmount = await db.models.snip.countDocuments();
     await requireUserSession(request);
-    return (
-        { snipps: numberOfsnipps.length }
-        )
+    return json(currentSnippetAmount);
 }
 
-export async function action() {
+export async function action({ request }) {
+    const form = await request.formData();
+    const params = form._fields;
+    console.log(params);
     const db = await connectDb();
-
-    await db.models.snip.deleteMany({});
-
-    await db.models.snip.insertMany([
-        {
-            "title": "HTML form",
-            "description": "A webform, web form or HTML form on a web page allows a user to enter data that is sent to a server for processing. Forms can resemble paper or database forms because web users fill out the forms using checkboxes, radio buttons, or text fields.",
-            "favorite": true,
-            "date": "29/03/2022",
-            "language": "HTML",
-            "user": "",
-            "code": `<form>
-            <label for="fname">First name:</label><br>
-            <input type="text" id="fname" name="fname"><br>
-            <label for="lname">Last name:</label><br>
-            <input type="text" id="lname" name="lname">
-          </form>`
-        },
-        {
-            "title": "Tailwind",
-            "description": "A utility-first CSS framework packed with classes like flex, pt-4, text-center and rotate-90 that can be composed to build any design, directly in your markup.",
-            "favorite": false,
-            "date": "30/03/2022",
-            "language": "CSS",
-            "user": "",
-            "code": `<figure class="bg-slate-100 rounded-xl p-8 dark:bg-slate-800">
-            <img class="w-24 h-24 rounded-full mx-auto" src="/sarah-dayan.jpg" alt="" width="384" height="512">
-            <div class="pt-6 space-y-4">`
-        },
-        {
-            "title": "React",
-            "description": "React makes it painless to create interactive UIs. Design simple views for each state in your application, and React will efficiently update and render just the right components when your data changes.",
-            "favorite": true,
-            "date": "02/04/2022",
-            "language": "JS",
-            "user": "",
-            "code": `export async function loader({ params }) {
-                const db = await connectDb();
-                const snip = await db.models.snip.findById(params.snipId);
-                return snip;
-              }`
-        },{
-            "title": "Remix routing",
-            "description": "In Remix, routes are more than just the page. When routes are nested we're able to know a little more about your app than just a single page, and do a lot more because of it.",
-            "favorite": false,
-            "date": "04/04/2022",
-            "language": "JS",
-            "user": "",
-            "code": `import { Outlet } from "@remix-run/react";
-                export default function Root() {
-                return (
-                    <Document>
-                    <Sidebar />
-                    <Outlet />
-                    </Document>
-                );
-            }`
+    try {
+        // Delete all Snippets on Database if not already empty
+        if (params.snippetCount.toString() !== '0') {
+          const deletedManySnippets = await db.models.snip.deleteMany();
+          // Inset Default Seed to Database
+          const insertDefaultSeedSnippets = await db.models.snip.insertMany(snippetSeed);
+          return redirect("/snippets");
+        } else {
+          const insertDefaultSeedSnippets = await db.models.snip.insertMany(snippetSeed);
+          return redirect("/snippets");
         }
-    ]);
-    return redirect("/snippets")
+      }   
+   catch (error) {
+        return json(
+        {errors: error.errors, values: Object.fromEntries(form)},
+        {status: 400}
+        )
+    }
 }
 
 export default function Index() {
+    const snippetCount = useLoaderData();
+    const snippetJSON = snippetSeed;
     return (
-        <Form method="post">
-            <button type="submit" className="mt-5 ml-5 mb-2 pr-3 pl-3 pt-0 pb-1 border-2 
-                  border-orange-400 bg-neutral-800 text-neutral-50 rounded-3xl
-                  hover:bg-orange-400">Delete all snippets and add defualt ones</button>
+        <Form method="post" className='p-5'>
+            <h1 className='text-2xl mb-5'>Seeding the database</h1>
+            <h2 className='text-xl mb-10'>You currently have <b>{snippetCount}</b> snipppets in your database.</h2>
+            {snippetCount === 0 ? <>
+                <p className='mb-4 text-lg'>Would you like to repopulate your database with <b>{snippetJSON.length}</b> default snippets?</p></> : <>
+                <p className='mb-4 text-lg'>Do you want to delete them and re-seed the database with <b>{snippetJSON.length}</b> default snippets?</p>
+                <p className='text-red-500 bg-black rounded-lg p-4'>You are about to reseed your database, are you sure you want to continue? This action is irreversible.</p></> } 
+            <div id="seed-options" className='grid grid-cols-2 space-x-10 mt-5'>
+                <input type="hidden" id="snippetCount" name="snippetCount" defaultValue={snippetCount} />
+                <input type="submit" name="acceptSeed" id="acceptSeed" value="Accept" className="text-white transition hover:bg-red-600 bg-red-800  p-4 rounded-lg" />
+                <Link to="/" className="text-white transition hover:bg-blue-500 bg-blue-600 p-4 rounded-lg">
+                    Decline
+                </Link>
+            </div>
         </Form>
         
     )
+}
+
+export function CatchBoundary() {
+  const caught = useCatch();
+  return (
+    <div>
+      <h1>
+        {caught.status} {caught.statusText}
+      </h1>
+      <h2>{caught.data}</h2>
+    </div>
+  );
+}
+
+export function ErrorBoundary({ error }) {
+  return (
+    <h1 className="text-red-500 font-bold">
+      {error.name}: {error.message}
+    </h1>
+  );
 }
   
