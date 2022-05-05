@@ -26,7 +26,7 @@ export default function Index() {
         <button type="submit" className="mt-3 mb-2 pr-3 pl-3 pt-0 pb-1 border-2 
                   border-orange-400 bg-neutral-800 text-neutral-50 rounded-3xl
                   hover:bg-orange-400">Log in</button>
-          <h1 className="text-red-500"> {loginStatus} </h1>
+          <p className="text-red-500 font-bold my-3"> {loginStatus} </p>
           No account yet?
           <Link to="/signup" className="ml-5 hover:text-neutral-50 text-orange-400">
           Sign up!
@@ -58,12 +58,12 @@ export async function action({ request }) {
       });
   }
   else {
-    data = "wrong login or password";
+    data = "Wrong login or password!";
     return data;
     }
   }
   else {
-    data = "wrong login or password";
+    data = "Wrong login or password!";
     return data;
     }
 }

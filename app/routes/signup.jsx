@@ -14,6 +14,12 @@ export async function action({ request }) {
       { status: 400 }
     );
   }
+  if (form.get("password").trim()?.length < 8) {
+    return json(
+      { errorMessage: "Password is too short!" },
+      { status: 400 }
+    );
+  }
 
     const hashedPassword = await bcrypt.hash(form.get("password").trim(),10);
   try {
