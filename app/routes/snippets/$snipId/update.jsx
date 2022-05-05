@@ -11,7 +11,7 @@ console.log(loader);
 export async function action({ request, params }) {
   const form = await request.formData();
   const db = await connectDb();
- 
+
   try {
     await db.models.snip.updateOne({ _id: params.snipId }, { title: form.get("title"), description: form.get("description"), language: form.get("language"), code: form.get("code") });
     return redirect(`snippets/${params.snipId}`);
@@ -27,7 +27,7 @@ export default function UpdateSnip() {
   const actionData = useActionData();
   const snip = useLoaderData();
   return (
-    <div className="m-6 w-1/2">
+    <div id="Snippet Update" className="grid grid-cols-1">
       <h1 className="text-2xl font-bold mb-4">Edit</h1>
       <Form method="post">
         <label htmlFor="title" className="block font-bold">
@@ -56,7 +56,7 @@ export default function UpdateSnip() {
           <p className="text-red-500">{actionData.errors.description.message}</p>
         )}
         <label htmlFor="language" className="block font-bold">
-        Language
+          Language
         </label>
         <input
           type="text"
@@ -69,7 +69,7 @@ export default function UpdateSnip() {
           <p className="text-red-500">{actionData.errors.language.message}</p>
         )}
         <label htmlFor="code" className="block font-bold">
-        Code
+          Code
         </label>
         <textarea
           name="code"
@@ -81,7 +81,7 @@ export default function UpdateSnip() {
           <p className="text-red-500">{actionData.errors.code.message}</p>
         )}
 
-        <button type="submit" className="mt-2 mb-2 pr-3 pl-3 pt-0 pb-1 border-2 
+        <button type="submit" className="px-4 py-1 border-2 
                   border-orange-400 bg-neutral-800 text-neutral-50 rounded-3xl
                   hover:bg-orange-400">Save</button>
       </Form>
