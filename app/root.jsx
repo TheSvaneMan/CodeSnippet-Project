@@ -21,10 +21,13 @@ export function meta() {
 
 
 export default function App() {
-  const [theme, setTheme] = useState("light");
+  let storedTheme = "";
+  const [theme, setTheme] = useState(storedTheme);
 
   const themeToggle = () => {
     theme == "light" ? setTheme("dark") : setTheme("light");
+    localStorage.setItem('theme', theme);
+    storedTheme = localStorage.getItem('theme');
   }
 
   return (

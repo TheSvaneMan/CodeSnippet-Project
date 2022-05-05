@@ -61,7 +61,7 @@ import { requireUserSession, getSession } from "~/sessions.server";
               <h2 className="text-lg font-bold mb-4">
                 Filters:
               </h2>
-              <input type="text" placeholder="Search..." className="rounded-3xl pt-1 pb-1 pr-2 pl-2 border-2 border-orange-400 text-neutral-800"
+              <input type="text" placeholder="Search..." className="rounded-lg pt-1 pb-1 pr-2 pl-2 border-2 border-orange-400 text-neutral-800"
                 name="search" onChange={(event) => {
                 setSearchTerm(event.target.value);
               }}

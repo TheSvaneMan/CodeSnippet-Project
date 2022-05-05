@@ -7,7 +7,7 @@ export async function action({ request }) {
   const db = await connectDb();
   try {
     await db.models.snip.create({ title: form.get("title"), description: form.get("description"), date: form.get("date"), language: form.get("language"), code: form.get("code"), user: form.get("user") });
-    return redirect(`/snippets/`);
+    return redirect(`/snippets/`);//new snip
   } catch (error) {
     return json(
       { errors: error.errors, values: Object.fromEntries(form) },
@@ -35,8 +35,8 @@ export default function Createsnip() {
     <div className="m-6 w-1/2">
       <h1 className="text-2xl font-bold mb-4">Create code snippet</h1>
       <Form method="post">
-        <input type="text" name="date" value={date} id="date" className="hidden" />
-        <input type="text" name="user" value={userID} id="user" className="hidden"/>
+        <input type="text" name="date" defaultValue={date} id="date" className="hidden" />
+        <input type="text" name="user" defaultValue={userID} id="user" className="hidden"/>
         <label htmlFor="title" className="block font-bold">
           Title
         </label>
@@ -45,7 +45,7 @@ export default function Createsnip() {
           name="title"
           defaultValue={actionData?.values.title}
           id="title"
-          className="py-1 px-2 rounded-lg"
+          className="py-1 px-2 rounded-lg dark:text-neutral-800 focus:outline-orange-400"
         />
         {actionData?.errors.title && (
           <p className="text-red-500">{actionData.errors.title.message}</p>
@@ -57,7 +57,7 @@ export default function Createsnip() {
           name="description"
           defaultValue={actionData?.values.description}
           id="description"
-          className="w-full h-20 py-1 px-2 rounded-lg"
+          className="w-full h-20 py-1 px-2 rounded-lg dark:text-neutral-800 focus:outline-orange-400"
         />
         {actionData?.errors.description && (
           <p className="text-red-500">{actionData.errors.description.message}</p>
@@ -87,7 +87,7 @@ export default function Createsnip() {
           name="language"
           defaultValue={actionData?.values.language}
           id="language"
-          className="py-1 px-2 rounded-lg"
+          className="py-1 px-2 rounded-lg dark:text-neutral-800 focus:outline-orange-400"
         />
         {actionData?.errors.language && (
           <p className="text-red-500">{actionData.errors.language.message}</p>
@@ -100,7 +100,7 @@ export default function Createsnip() {
           name="code"
           defaultValue={actionData?.values.code}
           id="code"
-          className="w-full h-60 py-1 px-2 rounded-lg"
+          className="w-full h-60 py-1 px-2 rounded-lg dark:text-neutral-800 focus:outline-orange-400"
         />
         {actionData?.errors.description && (
           <p className="text-red-500">{actionData.errors.code.message}</p>
