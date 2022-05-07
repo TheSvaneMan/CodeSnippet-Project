@@ -6,7 +6,6 @@ import { useState } from 'react';
 import { getSession } from "~/sessions.server";
 
 export async function loader({ request }) {
-
   // get the session
   const cookie = request.headers.get("cookie");
   const session = await getSession(cookie);
@@ -38,17 +37,74 @@ export function meta() {
   };
 }
 
+ // This check is !important
+  if (typeof document === "undefined") {
+    // running in a server environment
+  } else {
+    // running in a browser environment
+    // Check for a service worker registration status
+    async function checkRegistration() {
+      if ('serviceWorker' in navigator) {
+        const registration = await navigator.serviceWorker.getRegistration();
+        if (registration) {
+          console.log("Service worker was registered on page load")
+        } else {
+          console.log("No service worker is currently registered")
+        }
+      } else {
+        console.log("Service workers API not available");
+      }
+    }
+
+    // Registers a service worker
+    async function register() {
+      if ('serviceWorker' in navigator) {
+        try {
+          // Change the service worker URL to see what happens when the SW doesn't exist
+          const registration = await navigator.serviceWorker.register("sw.js");
+          console.log("Service worker registered");
+        } catch (error) {
+          console.log("Error while registering " + error.message);
+        }
+      } else {
+        console.log("Servive workers API not available");
+      }
+    }
+
+    // Unregister a currently registered service worker 
+    async function unregister() {
+      if ('serviceWorker' in navigator) {
+        try {
+          const registration = await navigator.serviceWorker.getRegistration();
+          if (registration) {
+            const result = await registration.unregister();
+            console.log(result ? "Service worker unregistered" : "Service worker couldn't be unregistered");
+          } else {
+            console.log("There is no service worker to unregister");
+          }
+        } catch (error) {
+          console.log("Error while unregistering: " + error.message);
+        }
+      } else {
+        console.log("Service workers API not available");
+      }
+    }
+
+    // Register service worker
+    register();  
+}
+
 export default function App() {
   let storedTheme = "";
   let [theme, setTheme] = useState(storedTheme);
   const themeToggle = () => {
     theme == "light" ? setTheme("dark") : setTheme("light");
-    theme == "light" ? theme="dark" : theme="light";
+    theme == "light" ? theme = "dark" : theme = "light";
     localStorage.setItem('theme', theme);
     storedTheme = localStorage.getItem('theme');
   }
   const sessionState = useLoaderData();
-
+  
   return (
     <html lang="en" className={theme == "light" ? 'light' : 'dark'}>
       <head>
@@ -82,7 +138,6 @@ export default function App() {
           </div>
         </header>
         <Outlet />
-
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
@@ -90,3 +145,4 @@ export default function App() {
     </html>
   );
 }
+
