@@ -1,10 +1,15 @@
-import { Form, redirect, useActionData, useLoaderData, Link } from "remix";
+import { Form, redirect, useActionData, useLoaderData, Link, useCatch, json } from "remix";
 import { getSession, commitSession } from "~/sessions.server";
 import connectDb from "~/db/connectDb.server";
 import bcrypt from "bcryptjs";
 
 export async function loader({ request }) {
   const session = await getSession(request.headers.get("Cookie"));
+  if (!session) {
+    throw new Response(`Couldn't handle login while offline`, {
+      status: 404,
+    });
+  }
   return { userID: session.get("userID") };
 }
 
@@ -38,32 +43,78 @@ export default function Index() {
 }
 
 export async function action({ request }) {
-  const session = await getSession(request.headers.get("Cookie"));
-  const db = await connectDb();
-  const form = await request.formData();
-  let data = "";
+  console.log(request);
+  try {
+      const session = await getSession(request.headers.get("Cookie"));
+      const db = await connectDb();
+      const form = await request.formData();
+      let data = "";
 
-  const user = await db.models.user.findOne({
-    username: form.get("username"),
-  });
-  if (user != null) {
-    const isCorrectPassword = await bcrypt.compare(form.get("password"), user.password);
-
-    if (user != null && isCorrectPassword == true) {
-      session.set("userID", user._id);
-      return redirect("/snippets", {
-        headers: {
-          "Set-Cookie": await commitSession(session),
-        },
+      const user = await db.models.user.findOne({
+        username: form.get("username"),
       });
-    }
-    else {
-      data = "wrong login or password";
-      return data;
-    }
+      if (user != null) {
+        const isCorrectPassword = await bcrypt.compare(form.get("password"), user.password);
+
+        if (user != null && isCorrectPassword == true) {
+          session.set("userID", user._id);
+          return redirect("/snippets", {
+            headers: {
+              "Set-Cookie": await commitSession(session),
+            },
+          });
+        }
+        else {
+          data = "wrong login or password";
+          return data;
+        }
+      }
+      else {
+        data = "wrong login or password";
+        return data;
+      }
+  } catch (error) {
+    return json(
+      { errors: error.errors, message: "error message",
+       status: 400 }
+    );
   }
-  else {
-    data = "wrong login or password";
-    return data;
-  }
+}
+
+export function ErrorBoundary({ error }) {
+  return (
+    <div className='grid grid-cols-1 bg-slate-900 p-4 rounded-lg shadow-lg mt-5 space-y-10'>
+      <h1>You are already logged in :)</h1>
+      <b>We could merely prevent this from happening but I want to show this error that occurs</b>
+      <div className='px-10 animate-pulse transition delay-300'> 
+         <h1 className="text-white font-bold">
+            {error.name}: {error.message}
+        </h1>
+      </div>
+      <Link to="/" className="py-1 px-4 border-2 
+                  border-orange-400 bg-neutral-800 text-neutral-50 rounded-3xl
+                  hover:bg-orange-400">
+        Check your snippets
+      </Link>
+    </div>
+  );
+}
+
+export function CatchBoundary() {
+  const caught = useCatch();
+  return (
+    <div className='grid grid-cols-1 bg-slate-900 p-4 rounded-lg shadow-lg mt-5 space-y-10'>
+      <h3>Sorry, you cannot login while offline</h3>
+      <p>Please make sure you have an internet connection and try again.</p>
+      <div className='px-10 animate-pulse transition delay-300'> 
+        <h1>
+          {caught.status} {caught.statusText}
+        </h1>
+        <h2><b>{caught.data}</b></h2>
+      </div>
+      <Link to="/" className="ml-3 transition hover:bg-slate-500 bg-slate-600 p-4 rounded-lg">
+          Return to Home Page :)
+      </Link>
+    </div>
+  );
 }

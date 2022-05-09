@@ -1,12 +1,11 @@
 import {
-  Links, Link, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useActionData, useLoaderData
+  Links, Link, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useActionData, useLoaderData, useCatch
 } from "remix";
 import styles from "~/tailwind.css";
 import { useState } from 'react';
 import { getSession } from "~/sessions.server";
 
 export async function loader({ request }) {
-
   // get the session
   const cookie = request.headers.get("cookie");
   const session = await getSession(cookie);
@@ -28,6 +27,15 @@ export const links = () => [
     rel: "stylesheet",
     href: styles,
   },
+  {
+    rel: "manifest",
+    crossOrigin: "use-credentials",
+    href: "/app.webmanifest"
+  },
+  {
+    rel: "apple-touch-icon",
+    href: "/assets/logo/apple-touch-icon.png"
+  }
 ];
 
 export function meta() {
@@ -38,12 +46,69 @@ export function meta() {
   };
 }
 
+ // This check is !important
+  if (typeof document === "undefined") {
+    // running in a server environment
+  } else {
+    // running in a browser environment
+    // Check for a service worker registration status
+    async function checkRegistration() {
+      if ('serviceWorker' in navigator) {
+        const registration = await navigator.serviceWorker.getRegistration();
+        if (registration) {
+          console.log("Service worker was registered on page load")
+        } else {
+          console.log("No service worker is currently registered")
+        }
+      } else {
+        console.log("Service workers API not available");
+      }
+    }
+
+    // Registers a service worker
+    async function register() {
+      if ('serviceWorker' in navigator) {
+        try {
+          // Change the service worker URL to see what happens when the SW doesn't exist
+          const registration = await navigator.serviceWorker.register("sw.js");
+          console.log("Service worker registered");
+        } catch (error) {
+          console.log("Error while registering " + error.message);
+        }
+      } else {
+        console.log("Servive workers API not available");
+      }
+    }
+
+    // Unregister a currently registered service worker 
+    async function unregister() {
+      if ('serviceWorker' in navigator) {
+        try {
+          const registration = await navigator.serviceWorker.getRegistration();
+          if (registration) {
+            const result = await registration.unregister();
+            console.log(result ? "Service worker unregistered" : "Service worker couldn't be unregistered");
+          } else {
+            console.log("There is no service worker to unregister");
+          }
+        } catch (error) {
+          console.log("Error while unregistering: " + error.message);
+        }
+      } else {
+        console.log("Service workers API not available");
+      }
+    }
+
+    // Register service worker
+    register();  
+}
+
 export default function App() {
   let storedTheme = "";
   let [theme, setTheme] = useState(storedTheme);
   const themeToggle = () => {
     theme == "light" ? setTheme("dark") : setTheme("light");
-    theme == "light" ? theme="dark" : theme="light";
+    theme == "light" ? theme = "dark" : theme = "light";
     localStorage.setItem('theme', theme);
     storedTheme = localStorage.getItem('theme');
   }
@@ -54,6 +119,8 @@ export default function App() {
       <head>
         <Meta />
         <Links />
+        <meta name="description" content="The root home page of Keep Snipp - Code Snippet PWA" />
+        <meta name="theme-color" content="#fb923c"/>
       </head>
       <body className="grid grid-cols-1 bg-slate-100 text-slate-800 font-sans dark:bg-neutral-800 dark:text-neutral-50">
         <header className="p-2 border-b-4 border-orange-400 bg-neutral-800">
@@ -82,10 +149,38 @@ export default function App() {
           </div>
         </header>
         <Outlet />
-
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
+      </body>
+    </html>
+  );
+}
+
+export function CatchBoundary() {
+  const caught = useCatch();
+  return (  
+    <html lang="en" className='dark'>
+      <head>
+        <title>Whoopsies</title>
+        <Meta />
+        <Links />
+      </head>
+      <body className="grid grid-cols-1 justify-center space-y-5 px-5 max-w-md bg-slate-100 text-slate-800 font-sans dark:bg-neutral-800 dark:text-neutral-50">
+          <h1 className='mt-10'>Hey there, sorry for the inconvenience - but it seems like the page you're looking for doesn't exist</h1>
+            <div className='p-10 animate-pulse transition delay-300'> 
+              <h1>
+                {caught.status} {caught.statusText}
+              </h1>
+              <h2><b>{caught.data}</b></h2>
+            </div>
+            <Link to="/" className="py-1 px-4 border-2 
+                  border-orange-400 bg-neutral-800 text-neutral-50 rounded-3xl
+                  hover:bg-orange-400">
+                Click here to return to home
+          </Link>
+        
+          <Scripts />
       </body>
     </html>
   );

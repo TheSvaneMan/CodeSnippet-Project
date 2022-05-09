@@ -1,0 +1,22 @@
+{
+   "short_name": "KeepSnipp",
+   "name": "Keep Snipp",
+   "description": "A simple code snippet management app",
+   "icons": [{
+      "src": "assets/logo/Keep-Snipp-logo-main.png",
+      "type": "image/png",
+      "sizes": "1080x1080"
+   },
+   {
+      "src": "assets/logo/android-chrome-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+   }],
+   "start_url": "./",
+   "orientation": "portrait",
+   "display": "standalone",
+   "background_color": "#262626",
+   "theme_color": "#fb923c",
+   "scope": "/"
+}
