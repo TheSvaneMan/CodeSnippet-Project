@@ -1,5 +1,5 @@
 import {
-  Links, Link, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useActionData, useLoaderData
+  Links, Link, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useActionData, useLoaderData, useCatch
 } from "remix";
 import styles from "~/tailwind.css";
 import { useState } from 'react';
@@ -27,6 +27,15 @@ export const links = () => [
     rel: "stylesheet",
     href: styles,
   },
+  {
+    rel: "manifest",
+    crossOrigin: "use-credentials",
+    href: "/app.webmanifest"
+  },
+  {
+    rel: "apple-touch-icon",
+    href: "/assets/logo/apple-touch-icon.png"
+  }
 ];
 
 export function meta() {
@@ -104,12 +113,14 @@ export default function App() {
     storedTheme = localStorage.getItem('theme');
   }
   const sessionState = useLoaderData();
-  
+
   return (
     <html lang="en" className={theme == "light" ? 'light' : 'dark'}>
       <head>
         <Meta />
         <Links />
+        <meta name="description" content="The root home page of Keep Snipp - Code Snippet PWA" />
+        <meta name="theme-color" content="#fb923c"/>
       </head>
       <body className="grid grid-cols-1 bg-slate-100 text-slate-800 font-sans dark:bg-neutral-800 dark:text-neutral-50">
         <header className="p-2 border-b-4 border-orange-400 bg-neutral-800">
@@ -146,3 +157,31 @@ export default function App() {
   );
 }
 
+export function CatchBoundary() {
+  const caught = useCatch();
+  return (  
+    <html lang="en" className='dark'>
+      <head>
+        <title>Whoopsies</title>
+        <Meta />
+        <Links />
+      </head>
+      <body className="grid grid-cols-1 justify-center space-y-5 px-5 max-w-md bg-slate-100 text-slate-800 font-sans dark:bg-neutral-800 dark:text-neutral-50">
+          <h1 className='mt-10'>Hey there, sorry for the inconvenience - but it seems like the page you're looking for doesn't exist</h1>
+            <div className='p-10 animate-pulse transition delay-300'> 
+              <h1>
+                {caught.status} {caught.statusText}
+              </h1>
+              <h2><b>{caught.data}</b></h2>
+            </div>
+            <Link to="/" className="py-1 px-4 border-2 
+                  border-orange-400 bg-neutral-800 text-neutral-50 rounded-3xl
+                  hover:bg-orange-400">
+                Click here to return to home
+          </Link>
+        
+          <Scripts />
+      </body>
+    </html>
+  );
+}

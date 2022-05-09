@@ -1,4 +1,4 @@
-import { useLoaderData, Link, useFormAction, redirect } from "remix";
+import { useLoaderData, Link, useFormAction, json, redirect, useCatch } from "remix";
 import connectDb from "~/db/connectDb.server.js";
 import React, { useState } from 'react';
 import { requireUserSession } from "~/sessions.server";
@@ -7,7 +7,13 @@ import { requireUserSession } from "~/sessions.server";
 export async function loader({ params, request }) {
   await requireUserSession(request);
   const db = await connectDb();
-  return await db.models.snip.findById(params.snipId);
+  const snippet = await db.models.snip.findById(params.snipId);
+  if (!snippet) {
+    throw new Response(`Couldn't find snippet with id ${params.snippetId}`, {
+      status: 404,
+    });
+  }
+  return json(snippet);
 }
 
 
@@ -70,4 +76,39 @@ export default function SnipPage() {
       </div>
     </div>
   )
+}
+
+export function CatchBoundary() {
+  const caught = useCatch();
+  return (
+    <div className='grid grid-cols-1 bg-slate-900 p-4 rounded-lg shadow-lg mt-5 space-y-10'>
+      <h3>Whoopsies</h3>
+      <div className='px-10 animate-pulse transition delay-300'> 
+        <h1>
+          {caught.status} {caught.statusText}
+        </h1>
+        <h2><b>{caught.data}</b></h2>
+      </div>
+      <Link to="/" className="ml-3 transition hover:bg-slate-500 bg-slate-600 p-4 rounded-lg">
+          Return to Home Page :)
+      </Link>
+    </div>
+  );
+}
+
+export function ErrorBoundary({ error }) {
+  return (
+   
+    <div className='grid grid-cols-1 bg-neutral-900 p-4 rounded-lg shadow-lg mx-5 space-y-10'>
+      <h3>Oh no, seems like we couldn't find that snippet:</h3>
+      <div className='px-10 animate-pulse transition delay-300'> 
+         <p className="text-white font-bold">
+            {error.name}: {error.message}
+        </p>
+      </div>
+      <Link to="/" className="py-1 px-4 border-2 
+                  border-orange-400 bg-neutral-800 text-neutral-50 rounded-3xl
+                  hover:bg-orange-400">Try clicking on another snippet</Link>
+    </div>
+  );
 }

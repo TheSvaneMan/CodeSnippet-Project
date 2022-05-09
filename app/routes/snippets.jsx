@@ -85,7 +85,7 @@ export default function App() {
           />
         </div>
         <div id="Code-Snippet-Panel" className='grid grid-cols-1 lg:grid-cols-2'>
-          <div id="Code-Snippet-List" className='p-2'>
+          <div id="Code-Snippet-List" className='p-1'>
             <h2 className="text-lg font-bold mb-2">
               Code snippets:
             </h2>

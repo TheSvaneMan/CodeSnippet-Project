@@ -8,7 +8,7 @@ const serviceWorkerCacheVersion = "v1";
 const cacheAvailable = 'caches' in self;
 
 // ---------------------- CONTROL CACHE ----------------- //
-const urlsToCache = ['/'];
+const urlsToCache = ['/', '/login', '/snippets', '/signup', '/favicon.ico'];
 
 // Total requests made
 let count = 0;
@@ -33,10 +33,17 @@ if (cacheAvailable === true) { console.log("Cache API available: " + cacheAvaila
 self.addEventListener("install", event => {
   console.log("Service worker installed");
   const preCache = async () => {
-    const cache = await caches.open(serviceWorkerCacheVersion);
-    return cache.addAll(urlsToCache);
+      const cache = await caches.open(serviceWorkerCacheVersion);
+
+      return cache.addAll(urlsToCache);
   }
-  event.waitUntil(preCache());
+  try {
+    event.waitUntil(preCache());
+  }
+  catch (error) {
+    console.log("Service worker error catch on preCache : " + error.errors)
+    return error.errors
+  }
 })
 
 // Get the current user ID
@@ -56,6 +63,7 @@ self.addEventListener("fetch", event => {
   const checkCache = async () => {
     const cache = await caches.open(serviceWorkerCacheVersion);
     const response = await cache.match(event.request.url);
+    // This prevents caching pages the user hasn't visited yet
     console.log(response ? "Asset is stored in cache :)" : "It's not in the cache");
     // We save snippet data once the user has viewed it and it ISN'T in cache :) Happy data storage method imo
     if (!response) {
@@ -66,7 +74,7 @@ self.addEventListener("fetch", event => {
       event.waitUntil(recentlyViewedSnippetCache());
     }
   }
-  event.waitUntil(checkCache());
+  event.waitUntil(checkCache());  
 });
 
 // ----------------- OFFLINE FEATURES -------------------------------- //
@@ -75,12 +83,12 @@ let offline = false;
 
 // Runs always but handles offline events on fetch -> Handles offline Network requests because the 
 // request failed to reach the server. I think most practical implementation for our needs
-// Network first approach
+// Network first approachS
 self.addEventListener("fetch", event => {
   event.respondWith(
     fetch(event.request).catch(error => {
       offline = true;
-      console.log("Application Network state, offline? : " + offline);
+      console.log("Application Network state. Offline? : " + offline);
       return caches.match(event.request);
     })
   )
