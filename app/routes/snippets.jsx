@@ -56,9 +56,10 @@ export default function App() {
   }
 
   return (
-    <section className={theme == "light" ? 'light grid' : 'dark grid'}>
-      <div id="Snippet-Page" className='grid grid-cols-1 lg:grid-cols-1'>
-        <div className="grid grid-cols-1 py-2 bg-neutral-800 text-neutral-50 space-y-2">
+    <section className={theme == "light" ? 'light grid h-screen' : 'dark grid h-screen'}>
+      <div id="Snippet-Page" className='grid grid-cols-1 lg:grid-cols-4'>
+        <div className="grid grid-cols-1 lg:flex lg:flex-col p-4 bg-neutral-800 text-neutral-50 space-y-2
+        border-r-2 border-orange-400">
           <div id="Snippet-Sorting" className='grid grid-cols-4'>
             <button className="hover:underline" onClick={() => setSort("")}>Date</button>
             <button className="hover:underline" onClick={() => setSort("sortByName")}>Name</button>
@@ -67,7 +68,7 @@ export default function App() {
           </div>
 
           {/* Use Penda's tagging solution */}
-          <select id="languageList" name="language" className="rounded-lg p-2 border-2 border-orange-400 text-neutral-800 focus:outline-orange-400" onChange={(event) => {
+          <select id="languageList" name="language" className="rounded-lg p-2 border-2 h-11 my-4 border-orange-400 text-neutral-800 focus:outline-orange-400" onChange={(event) => {
             setLanguage(event.target.value);
           }}>
             <option value="">All languages</option>
@@ -78,14 +79,14 @@ export default function App() {
             <option value="C">C</option>
             <option value="Java">Java</option>
           </select>
-          <input type="text" placeholder="Search..." className="rounded-lg p-2 border-2  border-orange-400 text-neutral-800 focus:outline-orange-400"
+          <input type="text" placeholder="Search..." className="rounded-lg p-2 border-2 h-11 my-4 border-orange-400 text-neutral-800 focus:outline-orange-400"
             name="search" onChange={(event) => {
               setSearchTerm(event.target.value);
             }}
           />
         </div>
-        <div id="Code-Snippet-Panel" className='grid grid-cols-1 lg:grid-cols-2'>
-          <div id="Code-Snippet-List" className='p-1'>
+        <div id="Code-Snippet-Panel" className='grid grid-cols-1 lg:grid-cols-4 lg:col-span-3'>
+          <div id="Code-Snippet-List" className='p-4 border-r-2 border-orange-400'>
             <h2 className="text-lg font-bold mb-2">
               Code snippets:
             </h2>
@@ -120,7 +121,9 @@ export default function App() {
             }
 
           </div>
-          <Outlet />
+          <div className="lg:col-span-3">
+            <Outlet />
+            </div>
         </div>
       </div>
     </section>

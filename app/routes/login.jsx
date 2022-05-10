@@ -22,20 +22,22 @@ export default function Index() {
   } else {
     return (
       <div id="SignInPage" className='grid grid-cols-1 justify-items-center align-middle min-h-full'>
-        <h1 className="text-2xl font-bold my-10">Log in</h1>
-        <Form method="post" reloadDocument>
+        <h1 className="text-2xl font-bold my-4">Log in</h1>
+        <Form method="post" reloadDocument className="w-56">
           <div id="login-input-fields" className='grid grid-cols-1 space-y-5'>
             <input type="text" name="username" placeholder="username" className="py-1 px-2 rounded-lg dark:text-neutral-800 focus:outline-orange-400"></input>
-            <input type="text" name="password" placeholder="password" className="py-1 px-2 rounded-lg mt-4 dark:text-neutral-800 focus:outline-orange-400"></input>
+            <input type="password" name="password" placeholder="password" className="py-1 px-2 rounded-lg mt-4 dark:text-neutral-800 focus:outline-orange-400"></input>
             <button type="submit" className="mt-3 mb-2 pr-3 pl-3 pt-0 pb-1 border-2 
                   border-orange-400 bg-neutral-800 text-neutral-50 rounded-3xl
                   hover:bg-orange-400">Log in</button>
           </div>
           <p className="text-red-500 font-bold my-3"> {loginStatus} </p>
+          <div className="text-center">
           No account yet?
           <Link to="/signup" className="ml-5 hover:text-neutral-800 dark:hover:text-neutral-50 text-orange-400">
             Sign up!
           </Link>
+          </div>
         </Form>
       </div>
     );

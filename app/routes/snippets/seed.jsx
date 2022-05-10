@@ -40,7 +40,7 @@ export default function Index() {
     const snippetCount = useLoaderData();
     const snippetJSON = snippetSeed;
     return (
-        <Form method="post" className='p-5'>
+        <Form method="post" className='p-4'>
             <h1 className='text-2xl mb-5'>Seeding the database</h1>
             <h2 className='text-xl mb-10'>You currently have <b>{snippetCount}</b> snipppets in your database.</h2>
             {snippetCount === 0 ? <>

@@ -23,7 +23,7 @@ export default function SnipPage() {
   const [sort, setSort] = useState("");
 
   return (
-    <div key={snip._id} id={snip._id} className="grid grid-cols-1 p-2">
+    <div key={snip._id} id={snip._id} className="grid grid-cols-1 p-4">
       <div id="Snippet-Data" className='grid grid-cols-1 space-y-2 '>
         <h1 className="text-2xl font-bold mb-2">{snip.title}</h1>
         <h1>
@@ -38,7 +38,7 @@ export default function SnipPage() {
         <div id="Code-block" className='my-10'>
           <b>Code:</b>
           <p>
-            <code className='text-black bg-white'>
+            <code className='text-black bg-slate-100'>
               {snip.code}
             </code>
           </p>
@@ -49,12 +49,12 @@ export default function SnipPage() {
         </h1>
       </div>
 
-      <div id="Snippet-Form-Handler" className='grid grid-cols-3 justify-items-center mt-4'>
+      <div id="Snippet-Form-Handler" className='grid grid-cols-3 justify-items-center mt-4 lg:flex'>
         {/* Deleting post method with Form and POST */}
         <form method="post" action={useFormAction("delete")}>
           <input type="hidden" name="inputID" value={snip._id}></input>
-          <button type="submit" className="py-1 px-4 border-2 
-                  border-orange-400 bg-neutral-900 text-neutral-50 rounded-3xl
+          <button type="submit" className="py-1 px-4 border-2
+                  border-orange-400 bg-neutral-800 text-neutral-50 rounded-3xl
                   hover:bg-orange-400">Delete</button>
         </form>
 
@@ -62,7 +62,7 @@ export default function SnipPage() {
         <form method="post" action={useFormAction("favorite")}>
 
           <input type="hidden" name="favorite" value={snip.favorite}></input>
-          <button type="submit" className="py-1 px-4 border-2 
+          <button type="submit" className="py-1 px-4 border-2 lg:mx-4 
                   border-orange-400 bg-neutral-800 text-neutral-50 rounded-3xl
                   hover:bg-orange-400">Favorite</button>
         </form>
@@ -70,7 +70,7 @@ export default function SnipPage() {
 
 
         {/* Editing post method with passing ID in the link */}
-        <Link to="update" className="py-1 px-4 border-2 
+        <Link to="update" className="py-1 px-4 border-2
                   border-orange-400 bg-neutral-800 text-neutral-50 rounded-3xl
                   hover:bg-orange-400">Update</Link>
       </div>

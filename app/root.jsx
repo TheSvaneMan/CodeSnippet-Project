@@ -125,12 +125,12 @@ export default function App() {
       <body className="grid grid-cols-1 bg-slate-100 text-slate-800 font-sans dark:bg-neutral-800 dark:text-neutral-50">
         <header className="p-2 border-b-4 border-orange-400 bg-neutral-800">
           <div>
-            {sessionState ? <div id="nav-links" className='grid grid-cols-2 lg:grid-cols-4'>
+            {sessionState ? <div id="nav-links" className='grid grid-cols-2'>
               <div id="header-user-toolbar-main" className='grid grid-cols-1'>
                 <Link to="/" className="hover:text-orange-400 text-neutral-50 text-4xl">
                   KeepSnip
                 </Link>
-                <Link to="/logout" className="hover:text-neutral-50 text-orange-600">
+                <Link to="/logout" className="hover:text-neutral-50 text-orange-400">
                   Log out
                 </Link>
               </div>
@@ -139,7 +139,7 @@ export default function App() {
                   Default snippets
                 </Link>
                 <button className="hover:text-neutral-50 text-orange-400" onClick={() => themeToggle()}>Light / Dark</button>
-                <Link to="/snippets/new" className="hover:text-neutral-50 text-orange-600">
+                <Link to="/snippets/new" className="hover:text-neutral-50 text-orange-400">
                   New code snippet
                 </Link>
               </div>
