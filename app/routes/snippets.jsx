@@ -94,7 +94,7 @@ export default function App() {
               sortedSnipps.length === 0 ? <div className='grid grid-cols-1 p-2 justify-items-end'><p className='animate-pulse transition delay-150 mb-4'>You currently have no code snippets, click here to add a new one to get started :)</p>
                 <Link to="/snippets/new"  className="py-1 px-4 border-2 
                   border-orange-400 bg-neutral-800 text-neutral-50 rounded-3xl
-                  hover:bg-orange-400">Create new Snippet</Link></div> : <div className="grid grid-cols-1 overflow-auto h-40">
+                  hover:bg-orange-400">Create new Snippet</Link></div> : <div className="flex flex-col">
                 {sortedSnipps.filter((snip) => {
                   if (searchTerm == "") {
                     return snip
@@ -114,7 +114,7 @@ export default function App() {
                   }
                 }).map((snip, i) => {
                   return (
-                    <Link className="hover:underline" to={`/snippets/${snip._id}`} key={snip._id}>{i + 1 + ". " + snip.title}</Link>
+                    <Link className="hover:underline py-1" to={`/snippets/${snip._id}`} key={snip._id}>{i + 1 + ". " + snip.title}</Link>
                   );
                 })}
               </div>
