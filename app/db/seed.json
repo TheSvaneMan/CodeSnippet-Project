@@ -9,7 +9,8 @@
             "Array",
             "String"
         ],
-        "favorite": false
+        "favorite": false,
+        "user":""
     },
     {
         "title": "Snippet C",
@@ -21,7 +22,8 @@
             "Random",
             "Number"
         ],
-        "favorite": true
+        "favorite": true,
+        "user":""
     },
     {
         "title": "Snippet D",
@@ -33,7 +35,8 @@
             "String",
             "Index"
         ],
-        "favorite": false
+        "favorite": false,
+        "user":""
     },
     {
         "title": "Snippet Z",
@@ -46,7 +49,8 @@
             "Const",
             "ES6"
         ],
-        "favorite": true
+        "favorite": true,
+        "user":""
     },
     {
         "title": "Snippet O",
@@ -58,6 +62,7 @@
             "Function",
             "Important"
         ],
-        "favorite": true
+        "favorite": true,
+        "user":""
     }
 ]

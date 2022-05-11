@@ -55,13 +55,14 @@ export default function Index() {
 
           </div>
           <p className="text-red-500 font-bold my-3"> {loginStatus} </p>
-          <div className="text-center">
+
           No account yet?
           {networkState === 'online' ? <Link to="/signup" className="ml-5 hover:text-neutral-800 dark:hover:text-neutral-50 text-orange-400">
             Sign up!
           </Link> : <button onClick={toggleSignUpWarning} className="ml-5 hover:text-neutral-800 dark:hover:text-neutral-50 text-orange-400">
             Sign up!
-          </button>}
+            </button>}
+
         </Form>
         <div id="signUpWarning" className={showSignUpWarning ? 'py-1 px-2 mt-4 my-10' : 'hidden'}>
           <p>You are offline - to sign up, please make sure you have an internet connection to continue.</p>
