@@ -47,10 +47,10 @@ export default function Index() {
                 <p className='mb-4 text-lg'>Would you like to repopulate your database with <b>{snippetJSON.length}</b> default snippets?</p></> : <>
                 <p className='mb-4 text-lg'>Do you want to delete them and re-seed the database with <b>{snippetJSON.length}</b> default snippets?</p>
                 <p className='text-red-500 bg-black rounded-lg p-4'>You are about to reseed your database, are you sure you want to continue? This action is irreversible.</p></> } 
-            <div id="seed-options" className='grid grid-cols-2 space-x-10 mt-5'>
+            <div id="seed-options" className='grid grid-cols-2 mt-5'>
                 <input type="hidden" id="snippetCount" name="snippetCount" defaultValue={snippetCount} />
-                <input type="submit" name="acceptSeed" id="acceptSeed" value="Accept" className="text-white transition hover:bg-red-600 bg-red-800  p-4 rounded-lg" />
-                <Link to="/" className="text-white transition hover:bg-blue-500 bg-blue-600 p-4 rounded-lg">
+                <input type="submit" name="acceptSeed" id="acceptSeed" value="Accept" className="text-white transition hover:bg-red-600 bg-red-800 m-4 rounded-lg h-10" />
+                <Link to="/" className="text-white transition hover:bg-blue-500 bg-blue-600 text-center rounded-lg m-4 h-10 leading-10">
                     Decline
                 </Link>
             </div>

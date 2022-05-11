@@ -58,7 +58,7 @@ export default function App() {
   return (
     <section className={theme == "light" ? 'light grid h-screen' : 'dark grid h-screen'}>
       <div id="Snippet-Page" className='grid grid-cols-1 lg:grid-cols-4'>
-        <div className="grid grid-cols-1 lg:flex lg:flex-col p-4 bg-neutral-800 text-neutral-50 space-y-2
+        <div className="flex flex-col p-4 bg-neutral-800 text-neutral-50 space-y-2
         lg:border-r-2 border-orange-400">
           <div id="Snippet-Sorting" className='grid grid-cols-4'>
             <button className="hover:underline" onClick={() => setSort("")}>Date</button>
