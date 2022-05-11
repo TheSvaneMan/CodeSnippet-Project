@@ -141,12 +141,12 @@ export default function App() {
         <div className={networkState === 'online' ? 'grid grid-cols-1 justify-items-center bg-green-400 text-black' : 'grid grid-cols-1 justify-items-center bg-red-600 text-white  animate-pulse transition delay-300'} >{networkState}</div>
         <header className="p-2 border-b-4 border-orange-400 bg-neutral-800">
           <div>
-            {sessionState ? <div id="nav-links" className='grid grid-cols-2 lg:grid-cols-4'>
+            {sessionState ? <div id="nav-links" className='grid grid-cols-2'>
               <div id="header-user-toolbar-main" className='grid grid-cols-1'>
                 <Link to="/" className="hover:text-orange-400 text-neutral-50 text-4xl">
                   KeepSnip
                 </Link>
-                <Link to="/logout" className="hover:text-neutral-50 text-orange-600">
+                <Link to="/logout" className="hover:text-neutral-50 text-orange-400">
                   Log out
                 </Link>
               </div>
@@ -155,7 +155,7 @@ export default function App() {
                   Default snippets
                 </Link>
                 <button className="hover:text-neutral-50 text-orange-400" onClick={() => themeToggle()}>Light / Dark</button>
-                {networkState === 'online' ? <Link to="/snippets/new" className="hover:text-neutral-50 text-orange-600">
+                {networkState === 'online' ? <Link to="/snippets/new" className="hover:text-neutral-50 text-orange-400">
                   New code snippet
                 </Link> : <p className="hover:text-neutral-50 text-red-600">
                   New code snippet

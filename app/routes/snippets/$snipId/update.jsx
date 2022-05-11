@@ -27,7 +27,7 @@ export default function UpdateSnip() {
   const actionData = useActionData();
   const snip = useLoaderData();
   return (
-    <div id="Snippet Update" className="grid grid-cols-1">
+    <div id="Snippet Update" className="grid grid-cols-1 p-4">
       <h1 className="text-2xl font-bold mb-4">Edit</h1>
       <Form method="post">
         <label htmlFor="title" className="block font-bold">

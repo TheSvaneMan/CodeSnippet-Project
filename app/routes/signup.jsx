@@ -53,8 +53,8 @@ export default function SignUp() {
   const actionData = useActionData();
   return (
     <div id="SignUpPage" className='grid grid-cols-1 justify-items-center align-middle min-h-full'>
-      <h1 className="text-2xl font-bold mb-4">Sign up</h1>
-      <Form method="post">
+      <h1 className="text-2xl font-bold my-4">Sign up</h1>
+      <Form method="post" className="w-56">
       <div id="signup-input-fields" className='grid grid-cols-1 space-y-5'>
         <input
           type="text"
@@ -63,7 +63,6 @@ export default function SignUp() {
           placeholder="username"
           className="py-1 px-2 rounded-lg dark:text-neutral-800 focus:outline-orange-400"
         />
-        <br />
         <input
           type="password"
           name="password"
@@ -71,7 +70,6 @@ export default function SignUp() {
           placeholder="password"
           className="py-1 px-2 rounded-lg mt-4 dark:text-neutral-800 focus:outline-orange-400"
         />
-        <br />
         <input
           type="password"
           name="repeatPassword"
@@ -79,18 +77,18 @@ export default function SignUp() {
           placeholder="repeat password"
           className="py-1 px-2 rounded-lg mt-4 dark:text-neutral-800 focus:outline-orange-400"
         />
-        <br />
         <button type="submit" className="mt-3 mb-2 pr-3 pl-3 pt-0 pb-1 border-2 
                   border-orange-400 bg-neutral-800 text-neutral-50 rounded-3xl
                   hover:bg-orange-400">Register</button>
-        <br />
         {actionData?.errorMessage ? (
         <p className="text-red-500 font-bold my-3">{actionData.errorMessage}</p>
-      ) : null}
-        You have an account?
+          ) : null}
+          <div className="text-center">
+          You have an account?
           <Link to="/login" className="ml-5 hover:text-neutral-50 text-orange-400">
           Log in!
           </Link>
+          </div>
           </div>
       </Form>
     </div>
