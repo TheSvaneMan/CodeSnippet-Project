@@ -1,5 +1,5 @@
 import {
-  Links, Link, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useActionData, useLoaderData, useCatch
+  Links, Link, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useActionData, Form, useLoaderData, useCatch
 } from "remix";
 import styles from "~/tailwind.css";
 import { useState, useEffect } from 'react';
@@ -146,9 +146,12 @@ export default function App() {
                 <Link to="/" className="hover:text-orange-400 text-neutral-50 text-4xl">
                   KeepSnip
                 </Link>
-                <Link to="/logout" className="hover:text-neutral-50 text-orange-400">
-                  Log out
-                </Link>
+                <Form method="post" action="/logout">
+            <button type="submit"
+              className="hover:text-neutral-50 text-orange-400">
+              Log out
+            </button>
+          </Form>
               </div>
               <div id="header-user-toolbar" className='grid grid-cols-1 justify-items-end '>
                 <Link to="/snippets/seed" className="hover:text-neutral-50 text-orange-400">
