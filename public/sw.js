@@ -41,7 +41,7 @@ self.addEventListener("install", event => {
     event.waitUntil(preCache());
   }
   catch (error) {
-    console.log("Service worker error catch on preCache : " + error.errors)
+    console.log("Service worker error catch on preCache : " + error.errors);
     return error.errors
   }
 })
@@ -78,17 +78,12 @@ self.addEventListener("fetch", event => {
 });
 
 // ----------------- OFFLINE FEATURES -------------------------------- //
-// Offline State 
-let offline = false;
-
 // Runs always but handles offline events on fetch -> Handles offline Network requests because the 
 // request failed to reach the server. I think most practical implementation for our needs
 // Network first approachS
 self.addEventListener("fetch", event => {
   event.respondWith(
     fetch(event.request).catch(error => {
-      offline = true;
-      console.log("Application Network state. Offline? : " + offline);
       return caches.match(event.request);
     })
   )
@@ -107,7 +102,6 @@ self.addEventListener("fetch", event => {
 // So having a fallback on the loader incase the data is empty, then it could make the network request in case the Service Worker fails for some reason
 
 /* export async function loader({ request }) {
-
   const db = await connectDb();
   await requireUserSession(request);
   const session = await getSession(request.headers.get("Cookie"));

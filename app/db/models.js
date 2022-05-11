@@ -35,6 +35,7 @@ const snippetSchema = new Schema({
     type: Boolean,
     default: false
   },
+  user: String,
   createdAt: {
     type: Date,
     immutable: true,

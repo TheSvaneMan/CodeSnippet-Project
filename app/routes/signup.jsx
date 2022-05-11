@@ -49,7 +49,7 @@ export async function action({ request }) {
     }
 };
 
-export default function SingUp() {
+export default function SignUp() {
   const actionData = useActionData();
   return (
     <div id="SignUpPage" className='grid grid-cols-1 justify-items-center align-middle min-h-full'>
