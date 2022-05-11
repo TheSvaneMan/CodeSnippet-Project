@@ -56,7 +56,7 @@ export default function App() {
   }
 
   return (
-    <section className={theme == "light" ? 'light grid h-screen' : 'dark grid h-screen'}>
+    <section className={theme == "light" ? 'light grid lg:h-screen' : 'dark grid lg:h-screen'}>
       <div id="Snippet-Page" className='grid grid-cols-1 lg:grid-cols-4'>
         <div className="flex flex-col p-4 bg-neutral-800 text-neutral-50 space-y-2
         lg:border-r-2 border-orange-400">
