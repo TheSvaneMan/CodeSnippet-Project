@@ -2,7 +2,7 @@ import {
   Links, Link, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useActionData, useLoaderData, useCatch
 } from "remix";
 import styles from "~/tailwind.css";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { getSession } from "~/sessions.server";
 
 export async function loader({ request }) {
@@ -46,7 +46,7 @@ export function meta() {
   };
 }
 
- // This check is !important
+// This check is !important
   if (typeof document === "undefined") {
     // running in a server environment
   } else {
@@ -59,6 +59,7 @@ export function meta() {
           console.log("Service worker was registered on page load")
         } else {
           console.log("No service worker is currently registered")
+          register();
         }
       } else {
         console.log("Service workers API not available");
@@ -100,11 +101,14 @@ export function meta() {
     }
 
     // Register service worker
-    register();  
+    checkRegistration();  
 }
+
+
 
 export default function App() {
   let storedTheme = "";
+  const [networkState, setNetworkState] = useState();
   let [theme, setTheme] = useState(storedTheme);
   const themeToggle = () => {
     theme == "light" ? setTheme("dark") : setTheme("light");
@@ -113,6 +117,17 @@ export default function App() {
     storedTheme = localStorage.getItem('theme');
   }
   const sessionState = useLoaderData();
+
+  // Similar to componentDidMount and componentDidUpdate:
+  useEffect(() => {
+    // Update the document title using the browser API
+    // Client
+    if (navigator.onLine) {
+      setNetworkState('online');
+    } else {
+      setNetworkState('offline');
+    }
+  }, []);
 
   return (
     <html lang="en" className={theme == "light" ? 'light' : 'dark'}>
@@ -123,6 +138,7 @@ export default function App() {
         <meta name="theme-color" content="#fb923c"/>
       </head>
       <body className="grid grid-cols-1 bg-slate-100 text-slate-800 font-sans dark:bg-neutral-800 dark:text-neutral-50">
+        <div className={networkState === 'online' ? 'grid grid-cols-1 justify-items-center bg-green-400 text-black' : 'grid grid-cols-1 justify-items-center bg-red-600 text-white  animate-pulse transition delay-300'} >{networkState}</div>
         <header className="p-2 border-b-4 border-orange-400 bg-neutral-800">
           <div>
             {sessionState ? <div id="nav-links" className='grid grid-cols-2 lg:grid-cols-4'>
@@ -139,9 +155,12 @@ export default function App() {
                   Default snippets
                 </Link>
                 <button className="hover:text-neutral-50 text-orange-400" onClick={() => themeToggle()}>Light / Dark</button>
-                <Link to="/snippets/new" className="hover:text-neutral-50 text-orange-600">
+                {networkState === 'online' ? <Link to="/snippets/new" className="hover:text-neutral-50 text-orange-600">
                   New code snippet
-                </Link>
+                </Link> : <p className="hover:text-neutral-50 text-red-600">
+                  New code snippet
+                </p> }
+                
               </div>
             </div> : <div className='animate-pulse'>
               <p className='text-white'>Hey there, welcome to KeepSnip! Login to get started.</p>
