@@ -59,7 +59,7 @@ export default function App() {
     <section className={theme == "light" ? 'light grid h-screen' : 'dark grid h-screen'}>
       <div id="Snippet-Page" className='grid grid-cols-1 lg:grid-cols-4'>
         <div className="grid grid-cols-1 lg:flex lg:flex-col p-4 bg-neutral-800 text-neutral-50 space-y-2
-        border-r-2 border-orange-400">
+        lg:border-r-2 border-orange-400">
           <div id="Snippet-Sorting" className='grid grid-cols-4'>
             <button className="hover:underline" onClick={() => setSort("")}>Date</button>
             <button className="hover:underline" onClick={() => setSort("sortByName")}>Name</button>
@@ -86,7 +86,7 @@ export default function App() {
           />
         </div>
         <div id="Code-Snippet-Panel" className='grid grid-cols-1 lg:grid-cols-4 lg:col-span-3'>
-          <div id="Code-Snippet-List" className='p-4 border-r-2 border-orange-400'>
+          <div id="Code-Snippet-List" className='p-4 lg:border-r-2 border-orange-400'>
             <h2 className="text-lg font-bold mb-2">
               Code snippets:
             </h2>
