@@ -8,7 +8,7 @@ const serviceWorkerCacheVersion = "v1";
 const cacheAvailable = 'caches' in self;
 
 // ---------------------- CONTROL CACHE ----------------- //
-const urlsToCache = ['/', '/login', '/snippets', '/signup', '/favicon.ico', '/logout'];
+const urlsToCache = ['/', '/snippets', '/signup', '/favicon.ico'];
 
 // Total requests made
 let count = 0;

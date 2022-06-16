@@ -35,6 +35,10 @@ const snippetSchema = new Schema({
     type: Boolean,
     default: false
   },
+  shareable: {
+    type: Boolean,
+    default: false
+  },
   user: String,
   createdAt: {
     type: Date,
@@ -49,7 +53,8 @@ const snippetSchema = new Schema({
 
 const userSchema = new Schema({
   username: String,
-  password: String
+  password: String,
+  following: [{ type: String }],
 });
 
 export const models = [
