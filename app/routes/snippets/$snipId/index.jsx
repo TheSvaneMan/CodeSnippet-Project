@@ -91,11 +91,11 @@ export default function SnipPage() {
         </div> : <></>
       }
 
-      <div id="Snippet-Form-Handler" className='grid grid-cols-3 justify-items-center mt-4 lg:flex'>
+      <div id="Snippet-Form-Handler" className='grid grid-cols-2 justify-items-center mt-4 lg:flex'>
         {/* Deleting post method with Form and POST */}
         <form method="post" action={useFormAction("delete")}>
           <input type="hidden" name="inputID" value={snip._id}></input>
-          <button type="submit" className="py-1 px-4 border-2
+          <button type="submit" className="py-1 px-4 border-2 lg:mr-4 
                   border-orange-400 bg-neutral-800 text-neutral-50 rounded-3xl
                   hover:bg-orange-400">Delete</button>
         </form>
@@ -104,18 +104,18 @@ export default function SnipPage() {
         <form method="post" action={useFormAction("favorite")}>
 
           <input type="hidden" name="favorite" value={snip.favorite}></input>
-          <button type="submit" className="py-1 px-4 border-2 lg:mx-4 
+          <button type="submit" className="py-1 px-4 border-2 lg:mr-4 
                   border-orange-400 bg-neutral-800 text-neutral-50 rounded-3xl
                   hover:bg-orange-400">Favorite</button>
         </form>
 
         {/* Share Snippet post method with passing ID in the link */}
-        <button type="submit" className="py-1 px-4 border-2 
-                  border-orange-400 bg-neutral-800 text-neutral-50 rounded-3xl
+        <button type="submit" className="py-1 px-4 border-2 lg:mr-4 
+                  border-orange-400 bg-neutral-800 text-neutral-50 rounded-3xl mt-4 lg:mt-0
                   hover:bg-orange-400" onClick={toggleShareSnippet}>{shareSnippet ? "Close" : "Share"}</button>
 
         {/* Editing post method with passing ID in the link */}
-        <Link to="update" className="py-1 px-4 border-2
+        <Link to="update" className="py-1 px-4 border-2 mt-4 lg:mt-0
                   border-orange-400 bg-neutral-800 text-neutral-50 rounded-3xl
                   hover:bg-orange-400">Update</Link>
 
