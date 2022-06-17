@@ -56,7 +56,7 @@ export default function Createsnip() {
   return (
     <div className="m-4">
       <h1 className="text-2xl font-bold mb-4">Create code snippet</h1>
-      <Form method="post">
+      <Form method="post" name="newPostForm">
         <input type="text" name="date" defaultValue={date} id="date" className="hidden" />
         <input type="text" name="user" defaultValue={userID} id="user" className="hidden"/>
          <div className="formElement grid">
@@ -100,7 +100,7 @@ export default function Createsnip() {
             Tags
           </label>
           <input type="hidden" value={tags} id="tags" name="tags" />
-          <div className={tags.length === 0 ? "grid grid-cols-1 text-orange-600" : "grid grid-cols-4"}>
+          <div className={tags.length === 0 ? "grid grid-cols-1 text-orange-400" : "grid grid-cols-4"}>
           {
             tags.length === 0 ? <p>No tags for this code snippet.</p> : tags.map(tag => {
               return (
@@ -173,9 +173,25 @@ export default function Createsnip() {
             <p className="text-red-500">{actionData.errors.favorite.message}</p>
           )}
         </div>
-        <button type="submit" className="mt-2 mb-2 pr-3 pl-3 pt-0 pb-1 border-2 
+        <div className="flex flex-row items-center">
+          <button
+          type="button"
+          onClick={() => {
+            if (navigator.onLine) {
+              document.newPostForm.submit();
+            }
+            else {
+              document.getElementById('offlineSaveAlert').innerHTML = "You are not connected to the internet";
+            }
+          }}
+          className="mt-2 mb-2 pr-3 pl-3 pt-0 pb-1 border-2 
                   border-orange-400 bg-neutral-800 text-neutral-50 rounded-3xl
-                  hover:bg-orange-400">Save</button>
+                  hover:bg-orange-400"
+        >
+          Save
+        </button>
+          <p id="offlineSaveAlert" className="text-red-500 ml-4"></p>
+          </div>
       </Form>
     </div>
   );

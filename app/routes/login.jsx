@@ -50,12 +50,6 @@ export default function Index() {
     }
   }
 
-  // --------- UX ---------------- //
-  const toggleSignUpWarning = (e) => {
-    e.preventDefault();
-    setSignUpWarning(!showSignUpWarning);
-  };
-
   if (userID != null) {
     return redirect("/snippets");
   } else {
@@ -97,7 +91,6 @@ export default function Index() {
             ) : (
               <button
                 type="button"
-                disabled
                 onClick={() => {
                   networkStateUpdate();
                 }} // this button is showing if youre offline

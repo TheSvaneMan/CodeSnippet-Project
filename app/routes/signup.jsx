@@ -3,6 +3,7 @@ import { Form, redirect, json, useActionData, Link} from "remix";
 import connectDb from "~/db/connectDb.server";
 import { getSession, commitSession } from "~/sessions.server";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export async function action({ request }) {
   const form = await request.formData();
@@ -53,6 +54,7 @@ export async function action({ request }) {
 export default function Index() {
   const actionData = useActionData();
   const [networkState, setNetworkState] = useState();
+  const navigate = useNavigate();
 
   // App network state
  

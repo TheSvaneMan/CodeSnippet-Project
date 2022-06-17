@@ -33,6 +33,7 @@ export async function loader({ request }) {
   }
 }
 
+
 export const links = () => [
   {
     rel: "stylesheet",
@@ -129,8 +130,9 @@ export default function App() {
     localStorage.setItem("theme", theme);
     storedTheme = localStorage.getItem("theme");
   };
-  const sessionState = useLoaderData();
   const navigate = useNavigate();
+  const sessionState = useLoaderData();
+  console.log(sessionState);
   //  setInterval(function () { networkStateUpdate() }, 3000);
   useEffect(() => {
     // Update the document title using the browser API
@@ -174,6 +176,7 @@ export default function App() {
         </div>
         <header className="p-2 border-b-4 border-orange-400 bg-neutral-800">
           <div>
+            
             {sessionState ? (
               <div id="nav-links" className="grid grid-cols-2">
                 <div id="header-user-toolbar-main" className="grid grid-cols-1">
