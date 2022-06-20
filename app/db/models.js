@@ -57,6 +57,11 @@ const userSchema = new Schema({
   following: [{ type: String }],
 });
 
+const subscriptionSchema = new Schema({
+  userID: String,
+  data: Object
+})
+
 export const models = [
   {
     name: "snip",
@@ -68,5 +73,10 @@ export const models = [
     schema: userSchema,
     collection: "users",
   },
+  {
+    name: "subscription",
+    schema: subscriptionSchema,
+    collection: "subscriptions"
+  }
 ];
 

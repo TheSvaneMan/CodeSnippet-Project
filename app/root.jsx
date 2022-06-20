@@ -1,5 +1,5 @@
 import {
-  Links, Link, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useActionData, Form, useLoaderData, useCatch
+  Links, Link, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData, useCatch
 } from "remix";
 import styles from "~/tailwind.css";
 import { useState, useEffect } from 'react';
@@ -54,7 +54,7 @@ if (typeof document === "undefined") {
   // running in a browser environment
   // Check for a service worker registration status
   async function checkRegistration() {
-    if ('serviceWorker' in navigator) {
+    if ('serviceWorker' in navigator && 'PushManager' in window) {
       const registration = await navigator.serviceWorker.getRegistration();
       if (registration) {
         console.log("Service worker was registered on page load")
@@ -63,7 +63,7 @@ if (typeof document === "undefined") {
         register();
       }
     } else {
-      console.log("Service workers API not available");
+      console.log("Service workers API not available or push messages");
     }
   }
 
