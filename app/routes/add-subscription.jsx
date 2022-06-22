@@ -4,7 +4,6 @@ import { requireUserSession, getSession } from "~/sessions.server";
 
 export async function action({ request }) {
     const subscriptionBody = await request.json();
-    console.log(subscriptionBody);
     // Get the user ID in case - I don't think we need save it but I do anyways
     await requireUserSession(request);
     const db = await connectDb();

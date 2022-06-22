@@ -1,7 +1,7 @@
 import { json } from 'remix';
 import connectDb from '~/db/connectDb.server';
 import { requireUserSession, getSession } from "~/sessions.server";
-import { webpush } from 'web-push';
+import webpush from 'web-push';
 
 
 const vapidDetails = {
@@ -21,7 +21,7 @@ export async function action({ request }) {
     try {
         console.log("Attempting to send notification");
         const userSubscription = await db.models.subscription.findOne({ userID: userID });
-        let sendNotificationStatus = sendNotifications([userSubscription.data]);
+        let notificationResponse = await sendNotifications([userSubscription.data]);
         console.log("Notification sent");
         let message = {
             message: "Notification sent",
@@ -29,6 +29,7 @@ export async function action({ request }) {
         }
         return json(message);
     } catch (error) {
+        console.log(error);
         return json(
             { errorMessage: "Error notifying user!" },
             { status: 400 }
@@ -47,21 +48,57 @@ function sendNotifications(subscriptions) {
     // Customize how the push service should attempt to deliver the push message.
     // And provide authentication information.
     const options = {
-        TTL: 10000,
-        vapidDetails: vapidDetails
+        TTL: 60,    
     };
-    // Send a push message to each client specified in the subscriptions array.
-    subscriptions.forEach(subscription => {
+    if (subscriptions.length === 1) {
+        const subscription = subscriptions[0];
         const endpoint = subscription.endpoint;
         const id = endpoint.substr((endpoint.length - 8), endpoint.length);
+        webpush.setVapidDetails(
+            vapidDetails.subject.toString(),
+            vapidDetails.publicKey.toString(),
+            vapidDetails.privateKey.toString(),
+        );
         webpush.sendNotification(subscription, notification, options)
             .then(result => {
                 console.log(`Endpoint ID: ${id}`);
-                console.log(`Result: ${result.statusCode}`);
+                console.log(`Result : ${result.statusCode}`);
             })
             .catch(error => {
                 console.log(`Endpoint ID: ${id}`);
                 console.log(`Error: ${error} `);
             });
-    });
+    } else {
+        // Send a push message to each client specified in the subscriptions array.
+        subscriptions.forEach(subscription => {
+            const endpoint = subscription.endpoint;
+            const id = endpoint.substr((endpoint.length - 8), endpoint.length);
+            webpush.setVapidDetails(
+                vapidDetails.subject.toString(),
+                vapidDetails.publicKey.toString(),
+                vapidDetails.privateKey.toString(),
+            );
+            webpush.sendNotification(subscription, notification, options)
+                .then(result => {
+                    console.log(`Endpoint ID: ${id}`);
+                    console.log(`Result : ${result.statusCode}`);
+                })
+                .catch(error => {
+                    console.log(`Endpoint ID: ${id}`);
+                    console.log(`Error: ${error} `);
+                });
+        });
+    }
+}
+
+// Utility functions
+export const urlB64ToUint8Array = (base64String) => {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+    for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
 }

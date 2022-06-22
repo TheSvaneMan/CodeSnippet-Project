@@ -12,7 +12,7 @@ export async function action({ request }) {
     const userID = session.get("userID");
     // Push and save data to mongodb for subscription service
     try {
-        await db.models.subscription.deleteOne({ userID: userID }, { data: null });
+        await db.models.subscription.deleteMany({ userID: userID });
         console.log("Subscription removed");
         let message = {
             message: "Subscription removed",

@@ -1,3 +1,5 @@
+import { json } from 'remix';
+
 console.log('Hello from push notification service');
 
 const VAPID_PUBLIC_KEY = "BBMfqa-KsxYs6cAy5mTSt3laiCnvS1L1KTdnWRCW6kTKk2_FeJIIFBzYQQIhBX4awRFmi9-3MsGOLtaYcVsX8kU";
@@ -22,16 +24,34 @@ export async function subscribeToPush() {
     });
     await postToServer('/add-subscription', subscription);
     console.log("Subscribed to Push Notifications");
+    let response = {
+        status: 200,
+        message: 'Subscribed to Push Notifications'
+    }
+    return response;
 }
 
 export async function unsubscribeFromPush() {
     const registration = await navigator.serviceWorker.getRegistration();
     const subscription = await registration.pushManager.getSubscription();
-    postToServer('/remove-subscription', {
-        endpoint: subscription.endpoint
-    });
-    await subscription.unsubscribe();
-    console.log("Unsubscribed from Push Notifications");   
+    if (subscription) {
+        postToServer('/remove-subscription', {
+            endpoint: subscription.endpoint
+        });
+        await subscription.unsubscribe();
+        let response = {
+            status: 200,
+            message: 'Unsubscribed from Push Notifications'
+        }
+        return response;
+    } else {
+        let response = {
+            status: 200,
+            message: 'No push notification subscription found'
+        }
+        return response;
+    }
+    
 }
 
 export async function notifyMe() {

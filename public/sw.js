@@ -85,6 +85,8 @@ self.addEventListener("fetch", event => {
   // Prevent service worker from interferring with subscription service calls
   if (event.request.url.indexOf('/add-subscription') !== -1) {
     return false;
+  } else if (event.request.url.indexOf('/notify-me') !== -1) {
+    return false;
   }
   event.respondWith(
     fetch(event.request).catch(error => {
@@ -94,15 +96,10 @@ self.addEventListener("fetch", event => {
 });
 
 self.addEventListener("push", (event) => {
-  let data = event.data.json();
-  const image = 'https://cdn.glitch.com/614286c9-b4fc-4303-a6a9-a4cef0601b74%2Flogo.png?v=1605150951230';
-  const options = {
-    body: data.options.body,
-    icon: image
-  }
+  let notification = event.data.json();
   self.registration.showNotification(
-    data.title,
-    options
+    notification.title,
+    notification.options
   );
 });
 
