@@ -108,8 +108,8 @@ if (typeof document === "undefined") {
 
 
 export default function App() {
-  let storedTheme = "";
   const [networkState, setNetworkState] = useState();
+  let storedTheme = "";
   let [theme, setTheme] = useState(storedTheme);
   const themeToggle = () => {
     theme == "light" ? setTheme("dark") : setTheme("light");
@@ -117,6 +117,7 @@ export default function App() {
     localStorage.setItem('theme', theme);
     storedTheme = localStorage.getItem('theme');
   }
+  
   const sessionState = useLoaderData();
 
   // Similar to componentDidMount and componentDidUpdate:
@@ -139,14 +140,14 @@ export default function App() {
         <meta name="theme-color" content="#fb923c" />
       </head>
       <body className="grid grid-cols-1 bg-slate-100 text-slate-800 font-sans dark:bg-neutral-800 dark:text-neutral-50">
-        <div className={networkState === 'online' ? 'grid grid-cols-1 justify-items-center bg-green-400 text-black' : 'grid grid-cols-1 justify-items-center bg-red-600 text-white  animate-pulse transition delay-300'} >{networkState}</div>
+        <div className={networkState === 'online' ? 'grid grid-cols-1 justify-items-center bg-green-400 text-black z-20' : 'grid grid-cols-1 justify-items-center bg-red-600 text-white animate-pulse transition delay-300 z-20'} >{networkState}</div>
         <header className="p-2 border-b-4 border-orange-400 bg-neutral-800">
           <div>
             {sessionState ? <div id="TopNavigation">
-              <Navigation networkState={networkState} />
-              <button className="hover:text-neutral-50 text-orange-400" onClick={() => themeToggle()}>Light / Dark</button></div> : <div className='animate-pulse'>
-              <p className='text-white'>Hey there, welcome to KeepSnip! Login to get started.</p>
-            </div>}
+              <Navigation networkState={networkState} themeChange={themeToggle} /></div>
+              : <div className='animate-pulse'>
+                  <p className='text-white'>Hey there, welcome to KeepSnip! Login to get started.</p>
+                </div>}
           </div>
         </header>
         <Outlet />
