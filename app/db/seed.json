@@ -10,6 +10,7 @@
             "String"
         ],
         "favorite": false,
+        "shareable": false,
         "user":""
     },
     {
@@ -23,6 +24,7 @@
             "Number"
         ],
         "favorite": true,
+        "shareable": false,
         "user":""
     },
     {
@@ -36,6 +38,7 @@
             "Index"
         ],
         "favorite": false,
+        "shareable": false,
         "user":""
     },
     {
@@ -50,6 +53,7 @@
             "ES6"
         ],
         "favorite": true,
+        "shareable": false,
         "user":""
     },
     {
@@ -63,6 +67,7 @@
             "Important"
         ],
         "favorite": true,
+        "shareable": false,
         "user":""
     }
 ]

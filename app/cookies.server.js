@@ -7,4 +7,4 @@ export const sessionCookie = createCookie("__session", {
   secrets: [process.env.COOKIE_SECRET],
 });
 
-console.log(sessionCookie.isSigned); // true
+// console.log(sessionCookie.isSigned); // true
