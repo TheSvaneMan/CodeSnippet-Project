@@ -2,16 +2,26 @@ import { Link, Form } from "remix";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function Navigation({ networkState, themeChange }) {
+export default function Navigation({ networkStateUpdate, themeChange }) {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const navigate = useNavigate();
 
   return (
     <div id="nav-links" className="grid grid-cols-2 ">
       <div id="header-user-toolbar-main" className="grid grid-cols-1">
-        <Link to="/" className="hover:text-orange-400 text-neutral-50 text-4xl">
+        <button
+          type="button"
+          onClick={() => {
+            networkStateUpdate();
+            if (navigator.onLine) {
+              return navigate("/snippets");
+            }
+          }}
+          className="hover:text-orange-400 text-neutral-50 text-4xl text-left"
+        >
           KeepSnip
-        </Link>
+        </button>
+        <button onClick={networkStateUpdate}>Change network state</button>
       </div>
       <div
         id="header-user-toolbar"
@@ -69,9 +79,9 @@ export default function Navigation({ networkState, themeChange }) {
                     className="border-b border-orange-400 my-8 uppercase"
                     onClick={() => themeChange()}
                   >
-                   Light / Dark
+                    Light / Dark
                   </button>
-                  <li>
+
                     <Form method="post" action="/logout">
                       <button
                         type="submit"
@@ -80,40 +90,151 @@ export default function Navigation({ networkState, themeChange }) {
                       >
                         Log out
                       </button>
-                    </Form>
-                  </li>
+                  </Form>
+                  
+                  
+                  {/*
+                  
+                  It's not really working since my networkState useState() is in root. I need to figure out how to acces it from this component
+                  https://www.youtube.com/watch?v=c05OL7XbwXU ------------ usefull link
+
+                  {sessionState ? (
+              <div id="nav-links" className="grid grid-cols-2">
+                <div id="header-user-toolbar-main" className="grid grid-cols-1">
+                  
+                  
+                  <Form method="post" action="/logout">
+                    {networkState === "online" ? (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          networkStateUpdate();
+                          if (navigator.onLine) {
+                            document.getElementById("logOut").click();
+                          }
+                        }} // this button checks if online and clicks invisible logOut button
+                        cclassName="border-b border-orange-400 my-8 uppercase"
+                      >
+                        Log out
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          networkStateUpdate();
+                        }} // this button is showing if youre offline
+                        className="border-b border-red-600 text-red-600 my-8 uppercase"
+                      >
+                        Log out
+                      </button>
+                    )}
+                    <button
+                      type="submit"
+                      id="logOut" // this button submits the form, which logs the user out
+                      className="hidden"
+                    ></button>
+                  </Form>
+                </div>
+                <div
+                  id="header-user-toolbar"
+                  className="grid grid-cols-1 justify-items-end "
+                >
+                  {networkState === "online" ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        networkStateUpdate();
+                        if (navigator.onLine) {
+                          console.log("online");
+                          return navigate("/snippets/seed");
+                        }
+                      }}
+                      className="hover:text-neutral-50 text-orange-400"
+                    >
+                      Default snippets
+                    </button>
+                  ) : (
+                    <button
+                      className="text-red-600"
+                      onClick={() => {
+                        networkStateUpdate();
+                      }}
+                    >
+                      Default snippets
+                    </button>
+                  )}
+                  <button
+                    className="hover:text-neutral-50 text-orange-400"
+                    onClick={() => themeToggle()}
+                  >
+                    Light / Dark
+                  </button>
+                  {networkState === "online" ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        networkStateUpdate();
+                        if (navigator.onLine) {
+                          console.log("online");
+                          return navigate("/snippets/new");
+                        }
+                      }}
+                      className="hover:text-neutral-50 text-orange-400"
+                    >
+                      New code snippet
+                    </button>
+                  ) : (
+                    <button
+                      className="text-red-600"
+                      onClick={() => {
+                        networkStateUpdate();
+                      }}
+                    >
+                      New code snippet
+                    </button>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="animate-pulse">
+                <p className="text-white">
+                  Hey there, welcome to KeepSnip! Login to get started.
+                </p>
+              </div>
+            )} */}
+
                 </ul>
               </div>
             </section>
             {/* Desktop menu */}
             <ul className="hidden space-x-8 lg:flex">
-            <li className="border-b border-orange-400 my-8 uppercase">
-                    <a href="/profile">Profile</a>
-                  </li>
-                  <li className="border-b border-orange-400 my-8 uppercase">
-                    <a href="/snippets/new">New code snippet</a>
-                  </li>
-                  <li className="border-b border-orange-400 my-8 uppercase">
-                    <a href="/snippets/seed">Default snippets</a>
-                  </li>
+              <li className="border-b border-orange-400 my-8 uppercase">
+                <a href="/profile">Profile</a>
+              </li>
+              <li className="border-b border-orange-400 my-8 uppercase">
+                <a href="/snippets/new">New code snippet</a>
+              </li>
+              <li className="border-b border-orange-400 my-8 uppercase">
+                <a href="/snippets/seed">Default snippets</a>
+              </li>
+              <button
+                className="border-b border-orange-400 my-8 uppercase"
+                onClick={() => themeChange()}
+              >
+                Light / Dark
+              </button>
+              <li>
+                <Form method="post" action="/logout">
                   <button
+                    type="submit"
+                    onClick={() => setIsNavOpen(false)}
                     className="border-b border-orange-400 my-8 uppercase"
-                    onClick={() => themeChange()}
                   >
-                   Light / Dark
+                    Log out
                   </button>
-                  <li>
-                    <Form method="post" action="/logout">
-                      <button
-                        type="submit"
-                        onClick={() => setIsNavOpen(false)}
-                        className="border-b border-orange-400 my-8 uppercase"
-                      >
-                        Log out
-                      </button>
-                    </Form>
-                  </li>
-                </ul>
+                </Form>
+              </li>
+            </ul>
           </nav>
           <style>{`
       .hideMenuNav {
