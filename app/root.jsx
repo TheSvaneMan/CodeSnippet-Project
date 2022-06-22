@@ -6,16 +6,14 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-  useActionData,
-  Form,
   useLoaderData,
   useCatch,
-  redirect,
 } from "remix";
 import styles from "~/tailwind.css";
 import { useState, useEffect } from "react";
 import { getSession } from "~/sessions.server";
 import { useNavigate } from "react-router-dom";
+import Navigation from './components/topNavigation';
 
 export async function loader({ request }) {
   // get the session
@@ -65,22 +63,22 @@ if (typeof document === "undefined") {
   // running in a browser environment
   // Check for a service worker registration status
   async function checkRegistration() {
-    if ("serviceWorker" in navigator) {
+    if ('serviceWorker' in navigator && 'PushManager' in window) {
       const registration = await navigator.serviceWorker.getRegistration();
       if (registration) {
-        console.log("Service worker was registered on page load");
+        console.log("Service worker was registered on page load")
       } else {
-        console.log("No service worker is currently registered");
+        console.log("No service worker is currently registered")
         register();
       }
     } else {
-      console.log("Service workers API not available");
+      console.log("Service workers API not available or push messages");
     }
   }
 
   // Registers a service worker
   async function register() {
-    if ("serviceWorker" in navigator) {
+    if ('serviceWorker' in navigator) {
       try {
         // Change the service worker URL to see what happens when the SW doesn't exist
         const registration = await navigator.serviceWorker.register("sw.js");
@@ -93,18 +91,14 @@ if (typeof document === "undefined") {
     }
   }
 
-  // Unregister a currently registered service worker
+  // Unregister a currently registered service worker 
   async function unregister() {
-    if ("serviceWorker" in navigator) {
+    if ('serviceWorker' in navigator) {
       try {
         const registration = await navigator.serviceWorker.getRegistration();
         if (registration) {
           const result = await registration.unregister();
-          console.log(
-            result
-              ? "Service worker unregistered"
-              : "Service worker couldn't be unregistered"
-          );
+          console.log(result ? "Service worker unregistered" : "Service worker couldn't be unregistered");
         } else {
           console.log("There is no service worker to unregister");
         }
@@ -121,16 +115,16 @@ if (typeof document === "undefined") {
 }
 
 export default function App() {
-  let storedTheme = "";
   const [networkState, setNetworkState] = useState();
+  let storedTheme = "";
   let [theme, setTheme] = useState(storedTheme);
   const themeToggle = () => {
     theme == "light" ? setTheme("dark") : setTheme("light");
-    theme == "light" ? (theme = "dark") : (theme = "light");
-    localStorage.setItem("theme", theme);
-    storedTheme = localStorage.getItem("theme");
-  };
-  const navigate = useNavigate();
+    theme == "light" ? theme = "dark" : theme = "light";
+    localStorage.setItem('theme', theme);
+    storedTheme = localStorage.getItem('theme');
+  }
+  
   const sessionState = useLoaderData();
   console.log(sessionState);
   //  setInterval(function () { networkStateUpdate() }, 3000);
@@ -157,142 +151,18 @@ export default function App() {
       <head>
         <Meta />
         <Links />
-        <meta
-          name="description"
-          content="The root home page of Keep Snipp - Code Snippet PWA"
-        />
+        <meta name="description" content="The root home page of Keep Snipp - Code Snippet PWA" />
         <meta name="theme-color" content="#fb923c" />
       </head>
       <body className="grid grid-cols-1 bg-slate-100 text-slate-800 font-sans dark:bg-neutral-800 dark:text-neutral-50">
-        <div
-          onClick={() => networkStateUpdate()}
-          className={
-            networkState === "online"
-              ? "grid grid-cols-1 justify-items-center bg-green-400 text-black"
-              : "grid grid-cols-1 justify-items-center bg-red-600 text-white  animate-pulse transition delay-300"
-          }
-        >
-          {networkState}
-        </div>
+        <div onClick={() => networkStateUpdate()} className={networkState === 'online' ? 'grid grid-cols-1 justify-items-center bg-green-400 text-black z-20' : 'grid grid-cols-1 justify-items-center bg-red-600 text-white animate-pulse transition delay-300 z-20'} >{networkState}</div>
         <header className="p-2 border-b-4 border-orange-400 bg-neutral-800">
           <div>
-            
-            {sessionState ? (
-              <div id="nav-links" className="grid grid-cols-2">
-                <div id="header-user-toolbar-main" className="grid grid-cols-1">
-                  
-                    <button
-                      type="button"
-                      onClick={() => {
-                        networkStateUpdate();
-                        if (navigator.onLine) {
-                          return navigate("/snippets");
-                        }
-                      }}
-                      className="hover:text-orange-400 text-neutral-50 text-4xl text-left"
-                    >
-                      KeepSnip
-                    </button>
-                  
-                  <Form method="post" action="/logout">
-                    {networkState === "online" ? (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          networkStateUpdate();
-                          if (navigator.onLine) {
-                            document.getElementById("logOut").click();
-                          }
-                        }} // this button checks if online and clicks invisible logOut button
-                        className="hover:text-neutral-50 text-orange-400"
-                      >
-                        Log out
-                      </button>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          networkStateUpdate();
-                        }} // this button is showing if youre offline
-                        className="text-red-600"
-                      >
-                        Log out
-                      </button>
-                    )}
-                    <button
-                      type="submit"
-                      id="logOut" // this button submits the form, which logs the user out
-                      className="hidden"
-                    ></button>
-                  </Form>
-                </div>
-                <div
-                  id="header-user-toolbar"
-                  className="grid grid-cols-1 justify-items-end "
-                >
-                  {networkState === "online" ? (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        networkStateUpdate();
-                        if (navigator.onLine) {
-                          console.log("online");
-                          return navigate("/snippets/seed");
-                        }
-                      }}
-                      className="hover:text-neutral-50 text-orange-400"
-                    >
-                      Default snippets
-                    </button>
-                  ) : (
-                    <button
-                      className="text-red-600"
-                      onClick={() => {
-                        networkStateUpdate();
-                      }}
-                    >
-                      Default snippets
-                    </button>
-                  )}
-                  <button
-                    className="hover:text-neutral-50 text-orange-400"
-                    onClick={() => themeToggle()}
-                  >
-                    Light / Dark
-                  </button>
-                  {networkState === "online" ? (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        networkStateUpdate();
-                        if (navigator.onLine) {
-                          console.log("online");
-                          return navigate("/snippets/new");
-                        }
-                      }}
-                      className="hover:text-neutral-50 text-orange-400"
-                    >
-                      New code snippet
-                    </button>
-                  ) : (
-                    <button
-                      className="text-red-600"
-                      onClick={() => {
-                        networkStateUpdate();
-                      }}
-                    >
-                      New code snippet
-                    </button>
-                  )}
-                </div>
-              </div>
-            ) : (
-              <div className="animate-pulse">
-                <p className="text-white">
-                  Hey there, welcome to KeepSnip! Login to get started.
-                </p>
-              </div>
-            )}
+            {sessionState ? <div id="TopNavigation">
+              <Navigation networkStateUpdate={networkStateUpdate} themeChange={themeToggle} /></div>
+              : <div className='animate-pulse'>
+                  <p className='text-white'>Hey there, welcome to KeepSnip! Login to get started.</p>
+                </div>}
           </div>
         </header>
         <Outlet />
@@ -307,31 +177,23 @@ export default function App() {
 export function CatchBoundary() {
   const caught = useCatch();
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className='dark'>
       <head>
         <title>Whoopsies</title>
         <Meta />
         <Links />
       </head>
       <body className="grid grid-cols-1 justify-center space-y-5 px-5 max-w-md bg-slate-100 text-slate-800 font-sans dark:bg-neutral-800 dark:text-neutral-50">
-        <h1 className="mt-10">
-          Hey there, sorry for the inconvenience - but it seems like the page
-          you're looking for doesn't exist
-        </h1>
-        <div className="p-10 animate-pulse transition delay-300">
+        <h1 className='mt-10'>Hey there, sorry for the inconvenience - but it seems like the page you're looking for doesn't exist</h1>
+        <div className='p-10 animate-pulse transition delay-300'>
           <h1>
             {caught.status} {caught.statusText}
           </h1>
-          <h2>
-            <b>{caught.data}</b>
-          </h2>
+          <h2><b>{caught.data}</b></h2>
         </div>
-        <Link
-          to="/"
-          className="py-1 px-4 border-2 
+        <Link to="/" className="py-1 px-4 border-2 
                   border-orange-400 bg-neutral-800 text-neutral-50 rounded-3xl
-                  hover:bg-orange-400"
-        >
+                  hover:bg-orange-400">
           Click here to return to home
         </Link>
 

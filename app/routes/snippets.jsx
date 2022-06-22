@@ -123,7 +123,7 @@ export default function App() {
           </div>
           <div className="lg:col-span-3">
             <Outlet />
-            </div>
+          </div>
         </div>
       </div>
     </section>

@@ -8,7 +8,7 @@ const serviceWorkerCacheVersion = "v1";
 const cacheAvailable = 'caches' in self;
 
 // ---------------------- CONTROL CACHE ----------------- //
-const urlsToCache = ['/', '/login', '/snippets', '/signup', '/favicon.ico', '/logout'];
+const urlsToCache = ['/', '/snippets', '/signup', '/favicon.ico', 'app.webmanifest', 'assets/logo/android-chrome-192x192.png'];
 
 // Total requests made
 let count = 0;
@@ -28,13 +28,14 @@ if (cacheAvailable === true) { console.log("Cache API available: " + cacheAvaila
 
 // This code executes in its own worker or thread !!
 
+let cache;
+
 // Install event listener to handle caching of network requests and responses on initial download
 // Event listener that subscribes to the install event
 self.addEventListener("install", event => {
   console.log("Service worker installed");
   const preCache = async () => {
-      const cache = await caches.open(serviceWorkerCacheVersion);
-
+      cache = await caches.open(serviceWorkerCacheVersion);
       return cache.addAll(urlsToCache);
   }
   try {
@@ -57,9 +58,35 @@ self.addEventListener("activate", event => {
 });
 
 
+// Network first approach - check cache, add to cache
+self.addEventListener("fetch", (event) => {
+  console.log("Fetching: " + event.request.url);
+  return caches.match(event.request.url)
+    // First we check if the requested url is already cached
+    .then(cacheResponse => {
+      if (cacheResponse && cacheResponse.status < 400) {
+        console.log("cookie match");
+        return cacheResponse;
+        // We got a match so we return the cached response
+      } else {
+        console.log("no cookie match");
+        // Improvement missing: Make sure user is not offline ??????????????????????????????
+        return fetch(event.request.url).then(fetchResponse => {
+          // We didn't get a match so we fetch the requested url
+          if (!fetchResponse.ok) throw fetchResponse.statusText;
+          // If fetchResponse is not ok, we throw an error
+          cache.put(event.request.url, fetchResponse.clone());
+          // We put a clone of the fetched response to cache
+          return fetchResponse;
+          // and we return the fetched response
+        })
+      }
+    })
+});
+
 // ---------- Saves the snippet data and associated page data that was navigated to when online to cache for offline viewing --- //
 // Cache-specific search, so as to only save snippets once and prevent duplicates
-self.addEventListener("fetch", event => {
+/* self.addEventListener("fetch", event => {
   const checkCache = async () => {
     const cache = await caches.open(serviceWorkerCacheVersion);
     const response = await cache.match(event.request.url);
@@ -75,19 +102,35 @@ self.addEventListener("fetch", event => {
     }
   }
   event.waitUntil(checkCache());  
-});
+}); */
 
 // ----------------- OFFLINE FEATURES -------------------------------- //
 // Runs always but handles offline events on fetch -> Handles offline Network requests because the 
 // request failed to reach the server. I think most practical implementation for our needs
 // Network first approachS
 self.addEventListener("fetch", event => {
+  // Prevent service worker from interferring with subscription service calls
+  if (event.request.url.indexOf('/add-subscription') !== -1) {
+    return false;
+  } else if (event.request.url.indexOf('/notify-me') !== -1) {
+    return false;
+  }
   event.respondWith(
     fetch(event.request).catch(error => {
+    //  console.log("cache: " + caches.match(event.request));
       return caches.match(event.request);
     })
   )
 });
+
+self.addEventListener("push", (event) => {
+  let notification = event.data.json();
+  self.registration.showNotification(
+    notification.title,
+    notification.options
+  );
+});
+
 
 // Useful link on caching strategy methods
 // LINK: https://web.dev/learn/pwa/serving/#caching-strategies
