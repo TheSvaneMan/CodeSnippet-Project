@@ -167,7 +167,7 @@ export default function Createsnip() {
             defaultValue={actionData?.values.favorite}
             id="favorite"
             value="favorite"
-            className="appearance-none bg-neutral-50 h-10 w-10 border-2 mt-2 border-orange-400 checked:border-neutral-50 hover:-translate-y-4 -translate-y-3 transition rounded-3xl default:ring-2 checked:bg-orange-400"
+            className="appearance-none bg-neutral-100 h-10 w-10 border-2 mt-2 border-orange-400 checked:border-neutral-50 hover:-translate-y-4 -translate-y-3 transition rounded-3xl default:ring-2 checked:bg-orange-400"
           />
           {actionData?.errors.favorite && (
             <p className="text-red-500">{actionData.errors.favorite.message}</p>

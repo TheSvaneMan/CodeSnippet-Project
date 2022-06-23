@@ -3,7 +3,7 @@ import { Form, redirect, json, useActionData, Link} from "remix";
 import connectDb from "~/db/connectDb.server";
 import { getSession, commitSession } from "~/sessions.server";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 
 export async function action({ request }) {
   const form = await request.formData();
@@ -53,28 +53,9 @@ export async function action({ request }) {
 
 export default function Index() {
   const actionData = useActionData();
-  const [networkState, setNetworkState] = useState();
+  const [networkState, networkStateUpdate] = useOutletContext();
   const navigate = useNavigate();
-
-  // App network state
- 
-  useEffect(() => {
-   // Update the document title using the browser API
-   // Client
-   if (navigator.onLine) {
-     setNetworkState("online");
-   } else {
-     setNetworkState("offline");
-   }
- }, []);
- 
- function networkStateUpdate() {
-   if (navigator.onLine) {
-     setNetworkState("online");
-   } else {
-     setNetworkState("offline");
-   }
- }
+  const [showSignWarning, setSignWarning] = useState(false);
   
   return (
     <div id="SignUpPage" className='grid grid-cols-1 justify-items-center align-middle min-h-full'>
@@ -139,12 +120,45 @@ export default function Index() {
           ) : null}
           <div className="text-center">
           You have an account?
-          <Link to="/login" className="ml-5 hover:text-neutral-50 text-orange-400">
-          Log in!
-          </Link>
+
+            {networkState === "online" ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        networkStateUpdate();
+                        if (navigator.onLine) {
+                          return navigate("/login");
+                        }
+                      }}
+                      className="ml-5 hover:text-neutral-800 dark:hover:text-neutral-50 text-orange-400"
+                    >
+                      Log in!
+                    </button>
+                  ) : (
+                    <button
+                  className="text-red-600 ml-5"
+                  type="button"
+                      onClick={() => {
+                        networkStateUpdate();
+                        setSignWarning(!showSignWarning);
+                        // Warning -  could be added on all buttons
+                      }}
+                    >
+                      Log in!
+                    </button>
+                  )}
           </div>
           </div>
       </Form>
+      <div
+          id="signUpWarning"
+          className={showSignWarning ? "py-1 px-2 mt-4 my-10" : "hidden"}
+        >
+          <p className="text-center">
+            You are offline - to log in, please make sure you have an internet
+            connection.
+          </p>
+        </div>
     </div>
   );
 }

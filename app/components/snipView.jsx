@@ -13,7 +13,7 @@ export default function SnipView({ snip }) {
             </h1>
             <div id="Code-block" className='grid grid-cols-1 space-y-4'>
                 <b>Code:</b>
-                <code className='text-black bg-slate-100 p-2 rounded-lg'>
+                <code className='text-black bg-neutral-100 p-2 rounded-lg'>
                     {snip.code}
                 </code>
             </div>

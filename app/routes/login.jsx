@@ -11,7 +11,7 @@ import { getSession, commitSession } from "~/sessions.server";
 import { useState, useEffect } from "react";
 import connectDb from "~/db/connectDb.server";
 import bcrypt from "bcryptjs";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 
 export async function loader({ request }) {
   const session = await getSession(request.headers.get("Cookie"));
@@ -26,13 +26,14 @@ export async function loader({ request }) {
 export default function Index() {
   const { userID } = useLoaderData();
   const loginStatus = useActionData();
-  const [networkState, setNetworkState] = useState();
-  const [showSignUpWarning, setSignUpWarning] = useState(false);
+/*   const [networkState, setNetworkState] = useState(); */
+  const [showSignWarning, setSignWarning] = useState(false);
   const navigate = useNavigate();
+  const [networkState, networkStateUpdate] = useOutletContext();
 
   // App network state
 
-  useEffect(() => {
+/*   useEffect(() => {
     // Update the document title using the browser API
     // Client
     if (navigator.onLine) {
@@ -40,15 +41,8 @@ export default function Index() {
     } else {
       setNetworkState("offline");
     }
-  }, []);
-  
-  function networkStateUpdate() {
-    if (navigator.onLine) {
-      setNetworkState("online");
-    } else {
-      setNetworkState("offline");
-    }
-  }
+  }, []); */
+
 
   if (userID != null) {
     return redirect("/snippets");
@@ -79,10 +73,9 @@ export default function Index() {
                 onClick={() => {
                   networkStateUpdate();
                   if (navigator.onLine) {
-                    //document.getElementById("login").click();
                     document.loginForm.submit();
                   }
-                }} // this button checks if online and clicks invisible login button
+                }} // this button checks if online and submits the login form
                 className="mt-3 mb-2 pr-3 pl-3 pt-0 pb-1 border-2 
                   border-orange-400 bg-neutral-800 text-neutral-50 rounded-3xl
                   hover:bg-orange-400"
@@ -101,11 +94,6 @@ export default function Index() {
                 Log in
               </button>
             )}
-            <button
-              type="submit"
-              id="login" // this button submits the form, which logs the user in
-              className="hidden"
-            ></button>
           </div>
           <p className="text-red-500 font-bold my-3 text-center">
             {" "}
@@ -132,7 +120,7 @@ export default function Index() {
                   type="button"
                       onClick={() => {
                         networkStateUpdate();
-                        setSignUpWarning(!showSignUpWarning);
+                        setSignWarning(!showSignWarning);
                         // Warning -  could be added on all buttons
                       }}
                     >
@@ -143,11 +131,11 @@ export default function Index() {
         </Form>
         <div
           id="signUpWarning"
-          className={showSignUpWarning ? "py-1 px-2 mt-4 my-10" : "hidden"}
+          className={showSignWarning ? "py-1 px-2 mt-4 my-10" : "hidden"}
         >
-          <p>
+          <p className="text-center">
             You are offline - to sign up, please make sure you have an internet
-            connection to continue.
+            connection.
           </p>
         </div>
       </div>
@@ -198,7 +186,7 @@ export async function action({ request }) {
 
 export function ErrorBoundary({ error }) {
   return (
-    <div className="grid grid-cols-1 bg-slate-900 p-4 rounded-lg shadow-lg mt-5 space-y-10">
+    <div className="grid grid-cols-1 bg-neutral-900 p-4 rounded-lg shadow-lg mt-5 space-y-10">
       <h1>You are already logged in :)</h1>
       <b>
         We could merely prevent this from happening but I want to show this
@@ -224,7 +212,7 @@ export function ErrorBoundary({ error }) {
 export function CatchBoundary() {
   const caught = useCatch();
   return (
-    <div className="grid grid-cols-1 bg-slate-900 p-4 rounded-lg shadow-lg mt-5 space-y-10">
+    <div className="grid grid-cols-1 bg-neutral-900 p-4 rounded-lg shadow-lg mt-5 space-y-10">
       <h3>Sorry, you cannot login while offline</h3>
       <p>Please make sure you have an internet connection and try again.</p>
       <div className="px-10 animate-pulse transition delay-300">
@@ -237,7 +225,7 @@ export function CatchBoundary() {
       </div>
       <Link
         to="/"
-        className="ml-3 transition hover:bg-slate-500 bg-slate-600 p-4 rounded-lg"
+        className="ml-3 transition hover:bg-neutral-500 bg-neutral-600 p-4 rounded-lg"
       >
         Return to Home Page :)
       </Link>

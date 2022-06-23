@@ -65,7 +65,7 @@ export default function SnipPage() {
   }
 
   return (
-    <div key={snip._id} id={snip._id} className="grid grid-cols-1 p-4">
+    <div key={snip._id} id={snip._id} className="grid grid-cols-1 lg:col-span-3 p-4">
       {
         // Different experience depending whether current user owns the snippet or not
         userSnippetOwner ? <SnippetViewer snip={snip} userID={userID} userSnippetOwner={userSnippetOwner} toggleShareSnippet={toggleShareSnippet} shareSnippet={shareSnippet} snippetURL={snippetURL} copySnippetURL={copySnippetURL} /> :
@@ -108,7 +108,7 @@ function SnippetViewer({ snip, userID, userSnippetOwner, toggleShareSnippet, sha
 // For now, visually - it does the trick but for privacy and security concerns it is not the best. 
 function SnippetPrivate() {
   return (
-    <div id="private-code" className='grid grid-cols-1 p-4 animate-pulse'>
+    <div id="private-code" className='grid grid-cols-1 lg:col-span-3 p-4 animate-pulse'>
       <h1>
         Sorry, seems like the owner of this snippet has made it private - you are unable to view it at this time.
       </h1>
@@ -120,7 +120,7 @@ function SnippetPrivate() {
 // We could further improve this by moving them to dedicated component folders: decoupling the files.
 function ShareSnippet({ copySnippetURL, snippetURL }) {
   return (
-    <div className='grid grid-cols-1 space-y-4 bg-neutral-900 p-4 border-2 border-orange-400 rounded-lg text-neutral-50'>
+    <div className='grid grid-cols-1 lg:col-span-3 space-y-4 bg-neutral-900 p-4 border-2 border-orange-400 rounded-lg text-neutral-50'>
       <h1>Share your code snippet</h1>
       <input className='bg-neutral-900 p-2 border-2 border-orange-300 rounded-lg text-neutral-50' id="snippetURL" defaultValue={snippetURL} />
       <button className="py-1 px-4 border-2 
@@ -197,7 +197,7 @@ function FollowUpdates({ snip, userID }) {
 export function CatchBoundary() {
   const caught = useCatch();
   return (
-    <div className='grid grid-cols-1 bg-slate-900 p-4 rounded-lg shadow-lg mt-5 space-y-10'>
+    <div className='grid grid-cols-1 lg:col-span-3 bg-neutral-900 p-4 rounded-lg shadow-lg mt-5 space-y-10'>
       <h3>Whoopsies</h3>
       <div className='px-10 animate-pulse transition delay-300'>
         <h1>
@@ -205,7 +205,7 @@ export function CatchBoundary() {
         </h1>
         <h2><b>{caught.data}</b></h2>
       </div>
-      <Link to="/" className="ml-3 transition hover:bg-slate-500 bg-slate-600 p-4 rounded-lg">
+      <Link to="/" className="ml-3 transition hover:bg-neutral-500 bg-neutral-600 p-4 rounded-lg">
         Return to Home Page :)
       </Link>
     </div>
@@ -215,7 +215,7 @@ export function CatchBoundary() {
 export function ErrorBoundary({ error }) {
   return (
 
-    <div className='grid grid-cols-1 bg-neutral-900 p-4 rounded-lg shadow-lg mx-5 space-y-10'>
+    <div className='grid grid-cols-1 lg:col-span-3 bg-neutral-900 p-4 rounded-lg shadow-lg mx-5 space-y-10'>
       <h3>Oh no, seems like we couldn't find that snippet:</h3>
       <div className='px-10 animate-pulse transition delay-300'>
         <p className="text-white font-bold">

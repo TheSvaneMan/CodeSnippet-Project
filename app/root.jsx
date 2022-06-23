@@ -116,13 +116,18 @@ if (typeof document === "undefined") {
 
 export default function App() {
   const [networkState, setNetworkState] = useState();
-  let storedTheme = "";
-  let [theme, setTheme] = useState(storedTheme);
+  let [theme, setTheme] = useState();
+  useEffect(() => {
+    setTheme(localStorage.getItem('theme'));
+  }, []);
+  console.log(theme);
   const themeToggle = () => {
     theme == "light" ? setTheme("dark") : setTheme("light");
     theme == "light" ? theme = "dark" : theme = "light";
     localStorage.setItem('theme', theme);
-    storedTheme = localStorage.getItem('theme');
+    const storedTheme = localStorage.getItem('theme');
+    console.log(storedTheme);
+    console.log(theme);
   }
   
   const sessionState = useLoaderData();
@@ -154,18 +159,18 @@ export default function App() {
         <meta name="description" content="The root home page of Keep Snipp - Code Snippet PWA" />
         <meta name="theme-color" content="#fb923c" />
       </head>
-      <body className="grid grid-cols-1 bg-slate-100 text-slate-800 font-sans dark:bg-neutral-800 dark:text-neutral-50">
+      <body className="grid grid-cols-1 bg-neutral-100 text-neutral-800 font-sans dark:bg-neutral-800 dark:text-neutral-50">
         <div onClick={() => networkStateUpdate()} className={networkState === 'online' ? 'grid grid-cols-1 justify-items-center bg-green-400 text-black z-20' : 'grid grid-cols-1 justify-items-center bg-red-600 text-white animate-pulse transition delay-300 z-20'} >{networkState}</div>
-        <header className="p-2 border-b-4 border-orange-400 bg-neutral-800">
+        <header className="p-2 border-b-4 border-orange-400 dark:bg-neutral-800 bg-neutral-100">
           <div>
             {sessionState ? <div id="TopNavigation">
               <Navigation networkStateUpdate={networkStateUpdate} themeChange={themeToggle} networkState={networkState} /></div>
               : <div className='animate-pulse'>
-                  <p className='text-white'>Hey there, welcome to KeepSnip! Login to get started.</p>
+                  <p className='dark:text-neutral-50 text-neutral-800 text-center'>Hey there, welcome to KeepSnip!<br/> Login to get started.</p>
                 </div>}
           </div>
         </header>
-        <Outlet />
+        <Outlet context={[networkState, networkStateUpdate]}/>
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
@@ -183,7 +188,7 @@ export function CatchBoundary() {
         <Meta />
         <Links />
       </head>
-      <body className="grid grid-cols-1 justify-center space-y-5 px-5 max-w-md bg-slate-100 text-slate-800 font-sans dark:bg-neutral-800 dark:text-neutral-50">
+      <body className="grid grid-cols-1 justify-center space-y-5 px-5 max-w-md bg-neutral-100 text-neutral-800 font-sans dark:bg-neutral-800 dark:text-neutral-50">
         <h1 className='mt-10'>Hey there, sorry for the inconvenience - but it seems like the page you're looking for doesn't exist</h1>
         <div className='p-10 animate-pulse transition delay-300'>
           <h1>

@@ -47,27 +47,27 @@ export default function Profile() {
     return (
         <div id="Profile-page">
             <div id="Profile-banner" className='grid grid-cols-1 justify-items-center my-10 gap-4'>
-                <h1>
-                    {user.username}
+                <h1 className='text-xl'>
+                   Hey {user.username}!
                 </h1>
                 <div id="profile-notifications" className='grid grid-cols-1 gap-4'>
-                    <button id="subscribe" onClick={subscribeToPush} className="mt-3 mb-2 pr-3 pl-3 pt-0 pb-1 border-2 
-                  border-orange-400 bg-neutral-800 text-neutral-50 rounded-3xl
+                    <button id="subscribe" onClick={subscribeToPush} className="mt-3 mb-2 py-1 px-3 border-2 
+                  border-orange-400 bg-neutral-50 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-50 rounded-3xl
                   hover:bg-orange-400" >
                         Subscribe to push notifications
                     </button>
-                    <button id="unsubscribe" onClick={unsubscribeButtonHandler} className="mt-3 mb-2 pr-3 pl-3 pt-0 pb-1 border-2 
-                  border-orange-400 bg-neutral-800 text-neutral-50 rounded-3xl
+                    <button id="unsubscribe" onClick={unsubscribeButtonHandler} className="mt-3 mb-2 py-1 px-3 border-2 
+                  border-orange-400 bg-neutral-50 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-50 rounded-3xl
                   hover:bg-orange-400">
                         Unsubscribe from push notifications
                     </button>
-                    <button id='notify-me' onClick={notifyMe} className="mt-3 mb-2 pr-3 pl-3 pt-0 pb-1 border-2 
-                  border-orange-400 bg-neutral-800 text-neutral-50 rounded-3xl
+                    <button id='notify-me' onClick={notifyMe} className="mt-3 mb-2 py-1 px-3 border-2 
+                  border-orange-400 bg-neutral-50 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-50 rounded-3xl
                   hover:bg-orange-400" >
                         Notify Me
                     </button>
-                    <button id="notify-all" className="mt-3 mb-2 pr-3 pl-3 pt-0 pb-1 border-2 
-                  border-orange-400 bg-neutral-800 text-neutral-50 rounded-3xl
+                    <button id="notify-all" className="mt-3 mb-2 py-1 px-3 border-2 
+                  border-orange-400 bg-neutral-50 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-50 rounded-3xl
                   hover:bg-orange-400">
                         Notify All
                     </button>

@@ -2,7 +2,11 @@ import { Link, Form } from "remix";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function Navigation({ networkStateUpdate, themeChange, networkState }) {
+export default function Navigation({
+  networkStateUpdate,
+  themeChange,
+  networkState,
+}) {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -17,7 +21,7 @@ export default function Navigation({ networkStateUpdate, themeChange, networkSta
               return navigate("/snippets");
             }
           }}
-          className="hover:text-orange-400 text-neutral-50 text-4xl text-left"
+          className="hover:text-orange-400 text-neutral-800 dark:text-neutral-50 text-4xl text-left"
         >
           KeepSnip
         </button>
@@ -43,8 +47,8 @@ export default function Navigation({ networkStateUpdate, themeChange, networkSta
               <div
                 className={
                   isNavOpen
-                    ? "bg-slate-100 text-slate-800 dark:bg-neutral-800 dark:text-neutral-50 showMenuNav"
-                    : "hideMenuNav"
+                    ? "bg-neutral-100 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-50 showMenuNav"
+                    : "hidden"
                 }
               >
                 <div
@@ -68,6 +72,13 @@ export default function Navigation({ networkStateUpdate, themeChange, networkSta
                   <li className="border-b border-orange-400 my-8 uppercase">
                     <a href="/profile">Profile</a>
                   </li>
+                  <Link
+                    to="/snippets"
+                    className="border-b border-orange-400 my-8 uppercase"
+                    onClick={() => { setIsNavOpen(false); }}
+                  >
+                    Snippets
+                  </Link>
                   {networkState === "online" ? (
                     <button
                       type="button"
@@ -125,14 +136,15 @@ export default function Navigation({ networkStateUpdate, themeChange, networkSta
                     Light / Dark
                   </button>
 
-                  <Form method="post" action="/logout" name="logoutForm">
+                  <Form method="post" action="/logout" name="mobileLogoutForm">
                     {networkState === "online" ? (
                       <button
                         type="button"
                         onClick={() => {
                           networkStateUpdate();
+                          console.log("Logged out");
                           if (navigator.onLine) {
-                            document.logoutForm.submit();
+                            document.mobileLogoutForm.submit();
                           }
                         }} // this button checks if online and submits the form
                         className="border-b border-orange-400 my-8 uppercase"
@@ -151,104 +163,100 @@ export default function Navigation({ networkStateUpdate, themeChange, networkSta
                       </button>
                     )}
                   </Form>
-
                 </ul>
               </div>
             </section>
             {/* Desktop menu */}
             <ul className="hidden space-x-8 lg:flex">
-            <li className="border-b border-orange-400 my-8 uppercase">
-                    <a href="/profile">Profile</a>
-                  </li>
-                  {networkState === "online" ? (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        networkStateUpdate();
-                        if (navigator.onLine) {
-                          console.log("online");
-                          setIsNavOpen(false);
-                          return navigate("/snippets/new");
-                        }
-                      }}
-                      className="border-b border-orange-400 my-8 uppercase"
-                    >
-                      New code snippet
-                    </button>
-                  ) : (
-                    <button
-                      className="border-b border-red-600 text-red-600 my-8 uppercase"
-                      onClick={() => {
-                        networkStateUpdate();
-                      }}
-                    >
-                      New code snippet
-                    </button>
-                  )}
-                  {networkState === "online" ? (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        networkStateUpdate();
-                        if (navigator.onLine) {
-                          console.log("online");
-                          setIsNavOpen(false);
-                          return navigate("/snippets/seed");
-                        }
-                      }}
-                      className="border-b border-orange-400 my-8 uppercase"
-                    >
-                      Default snippets
-                    </button>
-                  ) : (
-                    <button
-                      className="border-b border-red-600 text-red-600 my-8 uppercase"
-                      onClick={() => {
-                        networkStateUpdate();
-                      }}
-                    >
-                      Default snippets
-                    </button>
-                  )}
-                  <button
-                    className="border-b border-orange-400 my-8 uppercase"
-                    onClick={() => themeChange()}
-                  >
-                    Light / Dark
-                  </button>
+              <li className="border-b border-orange-400 my-2 uppercase">
+                <a href="/profile">Profile</a>
+              </li>
+              {networkState === "online" ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    networkStateUpdate();
+                    if (navigator.onLine) {
+                      console.log("online");
+                      setIsNavOpen(false);
+                      return navigate("/snippets/new");
+                    }
+                  }}
+                  className="border-b border-orange-400 my-2 uppercase"
+                >
+                  New code snippet
+                </button>
+              ) : (
+                <button
+                  className="border-b border-red-600 text-red-600 my-2 uppercase"
+                  onClick={() => {
+                    networkStateUpdate();
+                  }}
+                >
+                  New code snippet
+                </button>
+              )}
+              {networkState === "online" ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    networkStateUpdate();
+                    if (navigator.onLine) {
+                      console.log("online");
+                      setIsNavOpen(false);
+                      return navigate("/snippets/seed");
+                    }
+                  }}
+                  className="border-b border-orange-400 my-2 uppercase"
+                >
+                  Default snippets
+                </button>
+              ) : (
+                <button
+                  className="border-b border-red-600 text-red-600 my-2 uppercase"
+                  onClick={() => {
+                    networkStateUpdate();
+                  }}
+                >
+                  Default snippets
+                </button>
+              )}
+              <button
+                className="border-b border-orange-400 my-2 uppercase"
+                onClick={() => themeChange()}
+              >
+                Light / Dark
+              </button>
 
-                  <Form method="post" action="/logout" name="logoutForm">
-                    {networkState === "online" ? (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          networkStateUpdate();
-                          if (navigator.onLine) {
-                            document.logoutForm.submit();
-                          }
-                        }} // this button checks if online and submits the form
-                        className="border-b border-orange-400 my-8 uppercase"
-                      >
-                        Log out
-                      </button>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          networkStateUpdate();
-                        }} // this button is showing if youre offline
-                        className="border-b border-red-600 text-red-600 my-8 uppercase"
-                      >
-                        Log out
-                      </button>
-                    )}
-                  </Form>
+              <Form method="post" action="/logout" name="logoutForm">
+                {networkState === "online" ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      networkStateUpdate();
+                      if (navigator.onLine) {
+                        document.logoutForm.submit();
+                      }
+                    }} // this button checks if online and submits the form
+                    className="border-b border-orange-400 my-2 uppercase"
+                  >
+                    Log out
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      networkStateUpdate();
+                    }} // this button is showing if youre offline
+                    className="border-b border-red-600 text-red-600 my-2 uppercase"
+                  >
+                    Log out
+                  </button>
+                )}
+              </Form>
             </ul>
           </nav>
           <style>{`
-      .hideMenuNav {
-        display: none;
-      }
       .showMenuNav {
         display: block;
         position: absolute;
