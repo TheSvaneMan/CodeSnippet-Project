@@ -137,7 +137,7 @@ function DeleteSnippet({ snip }) {
     <input type="hidden" name="inputID" value={snip._id}></input>
     <button type="submit" className="py-1 px-4 border-2
                   border-orange-400 bg-neutral-800 text-neutral-50 rounded-3xl
-                  hover:bg-orange-400">Delete</button>
+                  hover:bg-orange-400 lg:mr-4">Delete</button>
   </form>)
  
 }
@@ -145,8 +145,8 @@ function FavoriteSnippet({ snip }) {
   return (
     <form method="post" action={useFormAction("favorite")}>
 
-      <input type="hidden" name="favorite" value={snip.favorite}></input>
-      <button type="submit" className="py-1 px-4 border-2 lg:mx-4 
+          <input type="hidden" name="favorite" value={snip.favorite}></input>
+          <button type="submit" className="py-1 px-4 border-2 lg:mr-4 
                   border-orange-400 bg-neutral-800 text-neutral-50 rounded-3xl
                   hover:bg-orange-400">Favorite</button>
     </form>
@@ -155,7 +155,7 @@ function FavoriteSnippet({ snip }) {
 
 function ToggleShareSnippet({toggleShareSnippet, shareSnippet}) {
   return (
-    <button type="submit" className="py-1 px-4 border-2 
+    <button type="submit" className="py-1 px-4 border-2 lg:mr-4 
                   border-orange-400 bg-neutral-800 text-neutral-50 rounded-3xl
                   hover:bg-orange-400" onClick={toggleShareSnippet}>{shareSnippet ? "Close" : "Share"}</button>
 
@@ -164,7 +164,7 @@ function ToggleShareSnippet({toggleShareSnippet, shareSnippet}) {
 
 function UpdateSnippet() {
   return (
-    <Link to="update" className="py-1 px-4 border-2
+    <Link to="update" className="py-1 px-4 border-2 lg:mr-4 
                   border-orange-400 bg-neutral-800 text-neutral-50 rounded-3xl
                   hover:bg-orange-400">Update</Link>
   )

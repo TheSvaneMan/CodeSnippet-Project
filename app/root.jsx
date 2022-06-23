@@ -1,9 +1,18 @@
 import {
-  Links, Link, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData, useCatch
+  Links,
+  Link,
+  LiveReload,
+  Meta,
+  Outlet,
+  Scripts,
+  ScrollRestoration,
+  useLoaderData,
+  useCatch,
 } from "remix";
 import styles from "~/tailwind.css";
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import { getSession } from "~/sessions.server";
+import { useNavigate } from "react-router-dom";
 import Navigation from './components/topNavigation';
 
 export async function loader({ request }) {
@@ -15,13 +24,13 @@ export async function loader({ request }) {
     // if there is no user session, don't show top navigation
     let showNav = false;
     return showNav;
-  }
-  else {
+  } else {
     // if there is a user session, show top navigation
     let showNav = true;
     return showNav;
   }
 }
+
 
 export const links = () => [
   {
@@ -31,12 +40,12 @@ export const links = () => [
   {
     rel: "manifest",
     crossOrigin: "use-credentials",
-    href: "/app.webmanifest"
+    href: "/app.webmanifest",
   },
   {
     rel: "apple-touch-icon",
-    href: "/assets/logo/apple-touch-icon.png"
-  }
+    href: "/assets/logo/apple-touch-icon.png",
+  },
 ];
 
 export function meta() {
@@ -105,8 +114,6 @@ if (typeof document === "undefined") {
   checkRegistration();
 }
 
-
-
 export default function App() {
   const [networkState, setNetworkState] = useState();
   let storedTheme = "";
@@ -119,20 +126,28 @@ export default function App() {
   }
   
   const sessionState = useLoaderData();
-
-  // Similar to componentDidMount and componentDidUpdate:
+  console.log(sessionState);
+  //  setInterval(function () { networkStateUpdate() }, 3000);
   useEffect(() => {
     // Update the document title using the browser API
     // Client
     if (navigator.onLine) {
-      setNetworkState('online');
+      setNetworkState("online");
     } else {
-      setNetworkState('offline');
+      setNetworkState("offline");
     }
   }, []);
 
+  function networkStateUpdate() {
+    if (navigator.onLine) {
+      setNetworkState("online");
+    } else {
+      setNetworkState("offline");
+    }
+  }
+
   return (
-    <html lang="en" className={theme == "light" ? 'light' : 'dark'}>
+    <html lang="en" className={theme == "light" ? "light" : "dark"}>
       <head>
         <Meta />
         <Links />
@@ -140,11 +155,11 @@ export default function App() {
         <meta name="theme-color" content="#fb923c" />
       </head>
       <body className="grid grid-cols-1 bg-slate-100 text-slate-800 font-sans dark:bg-neutral-800 dark:text-neutral-50">
-        <div className={networkState === 'online' ? 'grid grid-cols-1 justify-items-center bg-green-400 text-black z-20' : 'grid grid-cols-1 justify-items-center bg-red-600 text-white animate-pulse transition delay-300 z-20'} >{networkState}</div>
+        <div onClick={() => networkStateUpdate()} className={networkState === 'online' ? 'grid grid-cols-1 justify-items-center bg-green-400 text-black z-20' : 'grid grid-cols-1 justify-items-center bg-red-600 text-white animate-pulse transition delay-300 z-20'} >{networkState}</div>
         <header className="p-2 border-b-4 border-orange-400 bg-neutral-800">
           <div>
             {sessionState ? <div id="TopNavigation">
-              <Navigation networkState={networkState} themeChange={themeToggle} /></div>
+              <Navigation networkStateUpdate={networkStateUpdate} themeChange={themeToggle} networkState={networkState} /></div>
               : <div className='animate-pulse'>
                   <p className='text-white'>Hey there, welcome to KeepSnip! Login to get started.</p>
                 </div>}

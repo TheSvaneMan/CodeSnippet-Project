@@ -8,4 +8,5 @@ export async function action({ request }) {
             "Set-Cookie": await destroySession(session),
         },
     });
+
 }
