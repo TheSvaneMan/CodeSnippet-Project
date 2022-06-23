@@ -2,7 +2,7 @@ import { json } from 'remix';
 
 console.log('Hello from push notification service');
 
-const VAPID_PUBLIC_KEY = "BBMfqa-KsxYs6cAy5mTSt3laiCnvS1L1KTdnWRCW6kTKk2_FeJIIFBzYQQIhBX4awRFmi9-3MsGOLtaYcVsX8kU";
+const VAPID_PUBLIC_KEY = "BHuPYsJ85CAtE2XeEDT0t6ylD7h7kXTWR0cEguRUcIs9QW1IRSwwvffYWysGChbO1FjtaoG4yE7FVCm4YVIJV3g";
 
 async function postToServer(url, data) {
     let response = await fetch(url, {

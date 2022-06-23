@@ -59,7 +59,7 @@ export default function Index() {
         className="grid grid-cols-1 justify-items-center align-middle min-h-full"
       >
         <h1 className="text-2xl font-bold my-4">Log in</h1>
-        <Form method="post" reloadDocument className="w-56">
+        <Form method="post" name="loginForm" reloadDocument className="w-56">
           <div id="login-input-fields" className="grid grid-cols-1 space-y-5">
             <input
               type="text"
@@ -79,9 +79,10 @@ export default function Index() {
                 onClick={() => {
                   networkStateUpdate();
                   if (navigator.onLine) {
-                    document.getElementById("login").click();
+                    //document.getElementById("login").click();
+                    document.loginForm.submit();
                   }
-                }} // this button checks if online and clicks invisible logOut button
+                }} // this button checks if online and clicks invisible login button
                 className="mt-3 mb-2 pr-3 pl-3 pt-0 pb-1 border-2 
                   border-orange-400 bg-neutral-800 text-neutral-50 rounded-3xl
                   hover:bg-orange-400"

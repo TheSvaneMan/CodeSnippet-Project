@@ -159,7 +159,7 @@ export default function App() {
         <header className="p-2 border-b-4 border-orange-400 bg-neutral-800">
           <div>
             {sessionState ? <div id="TopNavigation">
-              <Navigation networkStateUpdate={networkStateUpdate} themeChange={themeToggle} /></div>
+              <Navigation networkStateUpdate={networkStateUpdate} themeChange={themeToggle} networkState={networkState} /></div>
               : <div className='animate-pulse'>
                   <p className='text-white'>Hey there, welcome to KeepSnip! Login to get started.</p>
                 </div>}
