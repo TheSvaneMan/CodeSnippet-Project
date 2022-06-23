@@ -29,13 +29,17 @@ export async function action({ request }) {
         }
         return json(message);
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         return json(
             { errorMessage: "Error notifying user!" },
             { status: 400 }
         );
     }
 };
+
+export async function loader({ request }) {
+    return null;
+}
 
 function sendNotifications(subscriptions) {
     // Create the notification content.

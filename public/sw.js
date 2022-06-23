@@ -10,6 +10,9 @@ const cacheAvailable = 'caches' in self;
 // ---------------------- CONTROL CACHE ----------------- //
 const urlsToCache = ['/', '/snippets', '/signup', '/favicon.ico', 'app.webmanifest', 'assets/logo/android-chrome-192x192.png'];
 
+// Domain 
+const herokuDomain = "https://code-snipps-ww.herokuapp.com/";
+const urlsNotToCache = ['/add-subscription'];
 // Total requests made
 let count = 0;
 
@@ -35,8 +38,8 @@ let cache;
 self.addEventListener("install", event => {
   console.log("Service worker installed");
   const preCache = async () => {
-      cache = await caches.open(serviceWorkerCacheVersion);
-      return cache.addAll(urlsToCache);
+    cache = await caches.open(serviceWorkerCacheVersion);
+    return cache.addAll(urlsToCache);
   }
   try {
     event.waitUntil(preCache());
@@ -54,34 +57,37 @@ self.addEventListener("fetch", (event) => {
 
 // Event listener that subscribes to the activate event
 self.addEventListener("activate", event => {
-    console.log("Service worker activated");
+  console.log("Service worker activated");
 });
 
 
-// Network first approach - check cache, add to cache
+// Cache first approach - check cache, add to cache
 self.addEventListener("fetch", (event) => {
-  console.log("Fetching: " + event.request.url);
-  return caches.match(event.request.url)
-    // First we check if the requested url is already cached
-    .then(cacheResponse => {
-      if (cacheResponse && cacheResponse.status < 400) {
-        console.log("cookie match");
-        return cacheResponse;
-        // We got a match so we return the cached response
-      } else {
-        console.log("no cookie match");
-        // Improvement missing: Make sure user is not offline ??????????????????????????????
-        return fetch(event.request.url).then(fetchResponse => {
-          // We didn't get a match so we fetch the requested url
-          if (!fetchResponse.ok) throw fetchResponse.statusText;
-          // If fetchResponse is not ok, we throw an error
-          cache.put(event.request.url, fetchResponse.clone());
-          // We put a clone of the fetched response to cache
-          return fetchResponse;
-          // and we return the fetched response
-        })
-      }
-    })
+  if (event.request.url === herokuDomain + '/add-subscription') {
+    return null
+  } else {
+    return caches.match(event.request.url)
+      // First we check if the requested url is already cached
+      .then(cacheResponse => {
+        if (cacheResponse && cacheResponse.status < 400) {
+          console.log("cookie match");
+          return cacheResponse;
+          // We got a match so we return the cached response
+        } else {
+          console.log("no cookie match");
+          return fetch(event.request.url).then(fetchResponse => {
+            // We didn't get a match so we fetch the requested url
+            if (!fetchResponse.ok) throw fetchResponse.statusText;
+            // If fetchResponse is not ok, we throw an error
+            cache.put(event.request.url, fetchResponse.clone());
+            // We put a clone of the fetched response to cache
+            return fetchResponse;
+            // and we return the fetched response
+          })
+        }
+      })
+  }
+
 });
 
 // ---------- Saves the snippet data and associated page data that was navigated to when online to cache for offline viewing --- //
@@ -117,7 +123,7 @@ self.addEventListener("fetch", event => {
   }
   event.respondWith(
     fetch(event.request).catch(error => {
-    //  console.log("cache: " + caches.match(event.request));
+      //  console.log("cache: " + caches.match(event.request));
       return caches.match(event.request);
     })
   )

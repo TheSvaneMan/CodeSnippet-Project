@@ -1,8 +1,7 @@
-import { json } from 'remix';
-
 console.log('Hello from push notification service');
+import vapidConfig from '../../config.json' assert {type: 'json'};
 
-const VAPID_PUBLIC_KEY = "BHuPYsJ85CAtE2XeEDT0t6ylD7h7kXTWR0cEguRUcIs9QW1IRSwwvffYWysGChbO1FjtaoG4yE7FVCm4YVIJV3g";
+const VAPID_PUBLIC_KEY = vapidConfig.PUBLIC_KEY.toString();
 
 async function postToServer(url, data) {
     let response = await fetch(url, {
