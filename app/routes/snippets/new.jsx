@@ -7,8 +7,8 @@ export async function action({ request }) {
   const form = await request.formData();
   const db = await connectDb();
   try {
-    await db.models.snip.create({ title: form.get("title"), description: form.get("description"), date: form.get("date"), language: form.get("language"), code: form.get("code"), user: form.get("user") });
-    return redirect(`/snippets/`);//new snip
+    await db.models.snip.create({ title: form.get("title"), description: form.get("description"), date: form.get("date"), language: form.get("language"), code: form.get("code"), user: form.get("user"), tags: form.get("tags") });
+    return redirect(`/snippets/`); //new snip
   } catch (error) {
     return json(
       { errors: error.errors, values: Object.fromEntries(form) },

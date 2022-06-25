@@ -67,12 +67,16 @@ export default function App() {
       }
     >
       <div id="Snippet-Page" className="grid grid-cols-1 lg:grid-cols-5 ">
-        <input className="showSnippsCheck" type="checkbox" id="showSnippsCheck" />
+        <input
+          className="showSnippsCheck"
+          type="checkbox"
+          id="showSnippsCheck"
+        />
         <label
           className="showSnippsBtn mt-3 py-1 px-3 border-2 w-36 text-center relative left-1/2 transform -translate-x-1/2
                   border-orange-400 bg-neutral-50 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-50 rounded-3xl
                   hover:bg-orange-400"
-                  htmlFor="showSnippsCheck"
+          htmlFor="showSnippsCheck"
         >
           Show snippets
         </label>
@@ -103,7 +107,6 @@ export default function App() {
               </button>
             </div>
 
-            {/* Use Penda's tagging solution */}
             <select
               id="languageList"
               name="language"
@@ -166,6 +169,14 @@ export default function App() {
                       ) {
                         return snip;
                       }
+                      else if (
+                        snip.tags
+                          .toString()
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase())
+                      ) {
+                        return snip;
+                      }
                     })
                     .map((snip, i) => {
                       finalSnipps.push(snip);
@@ -190,7 +201,9 @@ export default function App() {
                           onClick={() => {
                             var w = window.innerWidth;
                             if (w < 1024) {
-                              document.getElementById('showSnippsCheck').click();
+                              document
+                                .getElementById("showSnippsCheck")
+                                .click();
                             }
                           }}
                           to={`/snippets/${snip._id}`}

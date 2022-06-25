@@ -21,6 +21,32 @@ export default function SnipView({ snip }) {
         <b>Language:</b> {snip.language}
       </h1>
       <h1>
+      <b>Tags:</b>
+    </h1>
+      <div
+            className={
+              snip.tags.length === 0
+                ? "grid grid-cols-1 text-orange-400"
+                : "grid grid-cols-4"
+            }
+          >
+            {snip.tags.length === 0 ? (
+              <p>No tags for this code snippet.</p>
+            ) : (
+              snip.tags.toString().split(',').map((tag) => {
+                return (
+                  <button
+                    key={tag}
+                    className="cursor-default justify-items-center mr-2 mb-2 p-2 align-middle bg-orange-400 rounded-lg text-neutral-800"
+                    value={tag}
+                  >
+                    {tag}
+                  </button>
+                );
+              })
+            )}
+          </div>
+      <h1>
         <b>Description:</b> {snip.description}
       </h1>
       <div id="Code-block" className="grid grid-cols-1 space-y-4">

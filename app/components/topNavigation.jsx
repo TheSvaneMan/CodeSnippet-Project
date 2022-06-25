@@ -155,14 +155,7 @@ export default function Navigation({
                   <Form method="post" action="/logout" name="mobileLogoutForm">
                     {networkState === "online" ? (
                       <button
-                        type="button"
-                        onClick={() => {
-                          networkStateUpdate();
-                          console.log("Logged out");
-                          if (navigator.onLine) {
-                            document.mobileLogoutForm.submit();
-                          }
-                        }} // this button checks if online and submits the form
+                        type="submit"
                         className="border-b border-orange-400 my-8 uppercase"
                       >
                         Log out
@@ -273,14 +266,7 @@ export default function Navigation({
                   <Form method="post" action="/logout" name="mobileLogoutForm">
                     {networkState === "online" ? (
                       <button
-                        type="button"
-                        onClick={() => {
-                          networkStateUpdate();
-                          console.log("Logged out");
-                          if (navigator.onLine) {
-                            document.mobileLogoutForm.submit();
-                          }
-                        }} // this button checks if online and submits the form
+                        type="submit"
                         className="border-b border-orange-400 my-2 uppercase"
                       >
                         Log out
