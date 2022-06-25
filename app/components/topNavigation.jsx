@@ -11,13 +11,22 @@ export default function Navigation({
   const navigate = useNavigate();
 
   return (
-    <div id="nav-links" className="grid grid-cols-2 ">
+    <div id="nav-links" className="grid grid-cols-2 lg:grid-cols-4 ">
       <div id="header-user-toolbar-main" className="grid grid-cols-1">
         <button
           type="button"
           onClick={() => {
             networkStateUpdate();
             if (navigator.onLine) {
+              // Checking if the snippets are visible, if they are not then clicking "Show snippets" button
+              if (document.getElementById("showSnippsCheck")) {
+                const checkbox =
+                  document.getElementById("showSnippsCheck").checked;
+                if (checkbox === true) {
+                  document.getElementById("showSnippsCheck").click();
+                  console.log("checbkox clicked");
+                }
+              }
               return navigate("/snippets");
             }
           }}
@@ -28,7 +37,7 @@ export default function Navigation({
       </div>
       <div
         id="header-user-toolbar"
-        className="grid grid-cols-1 justify-items-end "
+        className="grid grid-cols-1 lg:col-span-3 justify-items-end "
       >
         <div className="flex items-center justify-between py-3">
           <nav>
@@ -55,18 +64,6 @@ export default function Navigation({
                   className="absolute top-0 right-0 px-2 py-10"
                   onClick={() => setIsNavOpen(false)}
                 >
-                  <svg
-                    className="h-8 w-8 text-orange-400"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <line x1="18" y1="6" x2="6" y2="18" />
-                    <line x1="6" y1="6" x2="18" y2="18" />
-                  </svg>
                 </div>
                 <ul className="flex flex-col items-center justify-between min-h-[250px]">
                   <li className="border-b border-orange-400 my-8 uppercase">
@@ -75,7 +72,9 @@ export default function Navigation({
                   <Link
                     to="/snippets"
                     className="border-b border-orange-400 my-8 uppercase"
-                    onClick={() => { setIsNavOpen(false); }}
+                    onClick={() => {
+                      setIsNavOpen(false);
+                    }}
                   >
                     Snippets
                   </Link>
@@ -87,7 +86,16 @@ export default function Navigation({
                         if (navigator.onLine) {
                           console.log("online");
                           setIsNavOpen(false);
-                          return navigate("/snippets/new");
+                          // Checking if the snippets are visible, if they are then clicking "Show snippets" button
+                          if (document.getElementById("showSnippsCheck")) {
+                            const checkbox =
+                              document.getElementById("showSnippsCheck").checked;
+                            if (checkbox === true) {
+                              document.getElementById("showSnippsCheck").click();
+                              console.log("snippets hidden");
+                            }
+                          }
+                            return navigate("/snippets/new");
                         }
                       }}
                       className="border-b border-orange-400 my-8 uppercase"
@@ -112,7 +120,15 @@ export default function Navigation({
                         if (navigator.onLine) {
                           console.log("online");
                           setIsNavOpen(false);
-                          return navigate("/snippets/seed");
+                          // Checking if the snippets are visible, if they are then clicking "Show snippets" button
+                          if (document.getElementById("showSnippsCheck")) {
+                            const checkbox = document.getElementById("showSnippsCheck").checked;
+                            if (checkbox === true) {
+                              document.getElementById("showSnippsCheck").click();
+                              console.log("snippets hidden");
+                            }
+                          }
+                            return navigate("/snippets/seed");
                         }
                       }}
                       className="border-b border-orange-400 my-8 uppercase"
@@ -168,92 +184,119 @@ export default function Navigation({
             </section>
             {/* Desktop menu */}
             <ul className="hidden space-x-8 lg:flex">
-              <li className="border-b border-orange-400 my-2 uppercase">
-                <a href="/profile">Profile</a>
-              </li>
-              {networkState === "online" ? (
-                <button
-                  type="button"
-                  onClick={() => {
-                    networkStateUpdate();
-                    if (navigator.onLine) {
-                      console.log("online");
-                      setIsNavOpen(false);
-                      return navigate("/snippets/new");
-                    }
-                  }}
-                  className="border-b border-orange-400 my-2 uppercase"
-                >
-                  New code snippet
-                </button>
-              ) : (
-                <button
-                  className="border-b border-red-600 text-red-600 my-2 uppercase"
-                  onClick={() => {
-                    networkStateUpdate();
-                  }}
-                >
-                  New code snippet
-                </button>
-              )}
-              {networkState === "online" ? (
-                <button
-                  type="button"
-                  onClick={() => {
-                    networkStateUpdate();
-                    if (navigator.onLine) {
-                      console.log("online");
-                      setIsNavOpen(false);
-                      return navigate("/snippets/seed");
-                    }
-                  }}
-                  className="border-b border-orange-400 my-2 uppercase"
-                >
-                  Default snippets
-                </button>
-              ) : (
-                <button
-                  className="border-b border-red-600 text-red-600 my-2 uppercase"
-                  onClick={() => {
-                    networkStateUpdate();
-                  }}
-                >
-                  Default snippets
-                </button>
-              )}
-              <button
-                className="border-b border-orange-400 my-2 uppercase"
-                onClick={() => themeChange()}
-              >
-                Light / Dark
-              </button>
-
-              <Form method="post" action="/logout" name="logoutForm">
-                {networkState === "online" ? (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      networkStateUpdate();
-                      if (navigator.onLine) {
-                        document.logoutForm.submit();
-                      }
-                    }} // this button checks if online and submits the form
+            <li className="border-b border-orange-400 my-2 uppercase">
+                    <a href="/profile">Profile</a>
+                  </li>
+                  <Link
+                    to="/snippets"
                     className="border-b border-orange-400 my-2 uppercase"
-                  >
-                    Log out
-                  </button>
-                ) : (
-                  <button
-                    type="button"
                     onClick={() => {
-                      networkStateUpdate();
-                    }} // this button is showing if youre offline
-                    className="border-b border-red-600 text-red-600 my-2 uppercase"
+                      setIsNavOpen(false);
+                    }}
                   >
-                    Log out
+                    Snippets
+                  </Link>
+                  {networkState === "online" ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        networkStateUpdate();
+                        if (navigator.onLine) {
+                          console.log("online");
+                          setIsNavOpen(false);
+                          // Checking if the snippets are visible, if they are then clicking "Show snippets" button
+                          if (document.getElementById("showSnippsCheck")) {
+                            const checkbox =
+                              document.getElementById("showSnippsCheck").checked;
+                            if (checkbox === false) {
+                              document.getElementById("showSnippsCheck").click();
+                              console.log("snippets hidden");
+                            }
+                          }
+                            return navigate("/snippets/new");
+                        }
+                      }}
+                      className="border-b border-orange-400 my-2 uppercase"
+                    >
+                      New code snippet
+                    </button>
+                  ) : (
+                    <button
+                      className="border-b border-red-600 text-red-600 my-2 uppercase"
+                      onClick={() => {
+                        networkStateUpdate();
+                      }}
+                    >
+                      New code snippet
+                    </button>
+                  )}
+                  {networkState === "online" ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        networkStateUpdate();
+                        if (navigator.onLine) {
+                          console.log("online");
+                          setIsNavOpen(false);
+                          // Checking if the snippets are visible, if they are then clicking "Show snippets" button
+                          if (document.getElementById("showSnippsCheck")) {
+                            const checkbox = document.getElementById("showSnippsCheck").checked;
+                            if (checkbox === false) {
+                              document.getElementById("showSnippsCheck").click();
+                              console.log("snippets hidden");
+                            }
+                          }
+                            return navigate("/snippets/seed");
+                        }
+                      }}
+                      className="border-b border-orange-400 my-2 uppercase"
+                    >
+                      Default snippets
+                    </button>
+                  ) : (
+                    <button
+                      className="border-b border-red-600 text-red-600 my-2 uppercase"
+                      onClick={() => {
+                        networkStateUpdate();
+                      }}
+                    >
+                      Default snippets
+                    </button>
+                  )}
+                  <button
+                    className="border-b border-orange-400 my-2 uppercase"
+                    onClick={() => themeChange()}
+                  >
+                    Light / Dark
                   </button>
-                )}
-              </Form>
+
+                  <Form method="post" action="/logout" name="mobileLogoutForm">
+                    {networkState === "online" ? (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          networkStateUpdate();
+                          console.log("Logged out");
+                          if (navigator.onLine) {
+                            document.mobileLogoutForm.submit();
+                          }
+                        }} // this button checks if online and submits the form
+                        className="border-b border-orange-400 my-2 uppercase"
+                      >
+                        Log out
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          networkStateUpdate();
+                        }} // this button is showing if youre offline
+                        className="border-b border-red-600 text-red-600 my-2 uppercase"
+                      >
+                        Log out
+                      </button>
+                    )}
+                  </Form>
             </ul>
           </nav>
           <style>{`

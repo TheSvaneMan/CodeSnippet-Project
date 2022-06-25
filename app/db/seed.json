@@ -1,13 +1,13 @@
 [
         {
-        "title": "Snippet A",
+        "title": "Remove old version of cache (serviceWorkerCacheVersion) - Wiktor",
         "language": "Javascript",
-        "code": "const fruits = ['Banana', 'Orange', 'Apple', 'Mango']; document.getElementById('demo').innerHTML = fruits.toString();",
-        "description": "The JavaScript method toString() converts an array to a string of (comma separated) array values.",
+        "code": "blabla",
+        "description": "When the service worker is being activated, it checks cache version and if it's different from the one specified at the top of the Service Worker it deletes it",
         "tags": [
             "JavaScript",
-            "Array",
-            "String"
+            "Service worker",
+            "Cache"
         ],
         "favorite": false,
         "shareable": false,

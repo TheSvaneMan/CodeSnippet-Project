@@ -1,7 +1,7 @@
 import { Form, redirect, json, useActionData, useLoaderData } from "remix";
 import connectDb from "~/db/connectDb.server";
 import { requireUserSession, getSession } from "~/sessions.server";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export async function action({ request }) {
   const form = await request.formData();
@@ -21,6 +21,7 @@ export async function loader({ request }) {
   await requireUserSession(request);
   const session = await getSession(request.headers.get("Cookie"));
   return { userID: session.get("userID") };
+  
 };
 
 
@@ -33,6 +34,9 @@ export default function Createsnip() {
   console.log(actionData);
   const current = new Date();
   const date = `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`;
+  useEffect(() => {
+    document.getElementById('showSnippsCheck').click();
+  }, []);
   
   // Add Tags
   const handleTag = (e) => {
@@ -54,7 +58,7 @@ export default function Createsnip() {
   }
 
   return (
-    <div className="m-4">
+    <div className="m-4 lg:col-span-3">
       <h1 className="text-2xl font-bold mb-4">Create code snippet</h1>
       <Form method="post" name="newPostForm">
         <input type="text" name="date" defaultValue={date} id="date" className="hidden" />

@@ -11,7 +11,7 @@ import {
 } from "remix";
 import styles from "~/tailwind.css";
 import connectDb from "~/db/connectDb.server.js";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { requireUserSession, getSession } from "~/sessions.server";
 
 export const links = () => [
@@ -67,17 +67,17 @@ export default function App() {
       }
     >
       <div id="Snippet-Page" className="grid grid-cols-1 lg:grid-cols-5 ">
-        <input class="showSnippsCheck" type="checkbox" id="showSnippsCheck" />
+        <input className="showSnippsCheck" type="checkbox" id="showSnippsCheck" />
         <label
-          class="showSnippsBtn mt-3 py-1 px-3 border-2 w-36 text-center relative left-1/2 transform -translate-x-1/2
+          className="showSnippsBtn mt-3 py-1 px-3 border-2 w-36 text-center relative left-1/2 transform -translate-x-1/2
                   border-orange-400 bg-neutral-50 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-50 rounded-3xl
                   hover:bg-orange-400"
-          for="showSnippsCheck"
+                  htmlFor="showSnippsCheck"
         >
           Show snippets
         </label>
 
-        <div class="dropdown block lg:grid lg:grid-cols-3 lg:col-span-2">
+        <div className="dropdown block lg:grid lg:grid-cols-3 lg:col-span-2">
           <div
             className="flex flex-col w-full p-4 lg:col-span-2 dark:bg-neutral-800 dark:text-neutral-50 space-y-2
          bg-neutral-100 text-neutral-800 border-orange-400 lg:border-r-2 lg:h-full"
@@ -188,7 +188,10 @@ export default function App() {
                         <Link
                           className="hover:underline py-1"
                           onClick={() => {
-                            document.getElementById('showSnippsCheck').click();
+                            var w = window.innerWidth;
+                            if (w < 1024) {
+                              document.getElementById('showSnippsCheck').click();
+                            }
                           }}
                           to={`/snippets/${snip._id}`}
                           key={snip._id}

@@ -3,6 +3,7 @@ import connectDb from "~/db/connectDb.server";
 import { requireUserSession } from "~/sessions.server";
 import snippetSeed from "~/db/seed.json";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 export async function loader({ request }) {
   const db = await connectDb();
@@ -43,8 +44,11 @@ export default function Index() {
   const snippetCount = useLoaderData();
   const snippetJSON = snippetSeed;
   const navigate = useNavigate();
+  useEffect(() => {
+    document.getElementById('showSnippsCheck').click();
+  }, []);
   return (
-    <Form method="post" className="p-4" name="seedForm">
+    <Form method="post" className="p-4 lg:col-span-3" name="seedForm">
       <h1 className="text-2xl mb-5">Seeding the database</h1>
       <h2 className="text-xl mb-10">
         You currently have <b>{snippetCount}</b> snipppets in your database.

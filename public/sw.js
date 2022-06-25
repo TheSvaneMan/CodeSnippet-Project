@@ -26,6 +26,7 @@ async function getClient(id) {
   }
 }
 
+
 // Checks if the cache API is available on the browser running the current code
 if (cacheAvailable === true) { console.log("Cache API available: " + cacheAvailable); }
 
@@ -64,6 +65,17 @@ self.addEventListener("fetch", (event) => {
 // Event listener that subscribes to the activate event
 self.addEventListener("activate", event => {
   console.log("Service worker activated");
+  // Remove old version of cache (serviceWorkerCacheVersion)
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(cacheNames.map(cache => {
+        if (cache != serviceWorkerCacheVersion) {
+          console.log("Service worker: cleared old cache");
+          return caches.delete(cache);
+        }
+      }))
+    })
+  );
 });
 
 

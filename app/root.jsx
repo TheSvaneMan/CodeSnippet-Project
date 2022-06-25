@@ -120,18 +120,14 @@ export default function App() {
   useEffect(() => {
     setTheme(localStorage.getItem('theme'));
   }, []);
-  console.log(theme);
   const themeToggle = () => {
     theme == "light" ? setTheme("dark") : setTheme("light");
     theme == "light" ? theme = "dark" : theme = "light";
     localStorage.setItem('theme', theme);
     const storedTheme = localStorage.getItem('theme');
-    console.log(storedTheme);
-    console.log(theme);
   }
   
   const sessionState = useLoaderData();
-  console.log(sessionState);
   //  setInterval(function () { networkStateUpdate() }, 3000);
   useEffect(() => {
     // Update the document title using the browser API
