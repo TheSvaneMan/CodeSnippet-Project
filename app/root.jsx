@@ -155,7 +155,7 @@ export default function App() {
         <meta name="description" content="The root home page of Keep Snipp - Code Snippet PWA" />
         <meta name="theme-color" content="#fb923c" />
       </head>
-      <body className="grid grid-cols-1 bg-neutral-100 text-neutral-800 font-sans dark:bg-neutral-800 dark:text-neutral-50">
+      <body className="lg:overflow-hidden grid grid-cols-1 bg-neutral-100 text-neutral-800 font-sans dark:bg-neutral-800 dark:text-neutral-50">
         <div onClick={() => networkStateUpdate()} className={networkState === 'online' ? 'grid grid-cols-1 justify-items-center bg-green-400 text-black z-20' : 'grid grid-cols-1 justify-items-center bg-red-600 text-white animate-pulse transition delay-300 z-20'} >{networkState}</div>
         <header className="p-2 border-b-4 border-orange-400 dark:bg-neutral-800 bg-neutral-100">
           <div>
