@@ -7,3 +7,4 @@ node_modules
 /app/tailwind.css
 app/pushNotifications/push-notification-service.js
 package-lock.json
+config.json

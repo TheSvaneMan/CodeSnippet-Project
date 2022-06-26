@@ -36,7 +36,7 @@ if (cacheAvailable === true) { console.log("Cache API available: " + cacheAvaila
 let cache;
 async function checkCache() {
   const exist = await caches.has('/snippets');
-  console.log("exist: " + exist);
+  // console.log("exist: " + exist);
 }
 checkCache();
 
@@ -81,16 +81,15 @@ self.addEventListener("activate", event => {
 
 // Cache first approach - check cache, add to cache
 self.addEventListener("fetch", (event) => {
-
     return caches.match(event.request.url)
       // First we check if the requested url is already cached
       .then(cacheResponse => {
         if (cacheResponse && cacheResponse.status < 400) {
-          console.log("cookie match");
+          // console.log("cookie match");
           return cacheResponse;
           // We got a match so we return the cached response
         } else {
-          console.log("no cookie match");
+          // console.log("no cookie match");
           return fetch(event.request.url).then(fetchResponse => {
             // We didn't get a match so we fetch the requested url
             if (!fetchResponse.ok) throw fetchResponse.statusText;
@@ -133,6 +132,9 @@ self.addEventListener("fetch", event => {
   if (event.request.url.indexOf('/add-subscription') !== -1) {
     return false;
   } else if (event.request.url.indexOf('/notify-me') !== -1) {
+    return false;
+  } else if (event.request.url.indexOf('/snippets/seed') !== -1) {
+    console.log("Check validates");
     return false;
   }
   event.respondWith(

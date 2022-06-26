@@ -13,7 +13,8 @@ import styles from "~/tailwind.css";
 import { useState, useEffect } from "react";
 import { getSession } from "~/sessions.server";
 import { useNavigate } from "react-router-dom";
-import Navigation from './components/topNavigation';
+import Navigation from './components/navigation/topNavigation';
+import BottomNavigation from './components/navigation/bottomNavigation';
 
 export async function loader({ request }) {
   // get the session
@@ -46,6 +47,10 @@ export const links = () => [
     rel: "apple-touch-icon",
     href: "/assets/logo/apple-touch-icon.png",
   },
+  {
+    rel: "stylesheet",
+    href: "/assets/customScrollbar/customScrollbar.css"
+  }
 ];
 
 export function meta() {
@@ -156,8 +161,7 @@ export default function App() {
         <meta name="theme-color" content="#fb923c" />
       </head>
       <body className="overflow-y-scroll grid grid-cols-1 bg-neutral-100 text-neutral-800 font-sans dark:bg-neutral-800 dark:text-neutral-50">
-        <div onClick={() => networkStateUpdate()} className={networkState === 'online' ? 'grid grid-cols-1 justify-items-center bg-green-400 text-black z-20' : 'grid grid-cols-1 justify-items-center bg-red-600 text-white animate-pulse transition delay-300 z-20'} >{networkState}</div>
-        <header className="p-2 border-b-4 border-orange-400 dark:bg-neutral-800 bg-neutral-100">
+        <header className={networkState === 'online' ? 'p-2 border-b-4 border-orange-400 dark:bg-neutral-800 bg-neutral-100' : 'p-2 border-b-4 border-red-600 dark:bg-neutral-800 bg-neutral-100'} >
           <div>
             {sessionState ? <div id="TopNavigation">
               <Navigation networkStateUpdate={networkStateUpdate} themeChange={themeToggle} networkState={networkState} /></div>
@@ -166,7 +170,10 @@ export default function App() {
                 </div>}
           </div>
         </header>
-        <Outlet context={[networkState, networkStateUpdate]}/>
+        <main className='min-h-screen'>
+          <Outlet context={[networkState, networkStateUpdate]} />
+        </main>  
+        <BottomNavigation />
         <ScrollRestoration />
         <Scripts />
         <LiveReload />

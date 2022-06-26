@@ -78,7 +78,7 @@ export default function App() {
                   hover:bg-orange-400"
           htmlFor="showSnippsCheck"
         >
-          Show snippets
+          Show Filters
         </label>
 
         <div className="dropdown block lg:grid lg:grid-cols-3 lg:col-span-2">
@@ -133,11 +133,9 @@ export default function App() {
               }}
             />
           </div>
-
-          <div id="Code-Snippet-Panel" className="">
             <div
               id="Code-Snippet-List"
-              className="p-4 lg:border-r-2 border-orange-400 lg:h-full"
+              className="max-h-screen overflow-y-scroll overflow-x-hidden p-4 border-orange-400 lg:h-full"
             >
               <h2 className="text-lg font-bold mb-2">Code snippets:</h2>
               {sortedSnipps.length === 0 ? (
@@ -215,7 +213,6 @@ export default function App() {
                     })}
                 </div>
               )}
-            </div>
           </div>
         </div>
         <Outlet />
