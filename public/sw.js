@@ -2,7 +2,7 @@
 console.log("Hello there, this message is being sent by your trusty service worker.");
 
 // Unique String Identifier of cache version -> Personally I want to add current date to the version (?)
-const serviceWorkerCacheVersion = "v1";
+const serviceWorkerVersion = "4";
 
 // Cache feature detection
 const cacheAvailable = 'caches' in self;
@@ -45,7 +45,7 @@ checkCache();
 self.addEventListener("install", event => {
   console.log("Service worker installed");
   const preCache = async () => {
-    cache = await caches.open(serviceWorkerCacheVersion);
+    cache = await caches.open(serviceWorkerVersion);
     return cache.addAll(urlsToCache);
   }
   try {
@@ -65,11 +65,11 @@ self.addEventListener("fetch", (event) => {
 // Event listener that subscribes to the activate event
 self.addEventListener("activate", event => {
   console.log("Service worker activated");
-  // Remove old version of cache (serviceWorkerCacheVersion)
+  // Remove old version of cache (serviceWorkerVersion)
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(cacheNames.map(cache => {
-        if (cache != serviceWorkerCacheVersion) {
+        if (cache != serviceWorkerVersion) {
           console.log("Service worker: cleared old cache");
           return caches.delete(cache);
         }
@@ -81,7 +81,8 @@ self.addEventListener("activate", event => {
 
 // Cache first approach - check cache, add to cache
 self.addEventListener("fetch", (event) => {
-    return caches.match(event.request.url)
+  console.log("cache");
+  return caches.match(event.request.url)
       // First we check if the requested url is already cached
       .then(cacheResponse => {
         if (cacheResponse && cacheResponse.status < 400) {
@@ -127,7 +128,7 @@ self.addEventListener("fetch", (event) => {
 // Runs always but handles offline events on fetch -> Handles offline Network requests because the 
 // request failed to reach the server. I think most practical implementation for our needs
 // Network first approachS
-self.addEventListener("fetch", event => {
+/* self.addEventListener("fetch", event => {
   // Prevent service worker from interferring with subscription service calls
   if (event.request.url.indexOf('/add-subscription') !== -1) {
     return false;
@@ -143,7 +144,7 @@ self.addEventListener("fetch", event => {
       return caches.match(event.request);
     })
   )
-});
+}); */
 
 self.addEventListener("push", (event) => {
   let notification = event.data.json();

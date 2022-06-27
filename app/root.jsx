@@ -71,6 +71,7 @@ if (typeof document === "undefined") {
     if ('serviceWorker' in navigator && 'PushManager' in window) {
       const registration = await navigator.serviceWorker.getRegistration();
       if (registration) {
+        registration.update();
         console.log("Service worker was registered on page load")
       } else {
         console.log("No service worker is currently registered")
@@ -84,17 +85,18 @@ if (typeof document === "undefined") {
   // Registers a service worker
   async function register() {
     if ('serviceWorker' in navigator) {
-      try {
-        // Change the service worker URL to see what happens when the SW doesn't exist
-        const registration = await navigator.serviceWorker.register("sw.js");
-        console.log("Service worker registered");
-      } catch (error) {
-        console.log("Error while registering " + error.message);
-      }
-    } else {
-      console.log("Servive workers API not available");
-    }
+      navigator.serviceWorker.register('sw.js', {scope: 'sw'}).then(function(registration) {
+        // registration worked
+        console.log('Registration succeeded.');
+          registration.update();
+      }).catch(function(error) {
+        // registration failed
+        console.log('Registration failed with ' + error);
+      });
+    };
   }
+
+
 
   // Unregister a currently registered service worker 
   async function unregister() {
