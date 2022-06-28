@@ -14,13 +14,13 @@ export default function NewSnippetNavButton({ networkState, networkStateUpdate, 
                         if (document.getElementById("showSnippsCheck")) {
                             const checkbox =
                                 document.getElementById("showSnippsCheck").checked;
-                            var w = window.innerWidth;
-                            if (checkbox === false && w > 1024) {
-                                document.getElementById("showSnippsCheck").click();
-                            }
-                            else if (checkbox === true && w < 1024) {
-                                document.getElementById("showSnippsCheck").click();
-                            } 
+                                var w = window.innerWidth;
+                                if (checkbox === false && w > 1024) {
+                                    document.getElementById("showSnippsCheck").click();
+                                }
+                                else if (checkbox === true && w < 1024) {
+                                    document.getElementById("showSnippsCheck").click();
+                                } 
                         }
                         return navigate("/snippets/new");
                     }
