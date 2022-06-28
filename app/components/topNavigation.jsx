@@ -17,7 +17,7 @@ export default function Navigation({
           type="button"
           onClick={() => {
             networkStateUpdate();
-            if (navigator.onLine) {
+            
               // Checking if the snippets are visible, if they are not then clicking "Show snippets" button
               if (document.getElementById("showSnippsCheck")) {
                 const checkbox =
@@ -28,7 +28,7 @@ export default function Navigation({
                 }
               }
               return navigate("/snippets");
-            }
+            
           }}
           className="hover:text-orange-400 text-neutral-800 dark:text-neutral-50 text-4xl text-left"
         >

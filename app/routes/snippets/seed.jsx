@@ -20,7 +20,7 @@ export async function action({ request }) {
   try {
     // Delete all Snippets on Database if not already empty
     if (params.snippetCount.toString() !== "0") {
-      const deletedManySnippets = await db.models.snip.deleteMany();
+      const deletedManySnippets = await db.models.snip.deleteMany({ user: userID });
       // Inset Default Seed to Database
       const insertDefaultSeedSnippets = await db.models.snip.insertMany(
         snippetSeed
