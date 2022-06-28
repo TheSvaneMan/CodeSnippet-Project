@@ -20,7 +20,10 @@ export async function loader({ request }) {
       status: 404,
     });
   }
-  return { userID: session.get("userID") };
+  const userLogin = {
+    userID: session.get("userID")
+  }
+  return json(userLogin, { status: 200, headers: { 'cache-control': 'private, max-age=604800, immutable' } });
 }
 
 export default function Index() {

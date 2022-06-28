@@ -66,13 +66,13 @@ if (typeof document === "undefined") {
     if ('serviceWorker' in navigator && 'PushManager' in window) {
       const registration = await navigator.serviceWorker.getRegistration();
       if (registration) {
-        console.log("Service worker was registered on page load")
+        console.log("Client: Service worker was registered on page load")
       } else {
-        console.log("No service worker is currently registered")
+        console.log("Client: No service worker is currently registered")
         register();
       }
     } else {
-      console.log("Service workers API not available or push messages");
+      console.log("Client: Service workers API not available or push messages");
     }
   }
 
@@ -82,12 +82,12 @@ if (typeof document === "undefined") {
       try {
         // Change the service worker URL to see what happens when the SW doesn't exist
         const registration = await navigator.serviceWorker.register("sw.js");
-        console.log("Service worker registered");
+        console.log("Client: Service worker registered");
       } catch (error) {
-        console.log("Error while registering " + error.message);
+        console.log("Client: Error while registering " + error.message);
       }
     } else {
-      console.log("Servive workers API not available");
+      console.log("Client: Servive workers API not available");
     }
   }
 
@@ -98,15 +98,15 @@ if (typeof document === "undefined") {
         const registration = await navigator.serviceWorker.getRegistration();
         if (registration) {
           const result = await registration.unregister();
-          console.log(result ? "Service worker unregistered" : "Service worker couldn't be unregistered");
+          console.log(result ? "Client: Service worker unregistered" : "Client: Service worker couldn't be unregistered");
         } else {
           console.log("There is no service worker to unregister");
         }
       } catch (error) {
-        console.log("Error while unregistering: " + error.message);
+        console.log("Client: Error while unregistering: " + error.message);
       }
     } else {
-      console.log("Service workers API not available");
+      console.log("Client: Service workers API not available");
     }
   }
 

@@ -2,8 +2,8 @@
 console.log("Hello there, this message is being sent by your trusty service worker.");
 
 // Unique String Identifier of cache version -> Personally I want to add current date to the version (?)
-const serviceWorkerCacheVersion = "v1";
-
+const serviceWorkerCacheVersion = "v4";
+console.log("Service Worker version: " + serviceWorkerCacheVersion);
 // Cache feature detection
 const cacheAvailable = 'caches' in self;
 
@@ -42,7 +42,7 @@ checkCache();
 // Install event listener to handle caching of network requests and responses on initial download
 // Event listener that subscribes to the install event
 self.addEventListener("install", event => {
-  console.log("Service worker installed");
+  console.log("Service Worker: installed");
   const preCache = async () => {
     const cache = await caches.open(serviceWorkerCacheVersion);
     return cache.addAll(urlsToCache);
@@ -51,7 +51,7 @@ self.addEventListener("install", event => {
     event.waitUntil(preCache());
   }
   catch (error) {
-    console.log("Service worker error catch on preCache : " + error.errors);
+    console.log("Service Worker: error catch on preCache : " + error.errors);
     return error.errors
   }
 })
@@ -63,7 +63,7 @@ self.addEventListener("fetch", (event) => {
 
 // Event listener that subscribes to the activate event
 self.addEventListener("activate", event => {
-  console.log("Service worker activated");
+  console.log("Service Worker: activated");
   // Remove old version of cache (serviceWorkerCacheVersion)
   event.waitUntil(
     caches.keys().then(cacheNames => {
@@ -80,20 +80,21 @@ self.addEventListener("activate", event => {
 
 // Cache first approach - check cache, add to cache
 self.addEventListener("fetch", async (event) => {
-  console.log("fetch");
+  console.log("Service Worker: fetch request");
   const cacheResponse = await caches.match(event.request.url);
   const cache = await caches.open(serviceWorkerCacheVersion);
   if (cacheResponse && cacheResponse.status < 400) {
-    console.log("cookie match");
+    console.log("Service Worker: cookie match");
     return cacheResponse;
   } else {
-    console.log("no cookie match");
+    console.log("Service Worker: no cookie match");
     return fetch(event.request.url).then(fetchResponse => {
       // We didn't get a match so we fetch the requested url
       if (!fetchResponse.ok)
         throw fetchResponse.statusText;
       // If fetchResponse is not ok, we throw an error
       cache.put(event.request.url, fetchResponse.clone());
+      console.log("Service Worker: Resource added to cache");
       // We put a clone of the fetched response to cache
       return fetchResponse;
       // We return fetchResponse

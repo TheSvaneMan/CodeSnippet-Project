@@ -1,7 +1,7 @@
 import {
   Link,
   Outlet,
-  useLoaderData,
+  useLoaderData, json
 } from "remix";
 import styles from "~/tailwind.css";
 import connectDb from "~/db/connectDb.server.js";

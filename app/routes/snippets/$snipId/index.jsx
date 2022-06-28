@@ -4,6 +4,16 @@ import React, { useState } from 'react';
 import { getSession, requireUserSession } from "~/sessions.server";
 import SnipView from '~/components/snipView';
 
+export function headers({
+  actionHeaders,
+  loaderHeaders,
+  parentHeaders,
+}) {
+  return {
+    "Cache-Control": "private, max-age=300",
+  };
+}
+
 export async function loader({ params, request }) {
   await requireUserSession(request);
   const db = await connectDb();
@@ -25,7 +35,7 @@ export async function loader({ params, request }) {
   if (snippet.user === userID) {
     snippetResponseObject.owner = true
   }
-  return json(snippetResponseObject);
+  return json(snippetResponseObject, { status: 200, headers: { 'cache-control': 'private, max-age=604800, immutable' } });
 }
 
 export default function SnipPage() {
