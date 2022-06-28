@@ -15,7 +15,7 @@ export default function SnipView({ snip }) {
     <div id="Snippet-Data" className="grid grid-cols-1 space-y-2 mb-5">
       <h1 className="text-2xl font-bold mb-2">{snip.title}</h1>
       <h1>
-        <b>Date:</b> {snip.date}
+        <b>Date:</b> {snip.updatedAt.slice(0, 10)}
       </h1>
       <h1>
         <b>Language:</b> {snip.language}

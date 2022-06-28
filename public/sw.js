@@ -83,21 +83,22 @@ self.addEventListener("fetch", async (event) => {
   console.log("Service Worker: fetch request");
   const cacheResponse = await caches.match(event.request.url);
   const cache = await caches.open(serviceWorkerCacheVersion);
+  
   if (cacheResponse && cacheResponse.status < 400) {
     console.log("Service Worker: cookie match");
     return cacheResponse;
   } else {
     console.log("Service Worker: no cookie match");
+    // We didn't get a match so we fetch the requested url
     return fetch(event.request.url).then(fetchResponse => {
-      // We didn't get a match so we fetch the requested url
-      if (!fetchResponse.ok)
+      if (!fetchResponse.ok) {
         throw fetchResponse.statusText;
-      // If fetchResponse is not ok, we throw an error
+        // If fetchResponse is not ok, we throw an error
+      }
       cache.put(event.request.url, fetchResponse.clone());
-      console.log("Service Worker: Resource added to cache");
       // We put a clone of the fetched response to cache
+      console.log("Service Worker: Resource added to cache");
       return fetchResponse;
-      // We return fetchResponse
     });
   }
 });
