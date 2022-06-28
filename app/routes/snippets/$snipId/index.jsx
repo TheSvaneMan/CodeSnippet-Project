@@ -35,7 +35,7 @@ export async function loader({ params, request }) {
   if (snippet.user === userID) {
     snippetResponseObject.owner = true
   }
-  return json(snippetResponseObject, { status: 200, headers: { 'cache-control': 'private, max-age=604800, immutable' } });
+  return json(snippetResponseObject, { status: 200, headers: { 'cache-control': 'private, max-age=604800, stale-while-revalidate' } });
 }
 
 export default function SnipPage() {
