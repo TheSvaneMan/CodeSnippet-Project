@@ -69,31 +69,49 @@ if (typeof document === "undefined") {
   // Check for a service worker registration status
   async function checkRegistration() {
     if ('serviceWorker' in navigator && 'PushManager' in window) {
-      const registration = await navigator.serviceWorker.getRegistration();
+      const registration = await navigator.serviceWorker.getRegistration('sw.js');
       if (registration) {
-        registration.update();
         console.log("Service worker was registered on page load")
+        updateServiceWorker(registration);
       } else {
-        console.log("No service worker is currently registered")
-        register();
+        console.log("No service worker is currently registered");
+        window.addEventListener('load', function () {
+          register();
+        });
       }
     } else {
       console.log("Service workers API not available or push messages");
     }
   }
 
+  // Update service worker
+  function updateServiceWorker(registration) {
+    try {
+      registration.update(); 
+      console.log("Service worker updated");
+    } catch (error) {
+      console.log("Failed to update service worker with error: " + error);
+    }
+  }
+
   // Registers a service worker
   async function register() {
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js', {scope: 'sw'}).then(function(registration) {
-        // registration worked
-        console.log('Registration succeeded.');
-          registration.update();
-      }).catch(function(error) {
-        // registration failed
-        console.log('Registration failed with ' + error);
-      });
-    };
+    try {
+        const registration = await navigator.serviceWorker.register('sw.js');
+        if (registration) {
+          // registration worked
+          console.log('Registration succeeded.');
+          try {
+            registration.update();
+            console.log('Service worker update succeeded.');
+          } catch (error) {
+            console.log('Service worker update failed: Error: ' + error);
+          }
+        }      
+    } catch (error) {
+      // registration failed
+      console.log('Registration failed with ' + error);
+    }
   }
 
 
@@ -183,13 +201,14 @@ export default function App() {
     </html>
   );
 }
+// --------------- Error Handling ------------------------------------------------- //
 
 export function CatchBoundary() {
   const caught = useCatch();
   return (
     <html lang="en" className='dark'>
       <head>
-        <title>Whoopsies</title>
+        <title>Home Page</title>
         <Meta />
         <Links />
       </head>
@@ -210,5 +229,24 @@ export function CatchBoundary() {
         <Scripts />
       </body>
     </html>
+  );
+}
+
+export function ErrorBoundary({ error }) {
+  return (
+    <div className='grid grid-cols-1 lg:col-span-3 bg-neutral-900 p-4 rounded-lg shadow-lg mx-5 space-y-10'>
+      <h3>Application Error</h3>
+      <div className='px-10 animate-pulse transition delay-300'>
+        <p className="text-white font-bold">
+          {error.name}: {error.message}
+        </p>
+      </div>
+      <p>
+        Seems like we had trouble handling your request. Route back to home page.
+      </p>
+      <Link to="/" className="py-1 px-4 border-2 
+                  border-orange-400 bg-neutral-800 text-neutral-50 rounded-3xl
+                  hover:bg-orange-400">Click here to return to the home page</Link>
+    </div>
   );
 }

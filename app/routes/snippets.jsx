@@ -60,6 +60,7 @@ export default function App() {
     sortedSnipps = snipps;
   }
 
+
   return (
     <section
       className={
@@ -78,7 +79,7 @@ export default function App() {
                   hover:bg-orange-400"
           htmlFor="showSnippsCheck"
         >
-          Show Filters
+          show snippets
         </label>
 
         <div className="dropdown block lg:grid lg:grid-cols-3 lg:col-span-2">
@@ -133,29 +134,29 @@ export default function App() {
               }}
             />
           </div>
-            <div
-              id="Code-Snippet-List"
-              className="max-h-screen overflow-y-scroll overflow-x-hidden p-4 border-orange-400 lg:h-full"
-            >
-              <h2 className="text-lg font-bold mb-2">Code snippets:</h2>
-              {sortedSnipps.length === 0 ? (
-                <div className="grid grid-cols-1 p-2 justify-items-end">
-                  <p className="animate-pulse transition delay-150 mb-4">
-                    You currently have no code snippets, click here to add a new
-                    one to get started :)
-                  </p>
-                  <Link
-                    to="/snippets/new"
-                    className="py-1 px-4 border-2 
+          <div
+            id="Code-Snippet-List"
+            className="max-h-screen overflow-y-scroll overflow-x-hidden p-4 border-orange-400 lg:h-full"
+          >
+            <h2 className="text-lg font-bold mb-2">Code snippets:</h2>
+            {sortedSnipps.length === 0 ? (
+              <div className="grid grid-cols-1 p-2 justify-items-end">
+                <p className="animate-pulse transition delay-150 mb-4">
+                  You currently have no code snippets, click here to add a new
+                  one to get started :)
+                </p>
+                <Link
+                  to="/snippets/new"
+                  className="py-1 px-4 border-2 
                   border-orange-400 bg-neutral-800 text-neutral-50 rounded-3xl
                   hover:bg-orange-400"
-                  >
-                    Create new Snippet
-                  </Link>
-                </div>
-              ) : (
-                <div className="flex flex-col">
-                  {sortedSnipps
+                >
+                  Create new Snippet
+                </Link>
+              </div>
+            ) : (
+              <div className="flex flex-col">
+                { sortedSnipps
                     .filter((snip) => {
                       if (searchTerm == "") {
                         return snip;
@@ -178,41 +179,42 @@ export default function App() {
                     })
                     .map((snip, i) => {
                       finalSnipps.push(snip);
-                    })}
-                  {finalSnipps
-                    .filter((snip) => {
-                      if (searchLanguage == "") {
-                        return snip;
-                      } else if (
-                        snip.language
-                          .toString()
-                          .toLowerCase()
-                          .includes(searchLanguage.toLowerCase())
-                      ) {
-                        return snip;
-                      }
                     })
-                    .map((snip, i) => {
-                      return (
-                        <Link
-                          className="hover:underline py-1"
-                          onClick={() => {
-                            var w = window.innerWidth;
-                            if (w < 1024) {
-                              document
-                                .getElementById("showSnippsCheck")
-                                .click();
-                            }
-                          }}
-                          to={`/snippets/${snip._id}`}
-                          key={snip._id}
-                        >
-                          {i + 1 + ". " + snip.title}
-                        </Link>
-                      );
-                    })}
-                </div>
-              )}
+                }
+                {finalSnipps
+                  .filter((snip) => {
+                    if (searchLanguage == "") {
+                      return snip;
+                    } else if (
+                      snip.language
+                        .toString()
+                        .toLowerCase()
+                        .includes(searchLanguage.toLowerCase())
+                    ) {
+                      return snip;
+                    }
+                  })
+                  .map((snip, i) => {
+                    return (
+                      <Link
+                        className="hover:underline py-1"
+                        onClick={() => {
+                          var w = window.innerWidth;
+                          if (w < 1024) {
+                            document
+                              .getElementById("showSnippsCheck")
+                              .click();
+                          }
+                        }}
+                        to={`/snippets/${snip._id}`}
+                        key={snip._id}
+                      >
+                        {i + 1 + ". " + snip.title}
+                      </Link>
+                    );
+                  })}
+              </div>
+            )}
           </div>
         </div>
         <Outlet />

@@ -22,7 +22,7 @@ export async function action({ request }) {
     const userID = session.get("userID");
     // Delete all Snippets on Database if not already empty
     if (snippetCount !== 0) {
-      const deletedManySnippets = await db.models.snip.deleteMany();
+      const deletedManySnippets = await db.models.snip.deleteMany({ user: userID });
       // Inset Default Seed to Database -> Data pumping to add more data
       for (let x = 0; x < 20; x++) {
         snippetSeed.forEach((snippetData, i) => {

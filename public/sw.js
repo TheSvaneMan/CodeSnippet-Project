@@ -2,16 +2,19 @@
 console.log("Hello there, this message is being sent by your trusty service worker.");
 
 // Unique String Identifier of cache version -> Personally I want to add current date to the version (?)
-const serviceWorkerVersion = "4";
+const swVersionControl = "1.1.4";
+const serviceWorkerVersion = swVersionControl;
+console.log("Service worker version: " + swVersionControl);
 
 // Cache feature detection
 const cacheAvailable = 'caches' in self;
 
 // ---------------------- CONTROL CACHE ----------------- //
-const urlsToCache = ['/', '/snippets', '/signup', '/favicon.ico', 'app.webmanifest', 'assets/logo/android-chrome-192x192.png'];
+const urlsToCache = ['/login', '/profile', '/offline', '/signup', '/favicon.ico', 'app.webmanifest', 'assets/logo/android-chrome-192x192.png'];
 
-// Domain 
+// Domain -- Change this before deploying
 const herokuDomain = "https://code-snipps-ww.herokuapp.com/";
+const localhostDomain = "http://localhost:3000/"
 const urlsNotToCache = ['/add-subscription'];
 // Total requests made
 let count = 0;
@@ -26,26 +29,17 @@ async function getClient(id) {
   }
 }
 
-
 // Checks if the cache API is available on the browser running the current code
 if (cacheAvailable === true) { console.log("Cache API available: " + cacheAvailable); }
 
 // This code executes in its own worker or thread !!
-
-// I was trying to see if /snippets exists in cache, It would be usefull to check if a button should work or not
-let cache;
-async function checkCache() {
-  const exist = await caches.has('/snippets');
-  // console.log("exist: " + exist);
-}
-checkCache();
 
 // Install event listener to handle caching of network requests and responses on initial download
 // Event listener that subscribes to the install event
 self.addEventListener("install", event => {
   console.log("Service worker installed");
   const preCache = async () => {
-    cache = await caches.open(serviceWorkerVersion);
+    const cache = await caches.open(serviceWorkerVersion);
     return cache.addAll(urlsToCache);
   }
   try {
@@ -57,10 +51,7 @@ self.addEventListener("install", event => {
   }
 })
 
-// Get the current user ID
-self.addEventListener("fetch", (event) => {
-  getClient(event.clientId);
-})
+
 
 // Event listener that subscribes to the activate event
 self.addEventListener("activate", event => {
@@ -78,73 +69,48 @@ self.addEventListener("activate", event => {
   );
 });
 
-
 // Cache first approach - check cache, add to cache
-self.addEventListener("fetch", (event) => {
-  console.log("cache");
-  return caches.match(event.request.url)
-      // First we check if the requested url is already cached
-      .then(cacheResponse => {
-        if (cacheResponse && cacheResponse.status < 400) {
-          // console.log("cookie match");
-          return cacheResponse;
-          // We got a match so we return the cached response
-        } else {
-          // console.log("no cookie match");
-          return fetch(event.request.url).then(fetchResponse => {
-            // We didn't get a match so we fetch the requested url
-            if (!fetchResponse.ok) throw fetchResponse.statusText;
-            // If fetchResponse is not ok, we throw an error
-            cache.put(event.request.url, fetchResponse.clone());
-            // We put a clone of the fetched response to cache
-            return fetchResponse;
-            // and we return the fetched response
-          })
-        }
-      })
+// --- Our service worker is doing super work offline -- //
+self.addEventListener("fetch", event => {
+  // Prevent POST requests from interferring with our service worker
+  if (event.request.method !== "POST") {
+    event.respondWith(
+      caches.match(event.request)
+        .then(cachedResponse => {
+          if (cachedResponse && cachedResponse.status < 400) {
+            return cachedResponse
+          } else {
+            return fetch(event.request).then(fetchResponse => {
+              // We didn't get a match so we fetch the requested url
+              if (!fetchResponse.ok) throw fetchResponse.statusText;
+              return caches.open(serviceWorkerVersion)
+                .then(function (cache) {
+                  // We put a clone of the fetched response to cache
+                  return cache.put(event.request, fetchResponse.clone());
+                }).then(function () {
+                  return fetchResponse;
+                });
+            }).catch(error => {
+              console.log("// --- You are now offline ---- //");
+              console.log("Offline Handler kicks in when no cache or network response available");
+              console.log("Offline: Error: " + error);
+              console.log("Offline: Requested URL : " + event.request.url);
+              console.log("Offline: Offline page being served");
+              return caches.open(serviceWorkerVersion).then(function (cache) {
+                // Create new response to handle the MIME type or find out what is wrong with the offline page
+                return cache.match('/snippets');
+              });
+            })
+          }
+        })
+    )
+  }
 });
 
-// ---------- Saves the snippet data and associated page data that was navigated to when online to cache for offline viewing --- //
-// Cache-specific search, so as to only save snippets once and prevent duplicates
-/* self.addEventListener("fetch", event => {
-  const checkCache = async () => {
-    const cache = await caches.open(serviceWorkerCacheVersion);
-    const response = await cache.match(event.request.url);
-    // This prevents caching pages the user hasn't visited yet
-    console.log(response ? "Asset is stored in cache :)" : "It's not in the cache");
-    // We save snippet data once the user has viewed it and it ISN'T in cache :) Happy data storage method imo
-    if (!response) {
-      const recentlyViewedSnippetCache = async () => {
-        const cache = await caches.open(serviceWorkerCacheVersion);
-        return cache.add(event.request.url);
-      }
-      event.waitUntil(recentlyViewedSnippetCache());
-    }
-  }
-  event.waitUntil(checkCache());  
-}); */
-
-// ----------------- OFFLINE FEATURES -------------------------------- //
-// Runs always but handles offline events on fetch -> Handles offline Network requests because the 
-// request failed to reach the server. I think most practical implementation for our needs
-// Network first approachS
-/* self.addEventListener("fetch", event => {
-  // Prevent service worker from interferring with subscription service calls
-  if (event.request.url.indexOf('/add-subscription') !== -1) {
-    return false;
-  } else if (event.request.url.indexOf('/notify-me') !== -1) {
-    return false;
-  } else if (event.request.url.indexOf('/snippets/seed') !== -1) {
-    console.log("Check validates");
-    return false;
-  }
-  event.respondWith(
-    fetch(event.request).catch(error => {
-      //  console.log("cache: " + caches.match(event.request));
-      return caches.match(event.request);
-    })
-  )
-}); */
+// Get the current user ID
+self.addEventListener("fetch", (event) => {
+  getClient(event.clientId);
+})
 
 self.addEventListener("push", (event) => {
   let notification = event.data.json();

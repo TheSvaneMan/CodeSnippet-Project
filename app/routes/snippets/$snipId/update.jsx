@@ -7,7 +7,6 @@ export async function loader({ params }) {
   const snip = await db.models.snip.findById(params.snipId);
   return snip;
 }
-console.log(loader);
 
 export async function action({ request, params }) {
   const form = await request.formData();

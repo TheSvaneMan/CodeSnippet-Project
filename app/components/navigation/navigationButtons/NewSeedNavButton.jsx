@@ -13,9 +13,13 @@ export default function NewSeedNavButton({ networkState, networkStateUpdate, set
                             // Checking if the snippets are visible, if they are then clicking "Show snippets" button
                             if (document.getElementById("showSnippsCheck")) {
                                 const checkbox = document.getElementById("showSnippsCheck").checked;
-                                if (checkbox === false) {
+                                var w = window.innerWidth;
+                                if (checkbox === false && w > 1024) {
                                     document.getElementById("showSnippsCheck").click();
                                 }
+                                else if (checkbox === true && w < 1024) {
+                                    document.getElementById("showSnippsCheck").click();
+                                } 
                             }
                             return navigate("/snippets/seed");
                         }
