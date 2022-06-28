@@ -2,7 +2,7 @@
 console.log("Hello there, this message is being sent by your trusty service worker.");
 
 // Unique String Identifier of cache version -> Personally I want to add current date to the version (?)
-const serviceWorkerCacheVersion = "v4";
+const serviceWorkerCacheVersion = "v1";
 
 // Cache feature detection
 const cacheAvailable = 'caches' in self;
@@ -33,7 +33,6 @@ if (cacheAvailable === true) { console.log("Cache API available: " + cacheAvaila
 // This code executes in its own worker or thread !!
 
 // I was trying to see if /snippets exists in cache, It would be usefull to check if a button should work or not
-let cache;
 async function checkCache() {
   const exist = await caches.has('/snippets');
   console.log("exist: " + exist);
@@ -45,7 +44,7 @@ checkCache();
 self.addEventListener("install", event => {
   console.log("Service worker installed");
   const preCache = async () => {
-    cache = await caches.open(serviceWorkerCacheVersion);
+    const cache = await caches.open(serviceWorkerCacheVersion);
     return cache.addAll(urlsToCache);
   }
   try {
@@ -83,7 +82,7 @@ self.addEventListener("activate", event => {
 self.addEventListener("fetch", async (event) => {
   console.log("fetch");
   const cacheResponse = await caches.match(event.request.url);
-  cache = await caches.open(serviceWorkerCacheVersion);
+  const cache = await caches.open(serviceWorkerCacheVersion);
   if (cacheResponse && cacheResponse.status < 400) {
     console.log("cookie match");
     return cacheResponse;
@@ -97,6 +96,7 @@ self.addEventListener("fetch", async (event) => {
       cache.put(event.request.url, fetchResponse.clone());
       // We put a clone of the fetched response to cache
       return fetchResponse;
+      // We return fetchResponse
     });
   }
 });
