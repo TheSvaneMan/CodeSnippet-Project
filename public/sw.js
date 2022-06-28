@@ -82,7 +82,8 @@ self.addEventListener("activate", event => {
 // Cache first approach - check cache, add to cache
 self.addEventListener("fetch", async (event) => {
   console.log("fetch");
-    const cacheResponse = await caches.match(event.request.url);
+  const cacheResponse = await caches.match(event.request.url);
+  cache = await caches.open(serviceWorkerCacheVersion);
   if (cacheResponse && cacheResponse.status < 400) {
     console.log("cookie match");
     return cacheResponse;
