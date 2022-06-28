@@ -1,8 +1,8 @@
 [
         {
-        "title": "Remove old version of cache (serviceWorkerCacheVersion) - Wiktor",
+        "title": "Remove old version of cache - Wiktor",
         "language": "Javascript",
-        "code": "blabla",
+        "code": "(serviceWorkerCacheVersion)",
         "description": "When the service worker is being activated, it checks cache version and if it's different from the one specified at the top of the Service Worker it deletes it",
         "tags": [
             "JavaScript",

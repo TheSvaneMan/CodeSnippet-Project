@@ -31,7 +31,6 @@ export default function Createsnip() {
   const actionData = useActionData();
   const [tags, setTags] = useState([]);
   const { userID } = useLoaderData();
-  console.log(actionData);
   const current = new Date();
   const date = `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`;
   useEffect(() => {

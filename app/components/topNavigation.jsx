@@ -24,7 +24,6 @@ export default function Navigation({
                   document.getElementById("showSnippsCheck").checked;
                 if (checkbox === true) {
                   document.getElementById("showSnippsCheck").click();
-                  console.log("checbkox clicked");
                 }
               }
               return navigate("/snippets");
@@ -96,7 +95,6 @@ export default function Navigation({
                       onClick={() => {
                         networkStateUpdate();
                         if (navigator.onLine) {
-                          console.log("online");
                           setIsNavOpen(false);
                           // Checking if the snippets are visible, if they are then clicking "Show snippets" button
                           if (document.getElementById("showSnippsCheck")) {
@@ -104,7 +102,6 @@ export default function Navigation({
                               document.getElementById("showSnippsCheck").checked;
                             if (checkbox === true) {
                               document.getElementById("showSnippsCheck").click();
-                              console.log("snippets hidden");
                             }
                           }
                             return navigate("/snippets/new");
@@ -130,14 +127,13 @@ export default function Navigation({
                       onClick={() => {
                         networkStateUpdate();
                         if (navigator.onLine) {
-                          console.log("online");
                           setIsNavOpen(false);
                           // Checking if the snippets are visible, if they are then clicking "Show snippets" button
                           if (document.getElementById("showSnippsCheck")) {
                             const checkbox = document.getElementById("showSnippsCheck").checked;
                             if (checkbox === true) {
                               document.getElementById("showSnippsCheck").click();
-                              console.log("snippets hidden");
+
                             }
                           }
                             return navigate("/snippets/seed");
@@ -207,7 +203,6 @@ export default function Navigation({
                       onClick={() => {
                         networkStateUpdate();
                         if (navigator.onLine) {
-                          console.log("online");
                           setIsNavOpen(false);
                           // Checking if the snippets are visible, if they are then clicking "Show snippets" button
                           if (document.getElementById("showSnippsCheck")) {
@@ -215,7 +210,6 @@ export default function Navigation({
                               document.getElementById("showSnippsCheck").checked;
                             if (checkbox === false) {
                               document.getElementById("showSnippsCheck").click();
-                              console.log("snippets hidden");
                             }
                           }
                             return navigate("/snippets/new");
@@ -241,14 +235,12 @@ export default function Navigation({
                       onClick={() => {
                         networkStateUpdate();
                         if (navigator.onLine) {
-                          console.log("online");
                           setIsNavOpen(false);
                           // Checking if the snippets are visible, if they are then clicking "Show snippets" button
                           if (document.getElementById("showSnippsCheck")) {
                             const checkbox = document.getElementById("showSnippsCheck").checked;
                             if (checkbox === false) {
                               document.getElementById("showSnippsCheck").click();
-                              console.log("snippets hidden");
                             }
                           }
                             return navigate("/snippets/seed");

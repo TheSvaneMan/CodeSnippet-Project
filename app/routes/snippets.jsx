@@ -1,17 +1,11 @@
 import {
-  Links,
   Link,
-  LiveReload,
-  Meta,
   Outlet,
-  Scripts,
-  ScrollRestoration,
   useLoaderData,
-  Form,
 } from "remix";
 import styles from "~/tailwind.css";
 import connectDb from "~/db/connectDb.server.js";
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import { requireUserSession, getSession } from "~/sessions.server";
 
 export const links = () => [
