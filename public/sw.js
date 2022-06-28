@@ -32,14 +32,6 @@ if (cacheAvailable === true) { console.log("Cache API available: " + cacheAvaila
 
 // This code executes in its own worker or thread !!
 
-// I was trying to see if /snippets exists in cache, It would be usefull to check if a button should work or not
-let cache;
-async function checkCache() {
-  const exist = await caches.has('/snippets');
-  // console.log("exist: " + exist);
-}
-checkCache();
-
 // Install event listener to handle caching of network requests and responses on initial download
 // Event listener that subscribes to the install event
 self.addEventListener("install", event => {

@@ -78,7 +78,7 @@ export default function App() {
                   hover:bg-orange-400"
           htmlFor="showSnippsCheck"
         >
-          Show Filters
+          Show snippets
         </label>
 
         <div className="dropdown block lg:grid lg:grid-cols-3 lg:col-span-2">

@@ -58,7 +58,7 @@ export default function Index() {
   const [showSignWarning, setSignWarning] = useState(false);
   
   return (
-    <div id="SignUpPage" className='grid grid-cols-1 justify-items-center align-middle min-h-full'>
+    <div id="SignUpPage" className='grid grid-cols-1 justify-items-center align-middle mt-[30%]'>
       <h1 className="text-2xl font-bold my-4">Sign up</h1>
       <Form method="post" className="w-56">
       <div id="signup-input-fields" className='grid grid-cols-1 space-y-5'>

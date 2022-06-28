@@ -50,7 +50,7 @@ export default function Index() {
     return (
       <div
         id="SignInPage"
-        className="grid grid-cols-1 justify-items-center align-middle min-h-full"
+        className="grid grid-cols-1 justify-items-center align-middle mt-[30%]"
       >
         <h1 className="text-2xl font-bold my-4">Log in</h1>
         <Form method="post" name="loginForm" reloadDocument className="w-56">
