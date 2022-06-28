@@ -2,7 +2,7 @@
 console.log("Hello there, this message is being sent by your trusty service worker.");
 
 // Unique String Identifier of cache version -> Personally I want to add current date to the version (?)
-const serviceWorkerCacheVersion = "v1";
+const serviceWorkerCacheVersion = "v4";
 
 // Cache feature detection
 const cacheAvailable = 'caches' in self;
@@ -80,28 +80,24 @@ self.addEventListener("activate", event => {
 
 
 // Cache first approach - check cache, add to cache
-self.addEventListener("fetch", (event) => {
-
-    return caches.match(event.request.url)
-      // First we check if the requested url is already cached
-      .then(cacheResponse => {
-        if (cacheResponse && cacheResponse.status < 400) {
-          console.log("cookie match");
-          return cacheResponse;
-          // We got a match so we return the cached response
-        } else {
-          console.log("no cookie match");
-          return fetch(event.request.url).then(fetchResponse => {
-            // We didn't get a match so we fetch the requested url
-            if (!fetchResponse.ok) throw fetchResponse.statusText;
-            // If fetchResponse is not ok, we throw an error
-            cache.put(event.request.url, fetchResponse.clone());
-            // We put a clone of the fetched response to cache
-            return fetchResponse;
-            // and we return the fetched response
-          })
-        }
-      })
+self.addEventListener("fetch", async (event) => {
+  console.log("fetch");
+    const cacheResponse = await caches.match(event.request.url);
+  if (cacheResponse && cacheResponse.status < 400) {
+    console.log("cookie match");
+    return cacheResponse;
+  } else {
+    console.log("no cookie match");
+    return fetch(event.request.url).then(fetchResponse => {
+      // We didn't get a match so we fetch the requested url
+      if (!fetchResponse.ok)
+        throw fetchResponse.statusText;
+      // If fetchResponse is not ok, we throw an error
+      cache.put(event.request.url, fetchResponse.clone());
+      // We put a clone of the fetched response to cache
+      return fetchResponse;
+    });
+  }
 });
 
 // ---------- Saves the snippet data and associated page data that was navigated to when online to cache for offline viewing --- //
