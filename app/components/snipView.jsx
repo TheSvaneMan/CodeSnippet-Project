@@ -46,9 +46,9 @@ export default function SnipView({ snip }) {
               })
             )}
           </div>
-      <h1>
+      <p>
         <b>Description:</b> {snip.description}
-      </h1>
+      </p>
       <div id="Code-block" className="grid grid-cols-1 space-y-4">
         <b>Code:</b>
         <CodeMirror

@@ -2,13 +2,13 @@
 console.log("Hello there, this message is being sent by your trusty service worker.");
 
 // Unique String Identifier of cache version -> Personally I want to add current date to the version (?)
-const serviceWorkerCacheVersion = "1.0.7";
+const serviceWorkerCacheVersion = "1.0.16";
 console.log("Service Worker version: " + serviceWorkerCacheVersion);
 // Cache feature detection
 const cacheAvailable = 'caches' in self;
 
 // ---------------------- CONTROL CACHE ----------------- //
-const urlsToCache = ['/', '/snippets', '/signup', '/favicon.ico', 'app.webmanifest', 'assets/logo/android-chrome-192x192.png'];
+const urlsToCache = ['/', '/snippets', '/favicon.ico', 'app.webmanifest', 'assets/logo/android-chrome-192x192.png'];
 
 // Domain 
 const herokuDomain = "https://code-snipps-ww.herokuapp.com/";

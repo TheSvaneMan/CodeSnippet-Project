@@ -2,11 +2,7 @@ import { Link, Form } from "remix";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function Navigation({
-  networkStateUpdate,
-  themeChange,
-  networkState,
-}) {
+export default function Navigation({ networkStateUpdate, themeChange, networkState }) {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -133,7 +129,6 @@ export default function Navigation({
                             const checkbox = document.getElementById("showSnippsCheck").checked;
                             if (checkbox === true) {
                               document.getElementById("showSnippsCheck").click();
-
                             }
                           }
                             return navigate("/snippets/seed");

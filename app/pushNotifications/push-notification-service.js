@@ -17,9 +17,14 @@ async function postToServer(url, data) {
 
 export async function subscribeToPush() {
     const registration = await navigator.serviceWorker.getRegistration();
+    // ServiceWorkerRegistration object whose scope URL matches the provided client URL.
     const subscription = await registration.pushManager.subscribe({
+    // It returns a Promise that resolves to a PushSubscription object containing details of a push subscription.
         userVisibleOnly: true,
+        // A boolean indicating that the returned push subscription will only be used for messages whose effect is made visible to the user.
         applicationServerKey: urlB64ToUint8Array(VAPID_PUBLIC_KEY)
+        // The applicationServerKey read-only property of the PushSubscriptionOptions interface contains the public key used by the push server.
+        // It's basically a security measure that prevents anyone else sending messages to an application's users.
     });
     await postToServer('/add-subscription', subscription);
     console.log("Subscribed to Push Notifications");

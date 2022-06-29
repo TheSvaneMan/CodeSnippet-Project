@@ -25,7 +25,7 @@ export async function loader({ params, request }) {
   if (snippet.user === userID) {
     snippetResponseObject.owner = true
   }
-  return json(snippetResponseObject, { status: 200, headers: { 'cache-control': 'private, max-age=604800, stale-while-revalidate' } });
+  return json(snippetResponseObject, { status: 200, headers: { 'cache-control': 'private, max-age=5, stale-while-revalidate=31536000' } });
 }
 
 export default function SnipPage() {
@@ -48,20 +48,23 @@ export default function SnipPage() {
   }
 
   // Copy to clipboard function
-  const copySnippetURL = (e) => {
-    e.preventDefault();
-    /* Get the text field */
-    var copyText = document.getElementById("snippetURL");
-
-    /* Select the text field */
-    copyText.select();
-    copyText.setSelectionRange(0, 99999); /* For mobile devices */
-
-    /* Copy the text inside the text field */
-    navigator.clipboard.writeText(copyText.value);
-
-    /* Alert the copied text */
-    alert("Copied the snippet url: " + copyText.value);
+  const copySnippetURL = async (e) => {
+    try {
+      /* It prevents a link from following the URL so that the browser can't go another page. 
+      It prevents a submit button from submitting a form. */
+      e.preventDefault();
+      /* Get the text field */
+      var copyText = document.getElementById("snippetURL");
+      /* Select the text field */
+      copyText.select();
+      copyText.setSelectionRange(0, 99999); /* For mobile devices */
+      /* Copy the text inside the text field */
+      await navigator.clipboard.writeText(copyText.value);
+      /* Alert the copied text */
+      alert("Copied the snippet url: " + copyText.value);
+    } catch (error) {
+      console.error('Failed to coopy snippet url: ', error);
+    }
   }
 
   return (
@@ -176,7 +179,7 @@ function TogglePrivacy({ snip }) {
       <input type="hidden" name="shareable" value={snip.shareable}></input>
       <button type="submit" className="py-1 px-4 border-2 lg:mx-4 
                   border-orange-400 bg-neutral-800 text-neutral-50 rounded-3xl
-                  hover:bg-orange-400">{snip.shareable ? 'public' : 'private'}</button>
+                  hover:bg-orange-400">{snip.shareable ? 'private' : 'public'}</button>
     </form>
   )
 }

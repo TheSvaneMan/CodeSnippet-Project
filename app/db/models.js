@@ -22,13 +22,13 @@ const snippetSchema = new Schema({
     type: String,
     required: true,
     minLength: [10, "That's too short"],
-    maxLength: [800, "That's too long"],
+    maxLength: [2000, "That's too long"],
   },
   description: {
     type: String,
     required: true,
     minLength: [5, "That's too short"],
-    maxLength: [240, "That's too long"],
+    maxLength: [800, "That's too long"],
   },
   tags: [{ type: String, minLenght: [1, "That is too shorts"], maxLength: [10, "That is too long"], lowercase: true }],
   favorite: {

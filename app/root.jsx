@@ -8,6 +8,7 @@ import {
   ScrollRestoration,
   useLoaderData,
   useCatch,
+  json
 } from "remix";
 import styles from "~/tailwind.css";
 import { useState, useEffect } from "react";
@@ -23,11 +24,11 @@ export async function loader({ request }) {
   if (!session.has("userID")) {
     // if there is no user session, don't show top navigation
     let showNav = false;
-    return showNav;
+    return json(showNav, { status: 200, headers: { 'cache-control': 'public, max-age=86400, stale-while-revalidate=604800' } });
   } else {
     // if there is a user session, show top navigation
     let showNav = true;
-    return showNav;
+    return json(showNav, { status: 200, headers: { 'cache-control': 'public, max-age=86400, stale-while-revalidate=604800' } });
   }
 }
 
@@ -92,7 +93,7 @@ if (typeof document === "undefined") {
   }
 
   // Unregister a currently registered service worker 
-  async function unregister() {
+  /* async function unregister() {
     if ('serviceWorker' in navigator) {
       try {
         const registration = await navigator.serviceWorker.getRegistration();
@@ -108,7 +109,7 @@ if (typeof document === "undefined") {
     } else {
       console.log("Client: Service workers API not available");
     }
-  }
+  } */
 
   // Register service worker
   checkRegistration();
