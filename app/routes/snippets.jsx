@@ -191,7 +191,7 @@ export default function App() {
                     .map((snip, i) => {
                       return (
                         <Link
-                          className="hover:underline py-1"
+                          className="hover:underline py-2 px-4"
                           onClick={() => {
                             var w = window.innerWidth;
                             if (w < 1024) {
