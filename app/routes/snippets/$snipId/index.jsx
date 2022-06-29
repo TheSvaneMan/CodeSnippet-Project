@@ -4,16 +4,6 @@ import React, { useState } from 'react';
 import { getSession, requireUserSession } from "~/sessions.server";
 import SnipView from '~/components/snipView';
 
-export function headers({
-  actionHeaders,
-  loaderHeaders,
-  parentHeaders,
-}) {
-  return {
-    "Cache-Control": "private, max-age=300",
-  };
-}
-
 export async function loader({ params, request }) {
   await requireUserSession(request);
   const db = await connectDb();

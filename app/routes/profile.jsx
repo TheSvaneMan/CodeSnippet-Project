@@ -2,7 +2,7 @@ import { getSession, requireUserSession } from '~/sessions.server';
 // Push Notification Service
 import { subscribeToPush, unsubscribeFromPush, notifyMe } from '../pushNotifications/push-notification-service';
 import connectDb from '~/db/connectDb.server';
-import { useLoaderData } from 'remix';
+import { useLoaderData, json } from 'remix';
 
 export async function loader({ request }) {
     const db = await connectDb();
@@ -11,7 +11,8 @@ export async function loader({ request }) {
     const userID = session.get("userID");
     // Returns User 
     const userData = await db.models.user.find({ _id: userID });
-    return userData[0];
+    const user = userData[0];
+    return json(user, { status: 200, headers: { 'cache-control': 'private, max-age=604800, stale-while-revalidate=86400' } });
 }
 
 // This check is !important

@@ -2,7 +2,7 @@
 console.log("Hello there, this message is being sent by your trusty service worker.");
 
 // Unique String Identifier of cache version -> Personally I want to add current date to the version (?)
-const serviceWorkerCacheVersion = "v4";
+const serviceWorkerCacheVersion = "1.0.7";
 console.log("Service Worker version: " + serviceWorkerCacheVersion);
 // Cache feature detection
 const cacheAvailable = 'caches' in self;

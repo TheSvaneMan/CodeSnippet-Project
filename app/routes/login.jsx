@@ -23,7 +23,8 @@ export async function loader({ request }) {
   const userLogin = {
     userID: session.get("userID")
   }
-  return json(userLogin, { status: 200, headers: { 'cache-control': 'private, max-age=604800, immutable' } });
+  // Alternative is no-store to prevent private data being stored in cache
+  return json(userLogin, { status: 200, headers: { 'cache-control': 'private, max-age=604800' } });
 }
 
 export default function Index() {
