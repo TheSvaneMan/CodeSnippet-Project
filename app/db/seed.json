@@ -1,18 +1,4 @@
 [
-        {
-        "title": "Remove old version of cache - Wiktor",
-        "language": "Javascript",
-        "code": "(serviceWorkerCacheVersion)",
-        "description": "When the service worker is being activated, it checks cache version and if it's different from the one specified at the top of the Service Worker it deletes it",
-        "tags": [
-            "JavaScript",
-            "Service worker",
-            "Cache"
-        ],
-        "favorite": false,
-        "shareable": false,
-        "user":""
-    },
     {
         "title": "Snippet C",
         "language": "Javascript",
@@ -58,7 +44,21 @@
     },
     {
         "title": "Snippet O",
-        "language": "Javascript",
+        "language": "HTML",
+        "code": "function myFunction(p1, p2) {return p1 * p2;   // The function returns the product of p1 and p2}",
+        "description": "A JavaScript function is a block of code designed to perform a particular task. A JavaScript function is executed when 'something' invokes it (calls it).",
+        "tags": [
+            "JavaScript",
+            "Function",
+            "Important"
+        ],
+        "favorite": true,
+        "shareable": false,
+        "user":""
+    },
+    {
+        "title": "Snippet A",
+        "language": "CSS",
         "code": "function myFunction(p1, p2) {return p1 * p2;   // The function returns the product of p1 and p2}",
         "description": "A JavaScript function is a block of code designed to perform a particular task. A JavaScript function is executed when 'something' invokes it (calls it).",
         "tags": [
