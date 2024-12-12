@@ -23,7 +23,7 @@
     "bcryptjs": "^2.4.3",
     "codemirror": "^5.65.6",
     "concurrently": "^7.0.0",
-    "mongoose": "^8.3.0",
+    "mongoose": "^8.8.3",
     "prismjs": "^1.27.0",
     "react": "^17.0.2",
     "react-codemirror6": "1.1.0",
