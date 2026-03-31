@@ -1,4 +1,4 @@
-import { redirect } from "remix";
+import { redirect } from "@remix-run/node";
 import { getSession, destroySession } from "../sessions.server";
 
 export async function action({ request }) {

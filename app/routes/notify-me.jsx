@@ -1,4 +1,4 @@
-import { json } from 'remix';
+import { json } from "@remix-run/node";
 import connectDb from '~/db/connectDb.server';
 import { requireUserSession, getSession } from "~/sessions.server";
 import webpush from 'web-push';

@@ -1,12 +1,11 @@
 // app/routes/snippets/seed.jsx
 import {
   useLoaderData,
-  json,
   Form,
-  redirect,
   useNavigation,
   useNavigate,
 } from "@remix-run/react";
+import { json, redirect } from "@remix-run/node";
 import { useState } from "react";
 import connectDb from "~/db/connectDb.server";
 import { getSession, requireUserSession } from "~/sessions.server";

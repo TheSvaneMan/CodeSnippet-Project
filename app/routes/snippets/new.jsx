@@ -1,11 +1,6 @@
 // app/routes/snippets/new.jsx
-import {
-  Form,
-  redirect,
-  json,
-  useActionData,
-  useNavigation,
-} from "@remix-run/react";
+import { Form, useActionData, useNavigation } from "@remix-run/react";
+import { json, redirect } from "@remix-run/node";
 import { useState } from "react";
 import connectDb from "~/db/connectDb.server";
 import { requireUserSession, getSession } from "~/sessions.server";

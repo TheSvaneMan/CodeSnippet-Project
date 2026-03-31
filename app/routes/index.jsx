@@ -1,4 +1,5 @@
-import { redirect, Link, useCatch } from "remix";
+import { redirect } from "@remix-run/node";
+import { Link, useCatch } from "@remix-run/react";
 import { getSession } from "~/sessions.server";
 
 export async function loader({ request }) {
