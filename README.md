@@ -1,53 +1,39 @@
-# Welcome to Remix!
+# 📝 CodeSnippet Project
 
-- [Remix Docs](https://remix.run/docs)
+> **⚠️ DEPRECATION NOTICE**
+> This project is scheduled for sunset. Active maintenance and security patching will cease on **April 1st, 2026**. The repository will remain available for archival purposes but will not receive further updates.
 
-## Development
+A lightweight web application for managing and sharing code snippets, built with Remix.
 
-From your terminal:
+## 🛠 Modernized Stack
+* **Framework:** [Remix](https://remix.run/)
+* **Runtime:** [Node.js](https://nodejs.org/)
+* **Package Manager:** [Bun](https://bun.sh/)
+* **Styling:** [Tailwind CSS](https://tailwindcss.com/)
 
-```sh
-npm run dev
-```
+## 🚀 Getting Started
 
-This starts your app in development mode, rebuilding assets on file changes.
+### Installation
+This project has been updated to bypass legacy setup scripts. Use Bun for optimal performance:
 
-## Deployment
+```bash
+bun install --ignore-scripts# 📝 CodeSnippet Project
 
-First, build your app for production:
+> **⚠️ DEPRECATION NOTICE**
+> This project is scheduled for sunset. Active maintenance and security patching will cease on **April 1st, 2026**. The repository will remain available for archival purposes but will not receive further updates.
 
-```sh
-npm run build
-```
+A lightweight web application for managing and sharing code snippets, built with Remix.
 
-Then run the app in production mode:
+## 🛠 Modernized Stack
+* **Framework:** [Remix](https://remix.run/)
+* **Runtime:** [Node.js](https://nodejs.org/)
+* **Package Manager:** [Bun](https://bun.sh/)
+* **Styling:** [Tailwind CSS](https://tailwindcss.com/)
 
-```sh
-npm start
-```
+## 🚀 Getting Started
 
-Now you'll need to pick a host to deploy it to.
+### Installation
+This project has been updated to bypass legacy setup scripts. Use Bun for optimal performance:
 
-### DIY
-
-If you're familiar with deploying node applications, the built-in Remix app server is production-ready.
-
-Make sure to deploy the output of `remix build`
-
-- `build/`
-- `public/build/`
-
-### Using a Template
-
-When you ran `npx create-remix@latest` there were a few choices for hosting. You can run that again to create a new project, then copy over your `app/` folder to the new project that's pre-configured for your target server.
-
-```sh
-cd ..
-# create a new project, and pick a pre-configured host
-npx create-remix@latest
-cd my-new-remix-app
-# remove the new project's app (not the old one!)
-rm -rf app
-# copy your app over
-cp -R ../my-old-remix-app/app app
-```
+```bash
+bun install --ignore-scripts

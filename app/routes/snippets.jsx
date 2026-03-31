@@ -1,239 +1,198 @@
+// app/routes/snippets.jsx
 import {
-  Link,
   Outlet,
-  useLoaderData, json
-} from "remix";
-import styles from "~/tailwind.css";
-import connectDb from "~/db/connectDb.server.js";
+  useLoaderData,
+  useNavigate,
+  useLocation,
+  Link,
+} from "@remix-run/react";
+import { json } from "@remix-run/node";
 import { useState } from "react";
+import connectDb from "~/db/connectDb.server.js";
 import { requireUserSession, getSession } from "~/sessions.server";
 
-export const links = () => [
-  {
-    rel: "stylesheet",
-    href: styles,
-  },
-];
-
-export function meta() {
-  return {
-    charset: "utf-8",
-    title: "KeepSnip",
-    viewport: "width=device-width,initial-scale=1",
-  };
-}
+// Import Material 3 Components
+import "@material/web/textfield/outlined-text-field.js";
+import "@material/web/select/outlined-select.js";
+import "@material/web/select/select-option.js";
+import "@material/web/list/list.js";
+import "@material/web/list/list-item.js";
+import "@material/web/divider/divider.js";
+import "@material/web/icon/icon.js";
 
 export async function loader({ request }) {
-  const db = await connectDb();
   await requireUserSession(request);
+  const db = await connectDb();
   const session = await getSession(request.headers.get("Cookie"));
   const userID = session.get("userID");
-  const snipps = await db.models.snip.find({ user: { $in: [userID, ""] } });
-  return snipps;
+
+  // Fetch snippets belonging to the user OR default public ones
+  const snipps = await db.models.snip
+    .find({ user: { $in: [userID, ""] } })
+    .lean();
+
+  return json(snipps, {
+    headers: {
+      "cache-control": "private, max-age=60, stale-while-revalidate=86400",
+    },
+  });
 }
 
-export default function App() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [searchLanguage, setLanguage] = useState("");
-  const [sort, setSort] = useState("");
+export default function SnippetsLayout() {
   const snipps = useLoaderData();
-  const finalSnipps = [];
-  const [theme, setTheme] = useState("light");
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  // sorting
-  let sortedSnipps = [];
-  if (sort == "sortByName") {
-    sortedSnipps = [...snipps].sort(function (a, b) {
-      return a.title.localeCompare(b.title);
+  // State for filtering and sorting
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchLanguage, setSearchLanguage] = useState("");
+  const [sortBy, setSortBy] = useState("date");
+
+  // Determine if we are viewing a specific snippet (for mobile responsive hiding)
+  const isViewingSnippet =
+    location.pathname !== "/snippets" && location.pathname !== "/snippets/";
+
+  // Highly optimized filtering and sorting chain
+  const filteredSnippets = snipps
+    .filter((snip) => {
+      const matchesSearch =
+        snip.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        snip.tags.some((tag) =>
+          tag.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      const matchesLang = searchLanguage
+        ? snip.language.toLowerCase() === searchLanguage.toLowerCase()
+        : true;
+      return matchesSearch && matchesLang;
+    })
+    .sort((a, b) => {
+      if (sortBy === "name") return a.title.localeCompare(b.title);
+      if (sortBy === "favorite")
+        return a.favorite === b.favorite ? 0 : a.favorite ? -1 : 1;
+      return new Date(b.createdAt) - new Date(a.createdAt); // Default: Newest first
     });
-  } else if (sort == "showFavorite") {
-    sortedSnipps = snipps.filter(function (snip) {
-      return snip.favorite == true;
-    });
-  } else {
-    sortedSnipps = snipps;
-  }
 
   return (
-    <section
-      className={
-        theme == "light" ? "light grid lg:h-screen" : "dark grid lg:h-screen"
-      }
-    >
-      <div id="Snippet-Page" className="grid grid-cols-1 lg:grid-cols-5 ">
-        <input
-          className="showSnippsCheck"
-          type="checkbox"
-          id="showSnippsCheck"
-        />
-        <label
-          className="showSnippsBtn mt-3 py-1 px-3 border-2 w-36 text-center relative left-1/2 transform -translate-x-1/2
-                  border-orange-400 bg-neutral-50 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-50 rounded-3xl
-                  hover:bg-orange-400"
-          htmlFor="showSnippsCheck"
-        >
-          Show snippets
-        </label>
-
-        <div className="dropdown block lg:grid lg:grid-cols-3 lg:col-span-2">
-          <div
-            className="flex flex-col w-full p-4 lg:col-span-2 dark:bg-neutral-800 dark:text-neutral-50 space-y-2
-         bg-neutral-100 text-neutral-800 border-orange-400 lg:border-r-2 lg:h-full"
+    <div className="flex h-[calc(100vh-64px)] overflow-hidden bg-surface text-on-surface">
+      {/* Sidebar: Hidden on mobile IF a snippet is open, otherwise visible */}
+      <aside
+        className={`w-full lg:w-96 flex-shrink-0 flex flex-col border-r border-outline-variant bg-surface-container-low transition-all duration-300 ${
+          isViewingSnippet ? "hidden lg:flex" : "flex"
+        }`}
+      >
+        {/* Search & Filter Controls */}
+        <div className="p-4 flex flex-col gap-4 bg-surface-container shadow-sm z-10">
+          <md-outlined-text-field
+            label="Search Snippets or Tags"
+            value={searchTerm}
+            onInput={(e) => setSearchTerm(e.target.value)}
+            className="w-full"
           >
-            <div id="Snippet-Sorting" className="grid grid-cols-4">
-              <button className="hover:underline" onClick={() => setSort("")}>
-                Date
-              </button>
-              <button
-                className="hover:underline"
-                onClick={() => setSort("sortByName")}
-              >
-                Name
-              </button>
-              <button
-                className="hover:underline"
-                onClick={() => setSort("showFavorite")}
-              >
-                Favorites
-              </button>
-              <button className="hover:underline" onClick={() => setSort("")}>
-                All
-              </button>
-            </div>
+            <md-icon slot="leading-icon">search</md-icon>
+          </md-outlined-text-field>
 
-            <select
-              id="languageList"
-              name="language"
-              className="lg:grid-cols-2 rounded-lg p-2 border-2 h-11 my-4 border-orange-400 text-neutral-800 focus:outline-orange-400"
-              onChange={(event) => {
-                setLanguage(event.target.value);
-              }}
+          <div className="flex gap-2">
+            <md-outlined-select
+              label="Sort By"
+              className="flex-1"
+              onInput={(e) => setSortBy(e.target.value)}
             >
-              <option value="">All languages</option>
-              <option value="JavaScript">JavaScript</option>
-              <option value="HTML">HTML</option>
-              <option value="CSS">CSS</option>
-              <option value="Python">Python</option>
-              <option value="C">C</option>
-              <option value="Java">Java</option>
-            </select>
-            <input
-              type="text"
-              placeholder="Search..."
-              className="rounded-lg p-2 border-2 h-11 my-4 border-orange-400 text-neutral-800 focus:outline-orange-400"
-              name="search"
-              onChange={(event) => {
-                setSearchTerm(event.target.value);
-              }}
-            />
-          </div>
+              <md-select-option value="date" selected={sortBy === "date"}>
+                <div slot="headline">Date</div>
+              </md-select-option>
+              <md-select-option value="name" selected={sortBy === "name"}>
+                <div slot="headline">Name</div>
+              </md-select-option>
+              <md-select-option
+                value="favorite"
+                selected={sortBy === "favorite"}
+              >
+                <div slot="headline">Favorites</div>
+              </md-select-option>
+            </md-outlined-select>
 
-          <div id="Code-Snippet-Panel" className="">
-            <div
-              id="Code-Snippet-List"
-              className="p-4 lg:border-r-2 border-orange-400 lg:h-full"
+            <md-outlined-select
+              label="Language"
+              className="flex-1"
+              onInput={(e) => setSearchLanguage(e.target.value)}
             >
-              <h2 className="text-lg font-bold mb-2">Code snippets:</h2>
-              {sortedSnipps.length === 0 ? (
-                <div className="grid grid-cols-1 p-2 justify-items-end">
-                  <p className="animate-pulse transition delay-150 mb-4">
-                    You currently have no code snippets, click here to add a new
-                    one to get started :)
-                  </p>
-                  <Link
-                    to="/snippets/new"
-                    className="py-1 px-4 border-2 
-                  border-orange-400 bg-neutral-800 text-neutral-50 rounded-3xl
-                  hover:bg-orange-400"
-                  >
-                    Create new Snippet
-                  </Link>
-                </div>
-              ) : (
-                <div className="flex flex-col">
-                  {sortedSnipps
-                    .filter((snip) => {
-                      if (searchTerm == "") {
-                        return snip;
-                      } else if (
-                        snip.title
-                          .toString()
-                          .toLowerCase()
-                          .includes(searchTerm.toLowerCase())
-                      ) {
-                        return snip;
-                      }
-                      else if (
-                        snip.tags
-                          .toString()
-                          .toLowerCase()
-                          .includes(searchTerm.toLowerCase())
-                      ) {
-                        return snip;
-                      }
-                    })
-                    .map((snip, i) => {
-                      finalSnipps.push(snip);
-                    })}
-                  {finalSnipps
-                    .filter((snip) => {
-                      if (searchLanguage == "") {
-                        return snip;
-                      } else if (
-                        snip.language
-                          .toString()
-                          .toLowerCase()
-                          .includes(searchLanguage.toLowerCase())
-                      ) {
-                        return snip;
-                      }
-                    })
-                    .map((snip, i) => {
-                      return (
-                        <Link
-                          className="hover:underline py-2"
-                          onClick={() => {
-                            var w = window.innerWidth;
-                            if (w < 1024) {
-                              document
-                                .getElementById("showSnippsCheck")
-                                .click();
-                            }
-                          }}
-                          to={`/snippets/${snip._id}`}
-                          key={snip._id}
-                        >
-                          {i + 1 + ". " + snip.title}
-                        </Link>
-                      );
-                    })}
-                </div>
-              )}
-            </div>
+              <md-select-option value="">
+                <div slot="headline">All</div>
+              </md-select-option>
+              <md-select-option value="javascript">
+                <div slot="headline">JavaScript</div>
+              </md-select-option>
+              <md-select-option value="python">
+                <div slot="headline">Python</div>
+              </md-select-option>
+              <md-select-option value="html">
+                <div slot="headline">HTML/CSS</div>
+              </md-select-option>
+            </md-outlined-select>
           </div>
         </div>
+
+        {/* Snippet List */}
+        <div className="flex-1 overflow-y-auto p-2">
+          {filteredSnippets.length === 0 ? (
+            <div className="p-8 text-center text-on-surface-variant flex flex-col items-center gap-3">
+              <md-icon className="text-4xl opacity-50">code_off</md-icon>
+              <p>No snippets found.</p>
+              <Link
+                to="/snippets/new"
+                className="text-primary font-medium hover:underline"
+              >
+                Create one now
+              </Link>
+            </div>
+          ) : (
+            <md-list className="bg-transparent">
+              {filteredSnippets.map((snip) => (
+                <md-list-item
+                  key={snip._id}
+                  type="button"
+                  onClick={() => navigate(`/snippets/${snip._id}`)}
+                  className="rounded-xl mb-1 cursor-pointer"
+                >
+                  <div slot="headline" className="font-medium text-on-surface">
+                    {snip.title}
+                  </div>
+                  <div
+                    slot="supporting-text"
+                    className="text-on-surface-variant capitalize"
+                  >
+                    {snip.language}
+                  </div>
+                  {snip.favorite && (
+                    <md-icon slot="end" className="text-tertiary">
+                      star
+                    </md-icon>
+                  )}
+                </md-list-item>
+              ))}
+            </md-list>
+          )}
+        </div>
+      </aside>
+
+      {/* Main Content Area (Outlet for specific snippet or 'new' form) */}
+      <main
+        className={`flex-1 overflow-y-auto bg-surface relative ${
+          !isViewingSnippet ? "hidden lg:block" : "block"
+        }`}
+      >
+        {/* Mobile back button (only visible on mobile when viewing a snippet) */}
+        {isViewingSnippet && (
+          <div className="lg:hidden sticky top-0 bg-surface-container p-2 border-b border-outline-variant z-10">
+            <md-text-button onClick={() => navigate("/snippets")}>
+              <md-icon slot="icon">arrow_back</md-icon>
+              Back to List
+            </md-text-button>
+          </div>
+        )}
+
         <Outlet />
-      </div>
-      <style>
-        {`.showSnippsBtn {
-          cursor: pointer;
-          display: block;
-      }
-
-      .showSnippsCheck {
-          display: none;
-      }
-
-      .showSnippsCheck:checked ~ .dropdown {
-          display: none;
-      }
-      @media (min-width: 1024px) {
-        .showSnippsBtn {
-            display: none;
-        }
-    }
-      `}
-      </style>
-    </section>
+      </main>
+    </div>
   );
 }

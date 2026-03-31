@@ -1,238 +1,177 @@
-import {
-  Form,
-  redirect,
-  useActionData,
-  useLoaderData,
-  Link,
-  useCatch,
-  json,
-} from "remix";
-import { getSession, commitSession } from "~/sessions.server";
+// app/routes/login.jsx
+import { Form, Link, useActionData, useNavigation } from "@remix-run/react";
+import { json, redirect } from "@remix-run/node";
 import { useState, useEffect } from "react";
-import connectDb from "~/db/connectDb.server";
 import bcrypt from "bcryptjs";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import connectDb from "~/db/connectDb.server";
+import { getSession, commitSession } from "~/sessions.server";
+
+// Material 3 Web Components
+import "@material/web/textfield/outlined-text-field.js";
+import "@material/web/button/filled-button.js";
+import "@material/web/button/text-button.js";
+import "@material/web/icon/icon.js";
+import "@material/web/elevation/elevation.js";
 
 export async function loader({ request }) {
   const session = await getSession(request.headers.get("Cookie"));
-  if (!session) {
-    throw new Response(`Couldn't handle login while offline`, {
-      status: 404,
-    });
+  if (session.has("userID")) {
+    return redirect("/snippets");
   }
-  const userLogin = {
-    userID: session.get("userID")
-  }
-  // Alternative is no-store to prevent private data being stored in cache
-  return json(userLogin, { status: 200, headers: { 'cache-control': 'private, max-age=604800' } });
+  return json(null, { headers: { "cache-control": "private, max-age=3600" } });
 }
 
-export default function Index() {
-  const { userID } = useLoaderData();
-  const loginStatus = useActionData();
-/*   const [networkState, setNetworkState] = useState(); */
-  const [showSignWarning, setSignWarning] = useState(false);
-  const navigate = useNavigate();
-  const [networkState, networkStateUpdate] = useOutletContext();
+export async function action({ request }) {
+  const form = await request.formData();
+  const username = form.get("username")?.toString().trim();
+  const password = form.get("password")?.toString();
 
-  // App network state
+  if (!username || !password) {
+    return json({ errorMessage: "Both fields are required." }, { status: 400 });
+  }
 
-/*   useEffect(() => {
-    // Update the document title using the browser API
-    // Client
-    if (navigator.onLine) {
-      setNetworkState("online");
-    } else {
-      setNetworkState("offline");
+  const db = await connectDb();
+
+  try {
+    const user = await db.models.user.findOne({ username });
+
+    // Security: Use a generic error message to prevent username enumeration
+    if (!user) {
+      return json(
+        { errorMessage: "Invalid username or password." },
+        { status: 401 }
+      );
     }
-  }, []); */
 
+    const isCorrectPassword = await bcrypt.compare(password, user.password);
 
-  if (userID != null) {
-    return redirect("/snippets");
-  } else {
-    return (
-      <div
-        id="SignInPage"
-        className="grid grid-cols-1 justify-items-center align-middle min-h-full"
-      >
-        <h1 className="text-2xl font-bold my-4">Log in</h1>
-        <Form method="post" name="loginForm" reloadDocument className="w-56">
-          <div id="login-input-fields" className="grid grid-cols-1 space-y-5">
-            <input
-              type="text"
-              name="username"
-              placeholder="username"
-              className="py-1 px-2 rounded-lg dark:text-neutral-800 focus:outline-orange-400"
-            ></input>
-            <input
-              type="password"
-              name="password"
-              placeholder="password"
-              className="py-1 px-2 rounded-lg mt-4 dark:text-neutral-800 focus:outline-orange-400"
-            ></input>
-            {networkState === "online" ? (
-              <button
-                type="button"
-                onClick={() => {
-                  networkStateUpdate();
-                  if (navigator.onLine) {
-                    document.loginForm.submit();
-                  }
-                }} // this button checks if online and submits the login form
-                className="mt-3 mb-2 pr-3 pl-3 pt-0 pb-1 border-2 
-                  border-orange-400 bg-neutral-800 text-neutral-50 rounded-3xl
-                  hover:bg-orange-400"
-              >
-                Log in
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={() => {
-                  networkStateUpdate();
-                }} // this button is showing if youre offline
-                className="mt-3 mb-2 pr-3 pl-3 pt-0 pb-1 border-2 
-                  border-orange-400 bg-red-800 text-neutral-50 rounded-3xl"
-              >
-                Log in
-              </button>
-            )}
-          </div>
-          <p className="text-red-500 font-bold my-3 text-center">
-            {" "}
-            {loginStatus}{" "}
-          </p>
-          <div className="flex justify-between">
-            No account yet?
-            {networkState === "online" ? (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        networkStateUpdate();
-                        if (navigator.onLine) {
-                          return navigate("/signup");
-                        }
-                      }}
-                      className="ml-5 hover:text-neutral-800 dark:hover:text-neutral-50 text-orange-400"
-                    >
-                      Sign up!
-                    </button>
-                  ) : (
-                    <button
-                  className="text-red-600 ml-5"
-                  type="button"
-                      onClick={() => {
-                        networkStateUpdate();
-                        setSignWarning(!showSignWarning);
-                        // Warning -  could be added on all buttons
-                      }}
-                    >
-                      Sign up!
-                    </button>
-                  )}
-          </div>
-        </Form>
-        <div
-          id="signUpWarning"
-          className={showSignWarning ? "py-1 px-2 mt-4 my-10" : "hidden"}
-        >
-          <p className="text-center">
-            You are offline - to sign up, please make sure you have an internet
-            connection.
-          </p>
-        </div>
-      </div>
+    if (!isCorrectPassword) {
+      return json(
+        { errorMessage: "Invalid username or password." },
+        { status: 401 }
+      );
+    }
+
+    // Success: Establish secure session
+    const session = await getSession(request.headers.get("Cookie"));
+    session.set("userID", user._id.toString());
+
+    return redirect("/snippets", {
+      headers: {
+        "Set-Cookie": await commitSession(session),
+      },
+    });
+  } catch (error) {
+    console.error("Login Error:", error);
+    return json(
+      { errorMessage: "An internal server error occurred." },
+      { status: 500 }
     );
   }
 }
 
-export async function action({ request }) {
-  console.log(request);
-  try {
-    const session = await getSession(request.headers.get("Cookie"));
-    const db = await connectDb();
-    const form = await request.formData();
-    let data = "";
+export default function Login() {
+  const actionData = useActionData();
+  const navigation = useNavigation();
+  const isSubmitting = navigation.state === "submitting";
 
-    const user = await db.models.user.findOne({
-      username: form.get("username"),
-    });
-    if (user != null) {
-      const isCorrectPassword = await bcrypt.compare(
-        form.get("password"),
-        user.password
-      );
+  const [isOnline, setIsOnline] = useState(true);
 
-      if (user != null && isCorrectPassword == true) {
-        session.set("userID", user._id);
-        return redirect("/snippets", {
-          headers: {
-            "Set-Cookie": await commitSession(session),
-          },
-        });
-      } else {
-        data = "wrong login or password";
-        return data;
-      }
-    } else {
-      data = "wrong login or password";
-      return data;
-    }
-  } catch (error) {
-    return json({
-      errors: error.errors,
-      message: "error message",
-      status: 400,
-    });
-  }
-}
+  // Simple client-side network detection
+  useEffect(() => {
+    setIsOnline(navigator.onLine);
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
 
-export function ErrorBoundary({ error }) {
   return (
-    <div className="grid grid-cols-1 bg-neutral-900 p-4 rounded-lg shadow-lg mt-5 space-y-10">
-      <h1>You are already logged in :)</h1>
-      <b>
-        We could merely prevent this from happening but I want to show this
-        error that occurs
-      </b>
-      <div className="px-10 animate-pulse transition delay-300">
-        <h1 className="text-white font-bold">
-          {error.name}: {error.message}
-        </h1>
-      </div>
-      <Link
-        to="/"
-        className="py-1 px-4 border-2 
-                  border-orange-400 bg-neutral-800 text-neutral-50 rounded-3xl
-                  hover:bg-orange-400"
-      >
-        Check your snippets
-      </Link>
-    </div>
-  );
-}
+    <div className="flex items-center justify-center min-h-[calc(100vh-64px)] bg-surface p-4">
+      <div className="relative w-full max-w-sm p-8 flex flex-col gap-6 rounded-[28px] bg-surface-container-high animate-in fade-in zoom-in-95">
+        <md-elevation></md-elevation>
 
-export function CatchBoundary() {
-  const caught = useCatch();
-  return (
-    <div className="grid grid-cols-1 bg-neutral-900 p-4 rounded-lg shadow-lg mt-5 space-y-10">
-      <h3>Sorry, you cannot login while offline</h3>
-      <p>Please make sure you have an internet connection and try again.</p>
-      <div className="px-10 animate-pulse transition delay-300">
-        <h1>
-          {caught.status} {caught.statusText}
-        </h1>
-        <h2>
-          <b>{caught.data}</b>
-        </h2>
+        {/* Header */}
+        <div className="text-center">
+          <md-icon className="text-5xl text-primary mb-4">
+            account_circle
+          </md-icon>
+          <h1 className="text-3xl font-bold tracking-tight text-on-surface mb-2">
+            Welcome Back
+          </h1>
+          <p className="text-on-surface-variant text-sm">
+            Sign in to KeepSnip to continue.
+          </p>
+        </div>
+
+        {/* Offline Warning */}
+        {!isOnline && (
+          <div className="p-3 rounded-xl bg-error-container text-on-error-container text-sm font-medium flex items-center gap-2">
+            <md-icon className="text-base">wifi_off</md-icon>
+            You are offline. Connection required.
+          </div>
+        )}
+
+        {/* Server Error Message */}
+        {actionData?.errorMessage && (
+          <div className="p-3 rounded-xl bg-error-container text-on-error-container text-sm font-medium flex items-center gap-2">
+            <md-icon className="text-base">error</md-icon>
+            {actionData.errorMessage}
+          </div>
+        )}
+
+        {/* Form */}
+        <Form method="post" className="flex flex-col gap-4">
+          <md-outlined-text-field
+            label="Username"
+            name="username"
+            required
+            autoComplete="username"
+            disabled={!isOnline || isSubmitting}
+          >
+            <md-icon slot="leading-icon">person</md-icon>
+          </md-outlined-text-field>
+
+          <md-outlined-text-field
+            label="Password"
+            name="password"
+            type="password"
+            required
+            autoComplete="current-password"
+            disabled={!isOnline || isSubmitting}
+          >
+            <md-icon slot="leading-icon">lock</md-icon>
+          </md-outlined-text-field>
+
+          <div className="mt-4">
+            <md-filled-button
+              type="submit"
+              className="w-full"
+              disabled={!isOnline || isSubmitting}
+            >
+              <md-icon slot="icon">
+                {isSubmitting ? "hourglass_empty" : "login"}
+              </md-icon>
+              {isSubmitting ? "Authenticating..." : "Log In"}
+            </md-filled-button>
+          </div>
+        </Form>
+
+        {/* Footer Link */}
+        <div className="text-center mt-2 text-sm text-on-surface-variant">
+          Don't have an account?{" "}
+          <Link
+            to="/signup"
+            className="text-primary font-medium hover:underline"
+          >
+            Sign up!
+          </Link>
+        </div>
       </div>
-      <Link
-        to="/"
-        className="ml-3 transition hover:bg-neutral-500 bg-neutral-600 p-4 rounded-lg"
-      >
-        Return to Home Page :)
-      </Link>
     </div>
   );
 }

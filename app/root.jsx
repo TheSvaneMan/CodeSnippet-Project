@@ -1,204 +1,140 @@
+// app/root.jsx
 import {
   Links,
-  Link,
-  LiveReload,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
-  useLoaderData,
-  useCatch,
-  json
-} from "remix";
-import styles from "~/tailwind.css";
+  useRouteError,
+  isRouteErrorResponse,
+  useLocation,
+} from "@remix-run/react";
 import { useState, useEffect } from "react";
-import { getSession } from "~/sessions.server";
-import { useNavigate } from "react-router-dom";
-import Navigation from './components/topNavigation';
+import tailwindStylesheetUrl from "~/tailwind.css";
 
-export async function loader({ request }) {
-  // get the session
-  const cookie = request.headers.get("cookie");
-  const session = await getSession(cookie);
-
-  if (!session.has("userID")) {
-    // if there is no user session, don't show top navigation
-    let showNav = false;
-    return json(showNav, { status: 200, headers: { 'cache-control': 'public, max-age=86400, stale-while-revalidate=604800' } });
-  } else {
-    // if there is a user session, show top navigation
-    let showNav = true;
-    return json(showNav, { status: 200, headers: { 'cache-control': 'public, max-age=86400, stale-while-revalidate=604800' } });
-  }
-}
-
+// Import the Navigation component we built earlier
+import Navigation from "~/components/Navigation";
 
 export const links = () => [
+  { rel: "stylesheet", href: tailwindStylesheetUrl },
+  // Material 3 Core Fonts & Icons
+  { rel: "preconnect", href: "https://fonts.googleapis.com" },
+  {
+    rel: "preconnect",
+    href: "https://fonts.gstatic.com",
+    crossOrigin: "anonymous",
+  },
   {
     rel: "stylesheet",
-    href: styles,
+    href: "https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap",
   },
   {
-    rel: "manifest",
-    crossOrigin: "use-credentials",
-    href: "/app.webmanifest",
-  },
-  {
-    rel: "apple-touch-icon",
-    href: "/assets/logo/apple-touch-icon.png",
+    rel: "stylesheet",
+    href: "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200",
   },
 ];
 
-export function meta() {
-  return {
-    charset: "utf-8",
-    title: "KeepSnip",
-    viewport: "width=device-width,initial-scale=1",
-  };
-}
-
-// This check is !important
-if (typeof document === "undefined") {
-  // running in a server environment
-} else {
-  // running in a browser environment
-  // Check for a service worker registration status
-  async function checkRegistration() {
-    if ('serviceWorker' in navigator && 'PushManager' in window) {
-      const registration = await navigator.serviceWorker.getRegistration();
-      if (registration) {
-        console.log("Client: Service worker was registered on page load")
-      } else {
-        console.log("Client: No service worker is currently registered")
-        register();
-      }
-    } else {
-      console.log("Client: Service workers API not available or push messages");
-    }
-  }
-
-  // Registers a service worker
-  async function register() {
-    if ('serviceWorker' in navigator) {
-      try {
-        // Change the service worker URL to see what happens when the SW doesn't exist
-        const registration = await navigator.serviceWorker.register("sw.js");
-        console.log("Client: Service worker registered");
-      } catch (error) {
-        console.log("Client: Error while registering " + error.message);
-      }
-    } else {
-      console.log("Client: Servive workers API not available");
-    }
-  }
-
-  // Unregister a currently registered service worker 
-  /* async function unregister() {
-    if ('serviceWorker' in navigator) {
-      try {
-        const registration = await navigator.serviceWorker.getRegistration();
-        if (registration) {
-          const result = await registration.unregister();
-          console.log(result ? "Client: Service worker unregistered" : "Client: Service worker couldn't be unregistered");
-        } else {
-          console.log("There is no service worker to unregister");
-        }
-      } catch (error) {
-        console.log("Client: Error while unregistering: " + error.message);
-      }
-    } else {
-      console.log("Client: Service workers API not available");
-    }
-  } */
-
-  // Register service worker
-  checkRegistration();
-}
+export const meta = () => [
+  { charset: "utf-8" },
+  { title: "KeepSnip | Code Library" },
+  { name: "viewport", content: "width=device-width,initial-scale=1" },
+];
 
 export default function App() {
-  const [networkState, setNetworkState] = useState();
-  let [theme, setTheme] = useState();
+  const [theme, setTheme] = useState("dark"); // M3 Dark mode looks great for code editors
+  const [networkState, setNetworkState] = useState("online");
+  const location = useLocation();
+
+  // 1. Global Network Detection
   useEffect(() => {
-    setTheme(localStorage.getItem('theme'));
-  }, []);
-  const themeToggle = () => {
-    theme == "light" ? setTheme("dark") : setTheme("light");
-    theme == "light" ? theme = "dark" : theme = "light";
-    localStorage.setItem('theme', theme);
-    const storedTheme = localStorage.getItem('theme');
-  }
-  
-  const sessionState = useLoaderData();
-  //  setInterval(function () { networkStateUpdate() }, 3000);
-  useEffect(() => {
-    // Update the document title using the browser API
-    // Client
-    if (navigator.onLine) {
-      setNetworkState("online");
-    } else {
-      setNetworkState("offline");
-    }
+    setNetworkState(navigator.onLine ? "online" : "offline");
+
+    const handleOnline = () => setNetworkState("online");
+    const handleOffline = () => setNetworkState("offline");
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
   }, []);
 
-  function networkStateUpdate() {
-    if (navigator.onLine) {
-      setNetworkState("online");
-    } else {
-      setNetworkState("offline");
-    }
-  }
+  const themeChange = () => {
+    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+  };
+
+  const networkStateUpdate = () => {
+    setNetworkState(navigator.onLine ? "online" : "offline");
+  };
+
+  // Hide the navigation bar on Auth pages for a cleaner focus
+  const hideNav =
+    location.pathname === "/login" || location.pathname === "/signup";
 
   return (
-    <html lang="en" className={theme == "light" ? "light" : "dark"}>
+    <html lang="en" className={theme}>
       <head>
         <Meta />
         <Links />
-        <meta name="description" content="The root home page of Keep Snipp - Code Snippet PWA" />
-        <meta name="theme-color" content="#fb923c" />
       </head>
-      <body className="overflow-y-scroll grid grid-cols-1 bg-neutral-100 text-neutral-800 font-sans dark:bg-neutral-800 dark:text-neutral-50">
-        <div onClick={() => networkStateUpdate()} className={networkState === 'online' ? 'grid grid-cols-1 justify-items-center bg-green-400 text-black z-20' : 'grid grid-cols-1 justify-items-center bg-red-600 text-white animate-pulse transition delay-300 z-20'} >{networkState}</div>
-        <header className="p-2 border-b-4 border-orange-400 dark:bg-neutral-800 bg-neutral-100">
-          <div>
-            {sessionState ? <div id="TopNavigation">
-              <Navigation networkStateUpdate={networkStateUpdate} themeChange={themeToggle} networkState={networkState} /></div>
-              : <div className='animate-pulse'>
-                  <p className='dark:text-neutral-50 text-neutral-800 text-center'>Hey there, welcome to KeepSnip!<br/> Login to get started.</p>
-                </div>}
-          </div>
-        </header>
-        <Outlet context={[networkState, networkStateUpdate]}/>
+      <body className="bg-surface text-on-surface m-0 p-0 min-h-screen flex flex-col antialiased transition-colors duration-300">
+        {!hideNav && (
+          <Navigation
+            themeChange={themeChange}
+            networkState={networkState}
+            networkStateUpdate={networkStateUpdate}
+          />
+        )}
+
+        {/* Global Context Provider for Child Routes */}
+        <Outlet context={[networkState, networkStateUpdate]} />
+
         <ScrollRestoration />
         <Scripts />
-        <LiveReload />
       </body>
     </html>
   );
 }
 
-export function CatchBoundary() {
-  const caught = useCatch();
+// 2. Unified Remix v2 Error Boundary (M3 Styled)
+export function ErrorBoundary() {
+  const error = useRouteError();
+
+  let heading = "Something went wrong";
+  let message = "An unexpected error occurred while loading this page.";
+  let icon = "warning";
+
+  if (isRouteErrorResponse(error)) {
+    heading = `${error.status} ${error.statusText}`;
+    message = error.data || "We couldn't find the page you were looking for.";
+    icon = error.status === 404 ? "travel_explore" : "gpp_bad";
+  } else if (error instanceof Error) {
+    message = error.message;
+  }
+
   return (
-    <html lang="en" className='dark'>
+    <html lang="en">
       <head>
-        <title>Whoopsies</title>
+        <title>Error | KeepSnip</title>
         <Meta />
         <Links />
       </head>
-      <body className="grid grid-cols-1 justify-center space-y-5 px-5 max-w-md bg-neutral-100 text-neutral-800 font-sans dark:bg-neutral-800 dark:text-neutral-50">
-        <h1 className='mt-10'>Hey there, sorry for the inconvenience - but it seems like the page you're looking for doesn't exist</h1>
-        <div className='p-10 animate-pulse transition delay-300'>
-          <h1>
-            {caught.status} {caught.statusText}
-          </h1>
-          <h2><b>{caught.data}</b></h2>
+      <body className="bg-surface text-on-surface m-0 p-0 min-h-screen flex items-center justify-center antialiased">
+        <div className="max-w-md w-full p-8 flex flex-col items-center gap-4 text-center bg-error-container text-on-error-container rounded-[28px] shadow-lg mx-4">
+          <span className="material-symbols-outlined text-6xl opacity-90">
+            {icon}
+          </span>
+          <h1 className="text-3xl font-bold tracking-tight">{heading}</h1>
+          <p className="text-lg opacity-90 leading-relaxed mb-4">{message}</p>
+          <a
+            href="/"
+            className="px-6 py-3 font-medium bg-on-error-container text-error-container rounded-full hover:opacity-90 transition-opacity"
+          >
+            Return to Safety
+          </a>
         </div>
-        <Link to="/" className="py-1 px-4 border-2 
-                  border-orange-400 bg-neutral-800 text-neutral-50 rounded-3xl
-                  hover:bg-orange-400">
-          Click here to return to home
-        </Link>
-
         <Scripts />
       </body>
     </html>

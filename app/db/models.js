@@ -1,82 +1,97 @@
+// app/db/models.js
 import { mongoose } from "mongoose";
 
 const { Schema } = mongoose;
 
-const snippetSchema = new Schema({
-  title: {
-    type: String,
-    required: true,
-    minLength: [3, "That's too short"],
-    validate: {
-      validator: title => title !== '',
-      message: `Title cannot be an empty`
-    }
+const snippetSchema = new Schema(
+  {
+    title: {
+      type: String,
+      required: [true, "Title is required"],
+      trim: true,
+      minLength: [3, "Title must be at least 3 characters"],
+      maxLength: [100, "Title cannot exceed 100 characters"],
+    },
+    language: {
+      type: String,
+      required: [true, "Language is required"],
+      trim: true,
+      maxLength: [50, "Language cannot exceed 50 characters"],
+    },
+    code: {
+      type: String,
+      required: [true, "Code is required"],
+      // Prevents payload size attacks
+      maxLength: [15000, "Code snippet is too long (max 15,000 chars)"],
+    },
+    description: {
+      type: String,
+      required: [true, "Description is required"],
+      trim: true,
+      maxLength: [1000, "Description cannot exceed 1000 characters"],
+    },
+    tags: [
+      {
+        type: String,
+        trim: true,
+        lowercase: true,
+        minLength: [1, "Tag cannot be empty"],
+        maxLength: [20, "Tag is too long"],
+      },
+    ],
+    favorite: {
+      type: Boolean,
+      default: false,
+    },
+    shareable: {
+      type: Boolean,
+      default: false,
+    },
+    user: {
+      type: String,
+      required: true,
+      index: true, // Optimizes searching snippets by user
+    },
   },
-  language: {
-    type: String,
-    required: true,
-    minLength: [3, "That's too short"],
-    maxLength: [100, "That's too long"],
-  },
-  code: {
-    type: String,
-    required: true,
-    minLength: [10, "That's too short"],
-    maxLength: [2000, "That's too long"],
-  },
-  description: {
-    type: String,
-    required: true,
-    minLength: [5, "That's too short"],
-    maxLength: [800, "That's too long"],
-  },
-  tags: [{ type: String, minLenght: [1, "That is too shorts"], maxLength: [10, "That is too long"], lowercase: true }],
-  favorite: {
-    type: Boolean,
-    default: false
-  },
-  shareable: {
-    type: Boolean,
-    default: false
-  },
-  user: String,
-  createdAt: {
-    type: Date,
-    immutable: true,
-    default: () => Date.now()
-  },
-  updatedAt: {
-    type: Date,
-    default: () => Date.now()
+  {
+    // Mongoose automatically handles createdAt and updatedAt
+    timestamps: true,
   }
-});
+);
 
 const userSchema = new Schema({
-  username: String,
-  password: String,
+  username: {
+    type: String,
+    required: true,
+    unique: true, // Prevents duplicate accounts
+    trim: true,
+    minLength: [3, "Username must be at least 3 characters"],
+  },
+  password: {
+    type: String,
+    required: true,
+  },
   following: [{ type: String }],
 });
 
 const subscriptionSchema = new Schema({
-  userID: String,
-  data: Object
-})
+  userID: {
+    type: String,
+    required: true,
+    index: true,
+  },
+  data: {
+    type: Object,
+    required: true,
+  },
+});
 
 export const models = [
-  {
-    name: "snip",
-    schema: snippetSchema,
-    collection: "snipps",
-  },
-  {
-    name: "user",
-    schema: userSchema,
-    collection: "users",
-  },
+  { name: "snip", schema: snippetSchema, collection: "snipps" },
+  { name: "user", schema: userSchema, collection: "users" },
   {
     name: "subscription",
     schema: subscriptionSchema,
-    collection: "subscriptions"
-  }
+    collection: "subscriptions",
+  },
 ];
-
