@@ -7,7 +7,6 @@ import { getSession, commitSession } from "~/sessions.server";
 // Material 3 Web Components
 import "@material/web/textfield/outlined-text-field.js";
 import "@material/web/button/filled-button.js";
-import "@material/web/button/text-button.js";
 import "@material/web/icon/icon.js";
 import "@material/web/elevation/elevation.js";
 
@@ -27,15 +26,13 @@ export async function action({ request }) {
 
   const errors = {};
 
-  // 1. Validation
+  // 1. Validation Logic
   if (!username || username.length < 3) {
     errors.username = "Username must be at least 3 characters.";
   }
-
   if (!password || password.length < 8) {
     errors.password = "Password must be at least 8 characters.";
   }
-
   if (password !== repeatPassword) {
     errors.repeatPassword = "Passwords do not match.";
   }
@@ -59,8 +56,7 @@ export async function action({ request }) {
       );
     }
 
-    // 3. 🔥 SWAP: Use Bun's native password hashing
-    // This uses the bcrypt algorithm but powered by Bun's optimized C++ engine
+    // 3. Native Bun Hashing
     const hashedPassword = await Bun.password.hash(password, {
       algorithm: "bcrypt",
       cost: 10,
@@ -71,13 +67,16 @@ export async function action({ request }) {
       password: hashedPassword,
     });
 
-    // 4. Establish Session
+    // 4. Establish Signed Session with Expiration
     const session = await getSession(request.headers.get("Cookie"));
     session.set("userID", user._id.toString());
 
     return redirect("/snippets", {
       headers: {
-        "Set-Cookie": await commitSession(session),
+        // SECURITY FIX: Using commitSession with explicit expires for the signed cookie
+        "Set-Cookie": await commitSession(session, {
+          expires: new Date(Date.now() + 60 * 60 * 24 * 7 * 1000), // 7 Days
+        }),
       },
     });
   } catch (error) {
@@ -111,7 +110,6 @@ export default function SignUp() {
       <div className="relative w-full max-w-sm p-8 flex flex-col gap-6 rounded-[28px] bg-surface-container-high animate-in fade-in zoom-in-95 shadow-lg">
         <md-elevation></md-elevation>
 
-        {/* Header */}
         <div className="text-center">
           <md-icon className="text-5xl text-primary mb-4">person_add</md-icon>
           <h1 className="text-3xl font-bold tracking-tight text-on-surface mb-2">
@@ -122,21 +120,22 @@ export default function SignUp() {
           </p>
         </div>
 
-        {/* Alerts */}
         {(!isOnline || actionData?.errorMessage) && (
           <div className="p-3 rounded-xl bg-error-container text-on-error-container text-sm font-medium flex items-center gap-2">
-            <md-icon className="text-base">{!isOnline ? "wifi_off" : "error"}</md-icon>
-            {!isOnline ? "You are offline. Connection required." : actionData.errorMessage}
+            <md-icon className="text-base">
+              {!isOnline ? "wifi_off" : "error"}
+            </md-icon>
+            {!isOnline
+              ? "Offline. Connection required."
+              : actionData.errorMessage}
           </div>
         )}
 
-        {/* Form */}
         <Form method="post" className="flex flex-col gap-4">
           <md-outlined-text-field
             label="Username"
             name="username"
             required
-            autoComplete="username"
             defaultValue={actionData?.values?.username || ""}
             disabled={!isOnline || isSubmitting}
             error={actionData?.errors?.username ? "true" : undefined}
@@ -150,7 +149,6 @@ export default function SignUp() {
             name="password"
             type="password"
             required
-            autoComplete="new-password"
             disabled={!isOnline || isSubmitting}
             error={actionData?.errors?.password ? "true" : undefined}
             error-text={actionData?.errors?.password}
@@ -163,7 +161,6 @@ export default function SignUp() {
             name="repeatPassword"
             type="password"
             required
-            autoComplete="new-password"
             disabled={!isOnline || isSubmitting}
             error={actionData?.errors?.repeatPassword ? "true" : undefined}
             error-text={actionData?.errors?.repeatPassword}
@@ -187,7 +184,10 @@ export default function SignUp() {
 
         <div className="text-center mt-2 text-sm text-on-surface-variant">
           Already have an account?{" "}
-          <Link to="/login" className="text-primary font-medium hover:underline">
+          <Link
+            to="/login"
+            className="text-primary font-medium hover:underline"
+          >
             Log in!
           </Link>
         </div>

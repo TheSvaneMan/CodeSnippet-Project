@@ -1,10 +1,10 @@
 import { createCookie } from "@remix-run/node";
 
 export const sessionCookie = createCookie("__session", {
+  // Use an environment variable for the secret!
+  secrets: [process.env.SESSION_SECRET || "default_secret_for_dev"],
+  sameSite: "lax",
+  path: "/",
   httpOnly: true,
-  expires: new Date(Date.now() + 60_000),
-  maxAge: 60 * 60 * 24 * 7,
-  secrets: [process.env.COOKIE_SECRET],
+  secure: process.env.NODE_ENV === "production",
 });
-
-// console.log(sessionCookie.isSigned); // true

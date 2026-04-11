@@ -7,7 +7,6 @@ import { getSession, commitSession } from "~/sessions.server";
 // Material 3 Web Components
 import "@material/web/textfield/outlined-text-field.js";
 import "@material/web/button/filled-button.js";
-import "@material/web/button/text-button.js";
 import "@material/web/icon/icon.js";
 import "@material/web/elevation/elevation.js";
 
@@ -33,22 +32,7 @@ export async function action({ request }) {
   try {
     const user = await db.models.user.findOne({ username });
 
-    // Security: Use generic error messages
-    if (!user) {
-      return json(
-        { errorMessage: "Invalid username or password." },
-        { status: 401 }
-      );
-    }
-
-    // 🔥 SWAP: Using Bun's native, high-performance bcrypt verification
-    // This removes the dependency on the buggy 'buffer-equal-constant-time' package
-    const isCorrectPassword = await Bun.password.verify(
-      password,
-      user.password
-    );
-
-    if (!isCorrectPassword) {
+    if (!user || !(await Bun.password.verify(password, user.password))) {
       return json(
         { errorMessage: "Invalid username or password." },
         { status: 401 }
@@ -61,15 +45,15 @@ export async function action({ request }) {
 
     return redirect("/snippets", {
       headers: {
-        "Set-Cookie": await commitSession(session),
+        // SECURITY FIX: Setting an explicit expiration date for a signed cookie
+        "Set-Cookie": await commitSession(session, {
+          expires: new Date(Date.now() + 60 * 60 * 24 * 7 * 1000), // 7 Days
+        }),
       },
     });
   } catch (error) {
     console.error("Login Error:", error);
-    return json(
-      { errorMessage: "An internal server error occurred." },
-      { status: 500 }
-    );
+    return json({ errorMessage: "Internal server error." }, { status: 500 });
   }
 }
 
@@ -95,7 +79,6 @@ export default function Login() {
       <div className="relative w-full max-w-sm p-8 flex flex-col gap-6 rounded-[28px] bg-surface-container-high animate-in fade-in zoom-in-95 shadow-lg">
         <md-elevation></md-elevation>
 
-        {/* Header */}
         <div className="text-center">
           <md-icon className="text-5xl text-primary mb-4">
             account_circle
@@ -108,14 +91,13 @@ export default function Login() {
           </p>
         </div>
 
-        {/* Network & Error Alerts */}
         {(!isOnline || actionData?.errorMessage) && (
           <div className="p-3 rounded-xl bg-error-container text-on-error-container text-sm font-medium flex items-center gap-2">
             <md-icon className="text-base">
               {!isOnline ? "wifi_off" : "error"}
             </md-icon>
             {!isOnline
-              ? "You are offline. Connection required."
+              ? "Offline. Connection required."
               : actionData.errorMessage}
           </div>
         )}
