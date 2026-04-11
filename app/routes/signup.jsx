@@ -1,8 +1,6 @@
-// app/routes/signup.jsx
 import { Form, Link, useActionData, useNavigation } from "@remix-run/react";
 import { json, redirect } from "@remix-run/node";
 import { useState, useEffect } from "react";
-import bcrypt from "bcryptjs";
 import connectDb from "~/db/connectDb.server";
 import { getSession, commitSession } from "~/sessions.server";
 
@@ -61,8 +59,13 @@ export async function action({ request }) {
       );
     }
 
-    // 3. Hash and Create
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // 3. 🔥 SWAP: Use Bun's native password hashing
+    // This uses the bcrypt algorithm but powered by Bun's optimized C++ engine
+    const hashedPassword = await Bun.password.hash(password, {
+      algorithm: "bcrypt",
+      cost: 10,
+    });
+
     const user = await db.models.user.create({
       username,
       password: hashedPassword,
@@ -90,25 +93,22 @@ export default function SignUp() {
   const actionData = useActionData();
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
-
   const [isOnline, setIsOnline] = useState(true);
 
-  // Simple client-side network detection
   useEffect(() => {
     setIsOnline(navigator.onLine);
-    const handleOnline = () => setIsOnline(true);
-    const handleOffline = () => setIsOnline(false);
-    window.addEventListener("online", handleOnline);
-    window.addEventListener("offline", handleOffline);
+    const handleState = () => setIsOnline(navigator.onLine);
+    window.addEventListener("online", handleState);
+    window.addEventListener("offline", handleState);
     return () => {
-      window.removeEventListener("online", handleOnline);
-      window.removeEventListener("offline", handleOffline);
+      window.removeEventListener("online", handleState);
+      window.removeEventListener("offline", handleState);
     };
   }, []);
 
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-64px)] bg-surface p-4">
-      <div className="relative w-full max-w-sm p-8 flex flex-col gap-6 rounded-[28px] bg-surface-container-high animate-in fade-in zoom-in-95">
+      <div className="relative w-full max-w-sm p-8 flex flex-col gap-6 rounded-[28px] bg-surface-container-high animate-in fade-in zoom-in-95 shadow-lg">
         <md-elevation></md-elevation>
 
         {/* Header */}
@@ -122,19 +122,11 @@ export default function SignUp() {
           </p>
         </div>
 
-        {/* Offline Warning */}
-        {!isOnline && (
+        {/* Alerts */}
+        {(!isOnline || actionData?.errorMessage) && (
           <div className="p-3 rounded-xl bg-error-container text-on-error-container text-sm font-medium flex items-center gap-2">
-            <md-icon className="text-base">wifi_off</md-icon>
-            You are offline. Connection required.
-          </div>
-        )}
-
-        {/* Server Error Message (Catch-all) */}
-        {actionData?.errorMessage && (
-          <div className="p-3 rounded-xl bg-error-container text-on-error-container text-sm font-medium flex items-center gap-2">
-            <md-icon className="text-base">error</md-icon>
-            {actionData.errorMessage}
+            <md-icon className="text-base">{!isOnline ? "wifi_off" : "error"}</md-icon>
+            {!isOnline ? "You are offline. Connection required." : actionData.errorMessage}
           </div>
         )}
 
@@ -193,13 +185,9 @@ export default function SignUp() {
           </div>
         </Form>
 
-        {/* Footer Link */}
         <div className="text-center mt-2 text-sm text-on-surface-variant">
           Already have an account?{" "}
-          <Link
-            to="/login"
-            className="text-primary font-medium hover:underline"
-          >
+          <Link to="/login" className="text-primary font-medium hover:underline">
             Log in!
           </Link>
         </div>

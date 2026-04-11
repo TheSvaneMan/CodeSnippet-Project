@@ -1,27 +1,41 @@
 import { json } from "@remix-run/node";
-import connectDb from '~/db/connectDb.server';
-import { requireUserSession, getSession } from "~/sessions.server";
+// Importing from .server is fine, but the compiler must be 100% sure
+// it's only used in the action.
+import connectDb from "~/db/connectDb.server";
+import { getSession } from "~/sessions.server";
+import { sendNativePush } from "~/utils/push.server";
 
 export async function action({ request }) {
-    const subscriptionBody = await request.json();
-    // Get the user ID in case - I don't think we need save it but I do anyways
-    await requireUserSession(request);
-    const db = await connectDb();
-    const session = await getSession(request.headers.get("Cookie"));
-    const userID = session.get("userID");
-    // Push and save data to mongodb for subscription service
-    try {
-        await db.models.subscription.create({ userID: userID, data: subscriptionBody });
-        console.log("Subscription saved");
-        let message = {
-            message: "Subscription saved",
-            code: 200
-        }
-        return json(message);
-    } catch (error) {
-        return json(
-            { errorMessage: "Error creating subscription!" },
-            { status: 400 }
-        );
-    }
-};
+  // All these calls are server-side only
+  const db = await connectDb();
+  const session = await getSession(request.headers.get("Cookie"));
+  const userID = session.get("userID");
+  const subscriptionBody = await request.json();
+
+  if (!subscriptionBody || !subscriptionBody.endpoint) {
+    return json({ errorMessage: "Invalid payload" }, { status: 400 });
+  }
+
+  try {
+    await db.models.subscription.findOneAndUpdate(
+      { userID: userID },
+      { userID, data: subscriptionBody, updatedAt: new Date() },
+      { upsert: true }
+    );
+
+    await sendNativePush(subscriptionBody, {
+      title: "KeepSnip Subscribed",
+      options: { body: "Notifications are now active!" },
+    });
+
+    return json({ message: "Success", code: 200 });
+  } catch (error) {
+    return json({ errorMessage: "Server Error" }, { status: 500 });
+  }
+}
+
+// Ensure you have a default export (even if it's empty)
+// so Remix doesn't think this is a pure server-resource route
+export default function AddSubscription() {
+  return null;
+}

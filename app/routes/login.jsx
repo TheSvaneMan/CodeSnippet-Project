@@ -1,8 +1,6 @@
-// app/routes/login.jsx
 import { Form, Link, useActionData, useNavigation } from "@remix-run/react";
 import { json, redirect } from "@remix-run/node";
 import { useState, useEffect } from "react";
-import bcrypt from "bcryptjs";
 import connectDb from "~/db/connectDb.server";
 import { getSession, commitSession } from "~/sessions.server";
 
@@ -35,7 +33,7 @@ export async function action({ request }) {
   try {
     const user = await db.models.user.findOne({ username });
 
-    // Security: Use a generic error message to prevent username enumeration
+    // Security: Use generic error messages
     if (!user) {
       return json(
         { errorMessage: "Invalid username or password." },
@@ -43,7 +41,12 @@ export async function action({ request }) {
       );
     }
 
-    const isCorrectPassword = await bcrypt.compare(password, user.password);
+    // 🔥 SWAP: Using Bun's native, high-performance bcrypt verification
+    // This removes the dependency on the buggy 'buffer-equal-constant-time' package
+    const isCorrectPassword = await Bun.password.verify(
+      password,
+      user.password
+    );
 
     if (!isCorrectPassword) {
       return json(
@@ -74,25 +77,22 @@ export default function Login() {
   const actionData = useActionData();
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
-
   const [isOnline, setIsOnline] = useState(true);
 
-  // Simple client-side network detection
   useEffect(() => {
     setIsOnline(navigator.onLine);
-    const handleOnline = () => setIsOnline(true);
-    const handleOffline = () => setIsOnline(false);
-    window.addEventListener("online", handleOnline);
-    window.addEventListener("offline", handleOffline);
+    const handleState = () => setIsOnline(navigator.onLine);
+    window.addEventListener("online", handleState);
+    window.addEventListener("offline", handleState);
     return () => {
-      window.removeEventListener("online", handleOnline);
-      window.removeEventListener("offline", handleOffline);
+      window.removeEventListener("online", handleState);
+      window.removeEventListener("offline", handleState);
     };
   }, []);
 
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-64px)] bg-surface p-4">
-      <div className="relative w-full max-w-sm p-8 flex flex-col gap-6 rounded-[28px] bg-surface-container-high animate-in fade-in zoom-in-95">
+    <div className="flex items-center justify-center min-h-[calc(100vh-64px)] bg-surface p-4 text-on-surface">
+      <div className="relative w-full max-w-sm p-8 flex flex-col gap-6 rounded-[28px] bg-surface-container-high animate-in fade-in zoom-in-95 shadow-lg">
         <md-elevation></md-elevation>
 
         {/* Header */}
@@ -100,7 +100,7 @@ export default function Login() {
           <md-icon className="text-5xl text-primary mb-4">
             account_circle
           </md-icon>
-          <h1 className="text-3xl font-bold tracking-tight text-on-surface mb-2">
+          <h1 className="text-3xl font-bold tracking-tight mb-2">
             Welcome Back
           </h1>
           <p className="text-on-surface-variant text-sm">
@@ -108,23 +108,18 @@ export default function Login() {
           </p>
         </div>
 
-        {/* Offline Warning */}
-        {!isOnline && (
+        {/* Network & Error Alerts */}
+        {(!isOnline || actionData?.errorMessage) && (
           <div className="p-3 rounded-xl bg-error-container text-on-error-container text-sm font-medium flex items-center gap-2">
-            <md-icon className="text-base">wifi_off</md-icon>
-            You are offline. Connection required.
+            <md-icon className="text-base">
+              {!isOnline ? "wifi_off" : "error"}
+            </md-icon>
+            {!isOnline
+              ? "You are offline. Connection required."
+              : actionData.errorMessage}
           </div>
         )}
 
-        {/* Server Error Message */}
-        {actionData?.errorMessage && (
-          <div className="p-3 rounded-xl bg-error-container text-on-error-container text-sm font-medium flex items-center gap-2">
-            <md-icon className="text-base">error</md-icon>
-            {actionData.errorMessage}
-          </div>
-        )}
-
-        {/* Form */}
         <Form method="post" className="flex flex-col gap-4">
           <md-outlined-text-field
             label="Username"
@@ -161,7 +156,6 @@ export default function Login() {
           </div>
         </Form>
 
-        {/* Footer Link */}
         <div className="text-center mt-2 text-sm text-on-surface-variant">
           Don't have an account?{" "}
           <Link
